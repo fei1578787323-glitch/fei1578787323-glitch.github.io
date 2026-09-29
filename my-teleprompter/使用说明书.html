@@ -1,0 +1,960 @@
+<title>FRMZONE 使用说明书</title>
+<meta name="description" content="FRMZONEmacOS 版完整使用说明">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;900&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --ground: #f5f6f8;
+    --surface: #ffffff;
+    --ink: #17191e;
+    --ink-soft: #3d424c;
+    --muted: #6b717c;
+    --rule: #e2e5ea;
+    --tint: #eef0f3;
+    --accent: #e8781a;
+    --accent-ink: #b8570a;
+    --accent-wash: #fdf1e6;
+    --warn: #b4441f;
+    --warn-wash: #fbeee9;
+    --key-top: #ffffff;
+    --key-edge: #c9ced6;
+    --prompter: #141518;
+    --prompter-ink: #f3f3f1;
+
+    --font-display: "Noto Serif SC", "Songti SC", "STSong", serif;
+    --font-body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+
+    --step--1: 0.8125rem;
+    --step-0: 1rem;
+    --step-1: 1.1875rem;
+    --step-2: 1.5rem;
+    --step-3: clamp(1.9rem, 1.4rem + 2.2vw, 2.9rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #111317;
+      --surface: #181b20;
+      --ink: #eceef2;
+      --ink-soft: #c3c8d0;
+      --muted: #8d949f;
+      --rule: #2a2f37;
+      --tint: #1f232a;
+      --accent: #f29a45;
+      --accent-ink: #f5ab62;
+      --accent-wash: #2a1f14;
+      --warn: #f08a6a;
+      --warn-wash: #2c1a15;
+      --key-top: #262a31;
+      --key-edge: #3b414b;
+      --prompter: #0a0b0d;
+      --prompter-ink: #f3f3f1;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #111317;
+    --surface: #181b20;
+    --ink: #eceef2;
+    --ink-soft: #c3c8d0;
+    --muted: #8d949f;
+    --rule: #2a2f37;
+    --tint: #1f232a;
+    --accent: #f29a45;
+    --accent-ink: #f5ab62;
+    --accent-wash: #2a1f14;
+    --warn: #f08a6a;
+    --warn-wash: #2c1a15;
+    --key-top: #262a31;
+    --key-edge: #3b414b;
+    --prompter: #0a0b0d;
+    --prompter-ink: #f3f3f1;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-ink); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  /* 页头：像一块提词屏 */
+  .masthead {
+    background: var(--prompter);
+    color: var(--prompter-ink);
+    padding-inline: 20px;
+  }
+  .masthead-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-block: 44px 40px;
+    display: grid;
+    gap: 14px;
+    position: relative;
+  }
+  .eyebrow {
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #a9adb5;
+    font-family: var(--font-mono);
+  }
+  .masthead h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--step-3);
+    line-height: 1.25;
+    text-wrap: balance;
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+  }
+  .masthead h1::before {
+    content: "";
+    width: 0; height: 0;
+    border-top: 0.32em solid transparent;
+    border-bottom: 0.32em solid transparent;
+    border-left: 0.42em solid var(--accent);
+    flex: none;
+  }
+  .masthead .lede {
+    margin: 0;
+    max-width: 40em;
+    color: #c9ccd2;
+    font-size: var(--step-1);
+    line-height: 1.7;
+  }
+  .reading-line {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), rgba(232,120,26,0.15) 70%, transparent);
+    margin-top: 6px;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: var(--step--1);
+  }
+  .meta span {
+    border: 1px solid #353941;
+    border-radius: 999px;
+    padding: 2px 12px;
+    color: #c9ccd2;
+  }
+
+  /* 主体布局 */
+  .layout {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: 56px;
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-block: 32px;
+  }
+  .toc h2 {
+    margin: 0 0 10px;
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+  .toc a {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    border-left: 2px solid transparent;
+  }
+  .toc a:hover { background: var(--tint); color: var(--ink); }
+  .toc a.active { color: var(--ink); background: var(--accent-wash); border-left-color: var(--accent); border-radius: 0 6px 6px 0; }
+  .toc-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    min-width: 1.4em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  main { padding-block: 24px 80px; min-width: 0; }
+  .chapter {
+    max-width: 46rem;
+    padding-block: 28px 8px;
+    border-bottom: 1px solid var(--rule);
+    scroll-margin-top: 12px;
+  }
+  .chapter:last-of-type { border-bottom: 0; }
+  .chapter h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-2);
+    line-height: 1.35;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-wrap: balance;
+  }
+  .chapter h2 .marker {
+    width: 0; height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 9px solid var(--accent);
+    flex: none;
+  }
+  .chapter h2 .num {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    color: var(--muted);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .chapter h3 {
+    font-size: var(--step-1);
+    font-weight: 700;
+    margin: 28px 0 8px;
+    text-wrap: balance;
+  }
+  p { margin: 0 0 14px; color: var(--ink-soft); }
+  strong { color: var(--ink); font-weight: 700; }
+  ul, ol { margin: 0 0 16px; padding-left: 1.4em; color: var(--ink-soft); }
+  li { margin: 3px 0; }
+  li::marker { color: var(--muted); }
+  ol > li::marker { font-family: var(--font-mono); font-size: 0.85em; }
+  li ul { margin: 4px 0 6px; }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--tint);
+    padding: 1px 6px;
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+  }
+  kbd {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    line-height: 1.5;
+    padding: 0 7px;
+    margin: 0 1px;
+    color: var(--ink);
+    background: var(--key-top);
+    border: 1px solid var(--key-edge);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+
+  .scroll { overflow-x: auto; margin: 0 0 18px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td { text-align: left; vertical-align: top; padding: 9px 14px; border-bottom: 1px solid var(--rule); }
+  th {
+    background: var(--tint);
+    font-weight: 500;
+    font-size: var(--step--1);
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td:first-child { color: var(--ink); font-weight: 500; white-space: nowrap; }
+  td { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+  pre.diagram {
+    margin: 0;
+    padding: 18px 20px;
+    background: var(--prompter);
+    color: #d9dbe0;
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.55;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  aside.note {
+    margin: 0 0 18px;
+    padding: 12px 16px;
+    background: var(--accent-wash);
+    border-radius: 8px;
+  }
+  aside.note p { margin: 0; color: var(--ink-soft); }
+  aside.note p + p { margin-top: 6px; }
+  aside.note.warn { background: var(--warn-wash); }
+  aside.note.warn strong:first-child { color: var(--warn); }
+
+  p.question {
+    margin: 22px 0 6px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: var(--step--1);
+    padding-block: 20px 36px;
+    padding-inline: 20px;
+    text-align: center;
+  }
+
+  /* 手机与窄屏 */
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    nav.toc {
+      position: static;
+      max-height: none;
+      padding-block: 20px 4px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .toc ol { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .toc a.active { border-left-color: transparent; border-radius: 6px; }
+    td:first-child { white-space: normal; }
+  }
+  @media print {
+    nav.toc { display: none; }
+    .layout { grid-template-columns: 1fr; }
+    .chapter { break-inside: auto; }
+  }
+  p.cap {
+    margin: -10px 0 18px;
+    font-size: .92em;
+    opacity: .72;
+  }
+  figure.shot {
+    margin: 18px 0;
+  }
+  figure.shot img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(128,128,128,.28);
+    box-shadow: 0 6px 22px rgba(0,0,0,.10);
+    display: block;
+  }
+</style>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="eyebrow">FRMZONE · User Guide</div>
+    <h1>FRMZONE 使用说明书</h1>
+    <p class="lede">从新建第一篇稿件，到智能跟读、节目单、导演提示、敏感词检测、手机遥控、外接屏幕演播室提词和多人工程文件——一份写给主播、老师、讲者和演播室操作员的完整指南。</p>
+    <div class="reading-line" aria-hidden="true"></div>
+    <div class="meta">
+      <span>macOS 14 及以上</span>
+      <span>版本 1.0</span>
+      <span>23 章</span>
+      <span>支持 7 种界面语言</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="目录">
+    <h2>目录</h2>
+    <ol>
+<li><a href="#s0"><span class="toc-num">0</span>五分钟上手</a></li>
+<li><a href="#s1"><span class="toc-num">1</span>软件简介</a></li>
+<li><a href="#s2"><span class="toc-num">2</span>安装与首次启动</a></li>
+<li><a href="#s3"><span class="toc-num">3</span>界面总览</a></li>
+<li><a href="#s4"><span class="toc-num">4</span>稿件管理</a></li>
+<li><a href="#s5"><span class="toc-num">5</span>导入外部文件</a></li>
+<li><a href="#s7"><span class="toc-num"></span>4a. 在任何 App 里选中文字直接开读</a></li>
+<li><a href="#s8"><span class="toc-num"></span>5a. 台本库</a></li>
+<li><a href="#s9"><span class="toc-num"></span>5b. 画面擦除</a></li>
+<li><a href="#s10"><span class="toc-num"></span>5c. 内容日历与流程看板</a></li>
+<li><a href="#s6"><span class="toc-num">6</span>开始提词：提词窗</a></li>
+<li><a href="#s7"><span class="toc-num">7</span>四种提词模式</a></li>
+<li><a href="#s8"><span class="toc-num">8</span>在提词窗里直接编辑</a></li>
+<li><a href="#s9"><span class="toc-num">9</span>隐形提词与鼠标穿透</a></li>
+<li><a href="#s10"><span class="toc-num">10</span>读稿计时器</a></li>
+<li><a href="#s11"><span class="toc-num">11</span>外接屏幕（演播室提词）</a></li>
+<li><a href="#s12"><span class="toc-num">12</span>节目单</a></li>
+<li><a href="#s13"><span class="toc-num">13</span>导演提示与格式标记</a></li>
+<li><a href="#s14"><span class="toc-num">14</span>敏感词检测</a></li>
+<li><a href="#s20"><span class="toc-num"></span>14a. 歌词同步</a></li>
+<li><a href="#s21"><span class="toc-num"></span>14b. 读稿生成 SRT 字幕</a></li>
+<li><a href="#s15"><span class="toc-num">15</span>手机遥控</a></li>
+<li><a href="#s23"><span class="toc-num"></span>15a. 外部控制器（踏板、Stream Deck、MIDI）</a></li>
+<li><a href="#s24"><span class="toc-num"></span>15a-b. 实时字幕源（直播上字幕）</a></li>
+<li><a href="#s25"><span class="toc-num"></span>15b. 多机同步与主备热切换</a></li>
+<li><a href="#s26"><span class="toc-num"></span>15c. Tally 灯</a></li>
+<li><a href="#s27"><span class="toc-num"></span>15d. 跟随幻灯片翻页</a></li>
+<li><a href="#s16"><span class="toc-num">16</span>设置面板详解</a></li>
+<li><a href="#s29"><span class="toc-num"></span>16a. 版本与授权</a></li>
+<li><a href="#s17"><span class="toc-num">17</span>工程文件（多人使用）</a></li>
+<li><a href="#s18"><span class="toc-num">18</span>快捷键</a></li>
+<li><a href="#s19"><span class="toc-num">19</span>菜单栏速查</a></li>
+<li><a href="#s20"><span class="toc-num">20</span>常见场景推荐设置</a></li>
+<li><a href="#s21"><span class="toc-num">21</span>常见问题与故障排除</a></li>
+<li><a href="#s22"><span class="toc-num">22</span>数据存放位置</a></li>
+    </ol>
+  </nav>
+  <main>
+<section class="chapter" id="s0"><h2><span class="marker" aria-hidden="true"></span><span class="num">0</span>五分钟上手</h2>
+<p>没用过提词器也没关系。这一节只讲最少的东西，照着做一遍，你就能对着屏幕念完第一条。</p>
+<p><strong>第一步：把稿子放进来。</strong></p>
+<p>打开软件先看到的是主页。左边是你所有的稿件，中间是各种入口，右边是提词设置。</p>
+<figure class="shot"><img src="screenshots/manual/manual-home-mac.png" alt="主窗口" width="620"></figure>
+<p class="cap">主窗口。想新写一篇，点「新建稿件」；已经有 Word / PPT / TXT，点「导入文件」；不知道写什么，点「台本库」拿一篇现成的改。</p>
+<p><strong>第二步：点开这篇稿子，看一眼字数和时长。</strong></p>
+<figure class="shot"><img src="screenshots/manual/manual-editor-mac.png" alt="编辑区" width="620"></figure>
+<p class="cap">选中左边的稿件，中间就变成编辑区。标题下面写着「119 字 · 约 32 秒」，这是按正常语速估的。蓝色的【方括号】是给你自己看的提示，念的时候会跳过；用两个星号包起来的词会变色，用来标重点。</p>
+<p><strong>第三步：点右下角「开始提词」。</strong></p>
+<figure class="shot"><img src="screenshots/manual/manual-prompter-mac.png" alt="提词窗" width="560"></figure>
+<p class="cap">提词窗。中间那条横线就是「阅读线」，色带盖住的那一句就是你现在该念的。最上面一排从左到右是：播放 / 暂停、回到开头、编辑、<strong>提词模式</strong>、慢一点 / 快一点、书签、目录、查找、字号、镜像、计时器、外接屏幕、隐形提词、外观、关闭。</p>
+<p><strong>要记住的只有三件事</strong></p>
+<ol><li><strong>模式选「智能跟读」</strong>，对着麦克风念，文字就跟着你走；你停它也停。想让文字自己匀速走，就选「匀速滚动」。</li><li><strong>空格键</strong> = 开始 / 暂停，<strong>Esc</strong> = 关闭提词窗。</li><li>第一次用会问你要<strong>麦克风</strong>和<strong>语音识别</strong>权限，要点「好」，否则智能跟读用不了。</li></ol>
+<p>剩下的都是锦上添花，用到哪一节再翻哪一节。</p>
+</section><section class="chapter" id="s1"><h2><span class="marker" aria-hidden="true"></span><span class="num">1</span>软件简介</h2>
+<p>「FRMZONE」是一款运行在 Mac 上的提词软件，主要功能：</p>
+<div class="scroll"><table><thead><tr><th>功能</th><th>说明</th></tr></thead><tbody><tr><td>智能跟读</td><td>通过麦克风识别你说的话，读到哪里，文字就滚动到哪里；停下来它也停下来；可设提前量和专有名词</td></tr><tr><td>当前句高亮</td><td>正在读的整句话加色带，眼睛更容易定位</td></tr><tr><td>匀速滚动 / 手动翻页</td><td>按固定速度滚动，或用键盘、翻页笔自己翻</td></tr><tr><td>隐形提词</td><td>录屏、直播、共享屏幕时，提词窗不会出现在画面里</td></tr><tr><td>悬浮置顶</td><td>提词窗浮在所有窗口之上，可设置鼠标穿透</td></tr><tr><td>外接屏幕输出</td><td>可同时输出到多块显示器，每块单独开关和选正常 / 镜像，配合提词玻璃做演播室提词</td></tr><tr><td>读稿计时</td><td>正计时 / 倒计时，超时提醒</td></tr><tr><td>歌词同步</td><td>导入 LRC 歌词和伴奏，按播放进度滚动，逐字卡拉 OK 高亮，间奏倒数；可边听边打点生成时间轴</td></tr><tr><td>节目单</td><td>多篇稿件排成节目，一键切换下一条，自动计算节目总时长和超时 / 提前</td></tr><tr><td>导演提示标记</td><td>【看 2 号机】这类提示换色显示、不朗读；<strong>重点</strong>加粗变色；段落标题可跳转</td></tr><tr><td>手机遥控</td><td>同一 Wi-Fi 下手机扫码即可遥控，无需安装 App</td></tr><tr><td>敏感词检测</td><td>内置《广告法》常见违规用语，可导入自定义词库；编辑区和提词窗标出，播前提醒</td></tr><tr><td>导入外部文件</td><td>TXT、Markdown、Word、RTF、PDF、PowerPoint 等，源文件修改后自动同步</td></tr><tr><td>提词窗内编辑</td><td>不用切回主窗口，直接在提词窗里改字</td></tr><tr><td>工程文件</td><td>每个人把自己的稿件和全部设置保存成一个文件，随时切换</td></tr><tr><td>多语言界面</td><td>简体中文、繁體中文、English、日本語、한국어、Español、Français</td></tr><tr><td>自定义外观与快捷键</td><td>12 种界面风格（浅色 / 深色 / 暗夜 / 霓光 / 清透 / 炫彩 / 云白 / 玻璃 / 浅色光影 / 深色光影 / 极光 / 星空）；12 种强调色 + 自定义；开屏动画、首页动态效果；全部快捷键可改</td></tr></tbody></table></div>
+<p><strong>系统要求：</strong> macOS 14 或更新版本。智能跟读需要麦克风，并建议联网（使用在线语音识别，准确率更高）。</p>
+</section><section class="chapter" id="s2"><h2><span class="marker" aria-hidden="true"></span><span class="num">2</span>安装与首次启动</h2>
+<h3>2.1 安装</h3>
+<ol><li>找到 <code>FRMZONE.app</code>（开发者用 <code>./build.sh</code> 构建后，在项目的 <code>build</code> 文件夹里）。</li><li>把它拖到「应用程序」文件夹。</li><li>双击打开。如果系统提示「无法验证开发者」，在应用图标上<strong>右键 → 打开</strong>，再点「打开」即可（只需要第一次这样做）。</li></ol>
+<aside class="note"><p>可以把应用拖到程序坞，方便以后打开。</p></aside>
+<h3>2.2 首次启动</h3>
+<ul><li>软件会自动创建一篇示例稿件「欢迎使用 FRMZONE」，可以直接用它体验。</li><li>默认设置：智能跟读模式、隐形提词开启、窗口置顶开启、浅色风格、橙色强调色。</li></ul>
+<h3>2.3 需要授予的权限</h3>
+<div class="scroll"><table><thead><tr><th>权限</th><th>什么时候会问</th><th>用途</th></tr></thead><tbody><tr><td>麦克风</td><td>第一次使用「智能跟读」时</td><td>听你读到了哪里</td></tr><tr><td>语音识别</td><td>同上</td><td>把声音转成文字，和稿件比对</td></tr></tbody></table></div>
+<p>系统弹窗时点「<strong>允许</strong>」。如果不小心点了「不允许」，到 <strong>系统设置 › 隐私与安全性 › 麦克风 / 语音识别</strong> 里，把「FRMZONE」打开即可。</p>
+<aside class="note"><p>只使用「匀速滚动」或「手动翻页」时，不需要任何权限。</p></aside>
+</section><section class="chapter" id="s3"><h2><span class="marker" aria-hidden="true"></span><span class="num">3</span>界面总览</h2>
+<figure class="shot"><img src="screenshots/manual/manual-home-mac.png" alt="主窗口三栏" width="620"></figure>
+<p>主窗口分为三栏：</p>
+<div class="scroll"><pre class="diagram">┌──────────────┬───────────────────────────────┬───────────────┐
+│ ① 侧边栏      │ ② 编辑区                        │ ③ 提词设置     │
+│              │                               │               │
+│ 搜索框        │ 标题                           │ 展开/收起全部   │
+│ 工程栏        │ 字数 · 预计时长 · 源文件状态       │ 外观           │
+│ 稿件｜节目单   │                               │ 语言           │
+│ 稿件列表      │                               │ 敏感词 · 导演提示 │
+│              │ 正文                           │ 提词模式        │
+│              │                               │ 文字           │
+│              │                               │ 提词窗          │
+│              │───────────────────────────────│ 计时器          │
+│              │ 模式 标记      [关闭提词窗][开始提词]│ 手机遥控        │
+│              │                               │ 外接屏幕 · 快捷键 │
+└──────────────┴───────────────────────────────┴───────────────┘</pre></div>
+<p><strong>窗口顶部</strong></p>
+<ul><li>标题：「FRMZONE」。当前工程名和保存状态显示在左侧的工程栏里（见 17.2 节）。</li><li>左侧工具栏按钮：<strong>导入文件</strong>（⬇）、<strong>新建稿件</strong>（✎）、<strong>显示 / 隐藏侧边栏</strong>。</li><li>右上角按钮（滑杆图标）：显示 / 隐藏右侧「提词设置」面板。</li></ul>
+<p><strong>侧边栏</strong></p>
+<ul><li>工程栏下方的「<strong>稿件 / 节目单</strong>」切换：「稿件」显示全部稿件，「节目单」显示本期节目的播出顺序（见第 12 章）。</li></ul>
+<p><strong>编辑区底部</strong></p>
+<ul><li><strong>模式</strong>：切换三种提词模式。</li><li><strong>标记</strong>：在光标处插入导演提示、重点、段落标题，或把当前稿件加入节目单（见第 13 章）。</li></ul>
+</section><section class="chapter" id="s4"><h2><span class="marker" aria-hidden="true"></span><span class="num">4</span>稿件管理</h2>
+<h3>4.1 新建稿件</h3>
+<ul><li>点工具栏的 <strong>✎ 新建</strong> 按钮，或按 <strong><kbd>⌘N</kbd></strong>。</li><li>新稿件会出现在列表最上方并自动选中。</li></ul>
+<h3>4.2 编辑稿件</h3>
+<ul><li>在编辑区顶部输入<strong>标题</strong>（不填则显示「未命名稿件」）。</li><li>在下方输入或粘贴<strong>正文</strong>。空白稿件会显示提示「在这里输入或粘贴稿件…」。</li><li>所有修改<strong>自动保存</strong>，不需要手动保存稿件。</li></ul>
+<h3>4.3 字数与预计时长</h3>
+<p>标题下方显示：</p>
+<ul><li><strong>敏感词</strong>：有敏感词时显示「⚠︎ N 个敏感词」（见第 14 章）。</li><li><strong>字数</strong>：中日韩文字按字计，英文等按词计。</li><li><strong>预计时长</strong>：按中文约 220 字 / 分钟、英文约 150 词 / 分钟估算。</li></ul>
+<h3>4.4 搜索</h3>
+<p>在侧边栏顶部的搜索框输入关键词，会同时搜索<strong>标题和正文</strong>。</p>
+<h3>4.5 稿件列表操作</h3>
+<p>在列表中的稿件上<strong>右键</strong>：</p>
+<div class="scroll"><table><thead><tr><th>菜单项</th><th>作用</th></tr></thead><tbody><tr><td>开始提词</td><td>直接用这篇稿件打开提词窗</td></tr><tr><td>加入节目单</td><td>把这篇稿件加到节目单末尾</td></tr><tr><td>复制一份</td><td>生成一份副本（标题后加「副本」）</td></tr><tr><td>删除</td><td>删除这篇稿件（也可以选中后按 <kbd>Delete</kbd> 键）</td></tr></tbody></table></div>
+<ul><li>选中的稿件会用你选择的<strong>强调色</strong>高亮。</li><li>每行显示：标题、第一行预览、字数和修改时间（今天改的显示时间，更早的显示日期）；含有敏感词时显示「⚠︎ 数量」。</li></ul>
+</section><section class="chapter" id="s5"><h2><span class="marker" aria-hidden="true"></span><span class="num">5</span>导入外部文件</h2>
+<h3>5.1 支持的格式</h3>
+<div class="scroll"><table><thead><tr><th>类型</th><th>扩展名</th><th>说明</th></tr></thead><tbody><tr><td>纯文本</td><td>.txt</td><td>自动识别 UTF-8 和 Windows 常见的 GBK 编码</td></tr><tr><td>Markdown</td><td>.md</td><td>自动去掉 <code>#</code>、<code>**</code>、列表符号、链接地址等标记</td></tr><tr><td>Word</td><td>.docx、.doc</td><td></td></tr><tr><td>其他文档</td><td>.rtf、.rtfd、.odt、.html</td><td></td></tr><tr><td>PDF</td><td>.pdf</td><td>自动把被版面拆开的句子拼回整句</td></tr><tr><td>PowerPoint</td><td>.pptx</td><td>可选导入演讲者备注或幻灯片文字，表格文字也会导入</td></tr></tbody></table></div>
+<p><strong>暂不支持：</strong></p>
+<ul><li>旧版 <strong>.ppt</strong> 和 <strong>Keynote</strong>：请先另存为 .pptx 或 PDF。</li><li><strong>扫描版 PDF</strong>（整页是图片）：没有可提取的文字，需要先用其他软件做文字识别（OCR）。</li></ul>
+<h3>5.2 三种导入方式</h3>
+<ol><li><strong>导入按钮</strong>：点工具栏的 <strong>⬇ 导入文件</strong>，或按 <strong><kbd>⇧⌘I</kbd></strong>，也可以在工程菜单里选「导入文件…」。可以一次选多个文件。</li><li><strong>拖入侧边栏</strong>：把文件直接拖到左侧稿件列表上，出现虚线框和「拖入文件即可导入」时松开。</li><li><strong>拖到程序坞图标</strong>：把文件拖到程序坞里的「FRMZONE」图标上。</li></ol>
+<p>每个文件会变成一篇新稿件，<strong>标题就是文件名</strong>。</p>
+<h3>5.3 PowerPoint 导入内容</h3>
+<p>在导入窗口底部的「<strong>PPT 导入内容</strong>」里选择（会被记住）：</p>
+<div class="scroll"><table><thead><tr><th>选项</th><th>效果</th></tr></thead><tbody><tr><td>备注优先（默认）</td><td>有演讲者备注的页导入备注；没有备注的页导入幻灯片上的文字</td></tr><tr><td>幻灯片文字</td><td>只导入幻灯片上的文字</td></tr><tr><td>备注和幻灯片文字</td><td>两者都导入</td></tr></tbody></table></div>
+<p>每页之间用空行分隔；页码、日期、页脚会自动去掉。页的顺序按<strong>放映顺序</strong>（拖动调整过顺序的 PPT 也不会错）。</p>
+<p>勾上「<strong>每页前加页码标题</strong>」（默认勾上）时，每页前面会加一行「# 第 N 页」：在提词窗的「跳到段落」菜单里能按页跳，也是「跟随幻灯片翻页」（见 15d）对页码的依据；没有字的页也会留一个标题，页码才对得上。标题不会被朗读、不计字数。</p>
+<h3>5.4 源文件自动同步</h3>
+<p>导入的稿件会记住它的源文件，标题下方显示：</p>
+<aside class="note"><p>🔗 来自 讲稿.docx · <strong>自动同步中</strong></p></aside>
+<ul><li>之后在 Word、PPT、记事本等软件里<strong>修改并保存源文件</strong>，约 2 秒后提词器里的稿件会自动更新；如果这篇稿件正在提词，提词窗也会同步刷新。</li><li>如果你在提词器里<strong>修改了这篇稿件</strong>（在编辑区或提词窗里），同步会自动停止，显示「<strong>已停止同步</strong>」，避免你的修改被源文件覆盖。</li><li>源文件被移动或删除时，显示「<strong>源文件找不到了</strong>」。</li></ul>
+<p>点状态右侧的 <strong>⋯</strong> 按钮：</p>
+<div class="scroll"><table><thead><tr><th>菜单项</th><th>作用</th></tr></thead><tbody><tr><td>源文件变化时自动更新</td><td>开 / 关自动同步。重新打开时会先确认，因为会用源文件覆盖当前稿件</td></tr><tr><td>从源文件重新导入</td><td>立即用源文件内容覆盖当前稿件（会先确认），并恢复自动同步</td></tr><tr><td>在访达中显示</td><td>打开源文件所在的文件夹</td></tr></tbody></table></div>
+</section><section class="chapter" id="s7"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>4a. 在任何 App 里选中文字直接开读</h2>
+<p>在微信、备忘录、飞书、网页里看到一段文案，<strong>选中 → 右键 → 服务 → 「用 FRMZONE 读这段文字」</strong>，它会自动存成一篇新稿件并打开提词窗。第一次用如果菜单里没有这一项，去「系统设置 › 键盘 › 键盘快捷键 › 服务 › 文本」里勾上。</p>
+<p>程序化调用也行：<code>open &quot;voiceprompter://prompt?text=要念的内容&quot;</code> 直接开读，<code>voiceprompter://new?title=标题&amp;text=内容</code> 只新建不开读（文字要做 URL 编码）。</p>
+</section><section class="chapter" id="s8"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>5a. 台本库</h2>
+<p>内置 200 篇写好的中文成稿范例（英文界面另有一套英文台本），不用从空白开始。</p>
+<figure class="shot"><img src="screenshots/manual/manual-library-mac.png" alt="台本库" width="560"></figure>
+<ul><li><strong>在哪打开</strong>：主页的「台本库」卡片，或菜单 <strong>文件 › 台本库…</strong>。</li><li><strong>分类</strong>：中文台本 200 篇，当下的热点话题排在最前面；另有口播开场、带货种草、知识科普、AI 科技、生活方式、美食旅行、健康运动、情绪成长、职场财经、节日祝福；上面的搜索框可以按关键词搜标题和正文。</li><li><strong>字数和建议录制时长</strong>：每一篇都标好了，和稿件详情用的是同一套估算（中文约 220 字 / 分钟，英文约 150 词 / 分钟），挑之前就知道大概念多久。</li><li><strong>用这篇</strong>：把这篇复制成一份自己的稿件（原文不动），接着改成自己的内容再提词；<strong>复制文字</strong>只把正文放进剪贴板。</li><li>台本里的【方括号】是导演提示，提词时不朗读；<code>**两个星号**</code> 之间是重点词，规则和第 13 节一样。</li><li>界面语言是中文时给中文台本，其他语言给英文台本。</li></ul>
+</section><section class="chapter" id="s9"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>5b. 画面擦除</h2>
+<p>擦掉<strong>自己视频</strong>上多余的文字、贴纸、路人或杂物：主页「画面擦除」或菜单 <strong>文件 › 画面擦除…</strong>。</p>
+<p>先勾选「这是我自己拍的视频，或我有权修改它」，再选视频或把视频拖进窗口。<strong>请不要用来去掉平台水印、作者署名或别人的版权标记。</strong> 点「加一个框」，把框拖到要擦掉的地方（可以加好几个框），三种处理：</p>
+<ul><li><strong>智能填充</strong>（默认）：用周围的画面补上，文字、贴纸效果最好。</li><li><strong>模糊</strong>：补不干净时用，看起来像打了码。</li><li><strong>裁掉边缘</strong>：框贴着边时最干净，画面会小一点；没贴边的框照样填补。</li></ul>
+<p>底下是纯色、天空、墙面几乎看不出来；底下是人脸、字、密集纹理会糊一小块。处理速度大约和视频时长相当。全部在这台电脑上处理，不上传。</p>
+</section><section class="chapter" id="s10"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>5c. 内容日历与流程看板</h2>
+<p>把一篇篇稿子当成一条条要做的内容：灵感 → 写稿中 → 待拍摄 → 已拍摄 → 已剪辑 → 已发布，再排上哪天拍、发哪个平台。只想提词的话可以完全不用，稿子照旧。手机上排的，电脑上一样看得到（iCloud、互传、工程文件都带着）。</p>
+<ul><li><strong>打开</strong>：主页「内容日历」「流程看板」两个图标，或菜单「文件 › 内容日历…」（<kbd>⌘⇧K</kbd>）、「文件 › 流程看板…」。</li><li><strong>加入计划</strong>：编辑稿件时，标题下面点「加入内容计划」，选阶段、哪天拍、发布到哪。稿件列表每一行会显示阶段、日期和平台。</li><li><strong>日历</strong>：按月看，每天格子里列出那天排的内容（左边的色条是阶段颜色）。把右边的稿子拖到哪一天就排到哪天；双击一条打开，▶ 直接提词；右键能改阶段、调整计划、移出计划。</li><li><strong>看板</strong>：六个阶段六列，把卡片拖到下一列就换阶段；每列右上角的「+」把一篇稿子放进这个阶段。</li><li><strong>今天要拍</strong>：主页两个大按钮下面，有排期时出现，点一条直接开始提词。</li><li><strong>自动往前走</strong>：提词读到结尾，这篇在计划里还没拍的话自动变「已拍摄」。</li><li><strong>团队排期（MAX）</strong>：给每条内容填「负责人」，日历和看板右上角可以只看某个人的。</li><li><strong>版本</strong>：免费版最多同时排 10 条（已发布的不算），Pro、MAX 不限。</li></ul>
+</section><section class="chapter" id="s6"><h2><span class="marker" aria-hidden="true"></span><span class="num">6</span>开始提词：提词窗</h2>
+<h3>6.1 打开提词窗</h3>
+<ul><li>选中稿件后，点编辑区右下角的 <strong>▶ 开始提词</strong>，或按 <strong><kbd>⌘↩</kbd></strong>。</li><li>提词窗会浮在所有窗口之上（默认置顶），第一次打开时出现在屏幕上方中间。</li></ul>
+<h3>6.2 提词窗组成</h3>
+<figure class="shot"><img src="screenshots/manual/manual-prompter-mac.png" alt="提词窗" width="620"></figure>
+<p class="cap">色带盖住的那一句是「正在读」；蓝色的是导演提示，不朗读；黄色的是重点词。</p>
+<div class="scroll"><pre class="diagram">┌───────────────────────────────────────────────────────────────────┐
+│ ≡ ▶ ⏮ ✏️ 智能跟读 ▮▮▮ A− A+        状态提示  12%  ⇋ ⏱ 📺 👁 ⊹ ✕ │ ← 工具栏
+├───────────────────────────────────────────────────────────────────┤
+│   已读过的文字（变暗）                                   ⏱ 00:12  │ ← 计时器
+│ ▶────────────────────────────────────────────────────────────── │ ← 阅读线
+│   正在读的这一行                                                  │
+│   接下来要读的内容                                                │
+└───────────────────────────────────────────────────────────────────┘</pre></div>
+<p><strong>工具栏按钮（从左到右）</strong></p>
+<div class="scroll"><table><thead><tr><th>按钮</th><th>作用</th></tr></thead><tbody><tr><td>≡</td><td>按住拖动窗口（也可以直接拖文字区域）</td></tr><tr><td>▶ / ⏸</td><td>开始 / 暂停（空格键）</td></tr><tr><td>‹ 2/5 ›</td><td>仅节目单播出时显示：上一条 / 当前第几条 / 下一条</td></tr><tr><td>⏮</td><td>从头开始（<kbd>R</kbd>）</td></tr><tr><td>✏️ / ✓</td><td>进入 / 结束编辑（<kbd>E</kbd>）</td></tr><tr><td>模式名称</td><td>点开切换：智能跟读 / 匀速滚动 / 手动翻页</td></tr><tr><td>音柱</td><td>仅智能跟读模式显示，表示麦克风状态（见第 7.1 节）</td></tr><tr><td>🐢 数字 🐇</td><td>仅匀速滚动模式显示：减速 / 当前速度 / 加速</td></tr><tr><td>段落图标</td><td>仅稿件里有段落标题时显示：点开跳到指定段落</td></tr><tr><td>A− / A+</td><td>缩小 / 放大字号</td></tr><tr><td>状态提示</td><td>如「正在聆听…」「已暂停」「编辑中 · <kbd>Esc</kbd> 结束」</td></tr><tr><td>百分比</td><td>阅读进度</td></tr><tr><td>⇋</td><td>镜像翻转（<kbd>M</kbd>）</td></tr><tr><td>⏱</td><td>显示 / 隐藏计时器（<kbd>T</kbd>）</td></tr><tr><td>📺</td><td>外接屏幕输出开 / 关</td></tr><tr><td>👁</td><td>隐形提词开 / 关（划斜线表示已开启）</td></tr><tr><td>⊹</td><td>鼠标穿透开 / 关</td></tr><tr><td>✕</td><td>关闭提词窗（<kbd>Esc</kbd>）</td></tr></tbody></table></div>
+<p>亮起（有浅色底）的按钮表示该功能已开启。</p>
+<h3>6.3 阅读线、当前句与已读变暗</h3>
+<ul><li>左侧的<strong>橙色三角和细线</strong>是阅读线，正在读的内容会停在这条线上。位置可在设置里调整（默认距顶部 30%）。</li><li><strong>当前句高亮</strong>：正在读的整句话加一条半透明色带（默认强调色，可改色或关闭）。<ul><li>智能跟读模式：按识别到的朗读位置；</li><li>匀速 / 手动模式：取阅读线所在的那一句；</li><li>按句号、问号、感叹号、分号、省略号和换行分句；编辑时暂停高亮；外接屏幕同步显示。</li></ul></li><li>读过的文字会<strong>变暗</strong>，方便你知道读到了哪里（可关闭或改颜色）。</li></ul>
+<h3>6.4 调整窗口</h3>
+<ul><li><strong>移动</strong>：拖动工具栏左侧的 ≡，或直接拖动文字区域。</li><li><strong>改变大小</strong>：拖动窗口边缘或四角。窗口位置和大小会被记住。</li><li><strong>手动滚动</strong>：任何模式下都可以用触控板或滚轮滚动文字。</li><li><strong>进度</strong>：工具栏右侧显示百分比。</li></ul>
+<h3>6.5 关闭与隐藏</h3>
+<ul><li><strong>关闭</strong>：点 ✕ 或按 <kbd>Esc</kbd>，或在编辑区点「关闭提词窗」。</li><li><strong>临时隐藏</strong>：按 <strong><kbd>⌃⌥H</kbd></strong>（全局快捷键），再按一次显示。隐藏时提词会暂停，外接屏幕仍然显示。</li></ul>
+</section><section class="chapter" id="s7"><h2><span class="marker" aria-hidden="true"></span><span class="num">7</span>四种提词模式</h2>
+<p>可以在三个地方切换：编辑区左下角、提词窗工具栏、设置面板「提词模式」。四种模式：智能跟读、匀速滚动、手动翻页、歌词同步（详见第 14a 章）。</p>
+<div class="scroll"><table><thead><tr><th>在哪里切换</th><th>作用范围</th></tr></thead><tbody><tr><td>设置面板「提词模式」</td><td><strong>默认模式</strong>，普通稿件都使用它</td></tr><tr><td>编辑区左下角 / 提词窗工具栏</td><td>普通稿件：修改默认模式；<strong>歌词稿：只对这篇稿件生效</strong>，并会被记住</td></tr></tbody></table></div>
+<ul><li>带时间轴的歌词稿（LRC）打开时<strong>自动使用「歌词同步」</strong>；想用匀速或手动来提这篇歌词，直接切换即可，切回「歌词同步」恢复自动。</li><li>普通稿件选择「歌词同步」时，编辑区会提示「这篇稿件还没有时间轴」，并提供「打点生成时间轴」「导入 LRC」入口；此时按播放不会开始，提示先生成时间轴。</li></ul>
+<h3>7.1 智能跟读（推荐）</h3>
+<p><strong>原理</strong>：通过麦克风识别你说的话，和稿件逐字比对，找到你读到的位置，把那一行滚到阅读线上。</p>
+<p><strong>使用步骤</strong></p>
+<ol><li>选择「智能跟读」模式，打开提词窗。</li><li>点 <strong>▶</strong>（或按空格）。第一次会请求麦克风和语音识别权限，点「允许」。</li><li>看工具栏的<strong>音柱</strong>：</li></ol>
+<div class="scroll"><table><thead><tr><th>音柱状态</th><th>含义</th></tr></thead><tbody><tr><td>灰色小点</td><td>麦克风未接通（刚点开始、等待授权或已暂停）</td></tr><tr><td>强调色矮音柱</td><td><strong>麦克风已接通，可以开始朗读</strong></td></tr><tr><td>强调色音柱跳动</td><td>正在收到你的声音</td></tr></tbody></table></div>
+<ol><li>开始朗读，文字会跟着你走；已读部分逐字变暗。</li><li>读完时状态显示「已读完 🎉」。</li></ol>
+<p><strong>特点</strong></p>
+<ul><li><strong>不说话就不动</strong>：停顿、喝水、思考时文字会停住。</li><li><strong>容错</strong>：念错个别字（如同音字）、漏字、多字都能跟上。</li><li><strong>跳读</strong>：跳过一段直接往后读，只要连续读对几个字就能追上。</li><li><strong>重读</strong>：往回重读一句（约 5 个字以上完全一致）会跟着回退。</li><li><strong>手动校正</strong>：如果位置不对，用滚轮或方向键把要读的行滚到阅读线附近，继续读即可从那里跟起。</li></ul>
+<p><strong>跟读提前量</strong>：设置「提词模式 › 跟读提前量」，0–40 字（默认 8 字）。数值越大，后面的内容越早滚到阅读线，读起来不赶；设为 0 时正在读的字正好对准阅读线。</p>
+<p><strong>专有名词</strong>：在「提词模式 › 专有名词」里每行填一个人名、品牌、地名（例如「林知远」「星河 X9」），开始跟读时会交给语音识别优先识别。</p>
+<ul><li>勾选「自动加入稿件中的重点词和英文词」时，稿件里用 <code>**</code> 标出的重点词和英文单词（如 iPhone、AI）也会自动加入；导演提示里的词不会加入。</li><li>最多使用 100 个词，随工程文件保存。</li><li>词表只是<strong>提高识别概率</strong>，不能保证一定识别准确；识别不出来时，智能跟读的容错也能继续跟上后面的内容。</li></ul>
+<p><strong>数字与公式</strong></p>
+<ul><li>普通数字（年份、百分比、金额、小数）语音识别会输出阿拉伯数字，跟读正常。</li><li>「一」到「九」、「零」与 1–9、0 视为相同，稿件里写「第一」或「第1」都能跟上。</li><li>公式符号按读法比对：<code>=</code> 等于、<code>≈</code> 约等于、<code>≠</code> 不等于、<code>+</code> 加、<code>×</code> 乘、<code>÷</code> 除以、<code>²</code> 平方、<code>³</code> 立方、<code>√</code> 根号、<code>&lt;</code> <code>&gt;</code> <code>≤</code> <code>≥</code> 小于 / 大于。例如稿件写 <code>E=mc²</code>，读「E 等于 m c 平方」即可跟上。</li><li>电话号码、长串编号、分式和积分等复杂公式，识别本身不稳定，可能跟得不准；建议在稿件里直接写成要念的文字，或用智能跟读的容错继续往后读。</li></ul>
+<p><strong>选择麦克风</strong>：「提词模式 › 麦克风」可以选系统默认、内置麦克风、外接 / 无线麦克风。正在跟读时切换会立即生效；选中的设备没连接时，自动改用系统默认并在状态栏提示。</p>
+<p><strong>用 iPhone 当麦克风（仅限苹果设备）</strong>：iPhone 与 Mac 登录同一个 Apple ID、打开 Wi-Fi 和蓝牙并放在 Mac 附近，列表里会出现带「（iPhone）」的设备，选它即可。这是系统的「连续互通」功能，需要 macOS 13、iOS 16 或更新版本；安卓手机和其他品牌设备不支持。手机遥控网页本身不能收音（手机浏览器只允许 HTTPS 网页使用麦克风）。</p>
+<p><strong>识别语言</strong>：默认跟随界面语言，也可以在「语言 › 跟读识别语言」单独指定（普通话、國語、英语、日语、韩语、西班牙语、法语）。例如界面用中文、读英文稿时，把识别语言设为 English。</p>
+<p><strong>提高准确率的建议</strong></p>
+<ul><li>保持网络连接（在线识别更准）。</li><li>使用离嘴较近的麦克风，减少背景噪音和音响回声。</li><li>语速正常、吐字清楚即可，不需要刻意放慢。</li></ul>
+<h3>7.2 匀速滚动</h3>
+<p>按固定速度向上滚动，适合节奏稳定的朗读。</p>
+<ul><li><strong>速度</strong>：10–300（默认 60）。可在设置里拖动，或在提词窗用 🐢 / 🐇 按钮、↑ / ↓ 键调整（每次 ±10）。</li><li><strong>开始前倒计时</strong>：0–10 秒（默认 3 秒）。从头开始播放时，屏幕中央显示 3、2、1。中途暂停后继续不会再倒计时。</li><li>滚到结尾会自动停止，提示「已到结尾，按 <kbd>R</kbd> 从头开始」。</li><li><strong>反向滚动</strong>：按 <strong>B</strong>（或在工具条的模式菜单里选「反向滚动」）让稿子倒着滚，速度数字前会出现「−」；再按一次恢复。倒回开头会自动停下。适合主持人跳读、导播要求退回重读的时候用。</li></ul>
+<h3>7.3 手动翻页</h3>
+<aside class="note"><p>翻页键（<kbd>PageDown</kbd> / <kbd>PageUp</kbd>、踏板、翻页笔）每次走多少，可以在「提词设置 › 提词窗 › 翻页键每次走」里选：3 行（默认）、半屏、一整屏（留一行重叠，眼睛好接上）。</p></aside>
+<p>完全由你控制，适合使用翻页笔。</p>
+<div class="scroll"><table><thead><tr><th>操作</th><th>效果</th></tr></thead><tbody><tr><td><kbd>PageDown</kbd> / →</td><td>向下翻 3 行</td></tr><tr><td><kbd>PageUp</kbd> / ←</td><td>向上翻 3 行</td></tr><tr><td>↓ / ↑</td><td>逐行翻动</td></tr><tr><td>滚轮 / 触控板</td><td>自由滚动</td></tr></tbody></table></div>
+<aside class="note"><p>大多数<strong>翻页笔</strong>发送的就是 <kbd>PageUp</kbd> / <kbd>PageDown</kbd>，插上即可使用。</p><p>手动模式下按空格会开始 / 暂停<strong>计时器</strong>。</p></aside>
+</section><section class="chapter" id="s8"><h2><span class="marker" aria-hidden="true"></span><span class="num">8</span>在提词窗里直接编辑</h2>
+<p>发现错别字或想临时改词，不用回到主窗口。</p>
+<ol><li>点提词窗工具栏的 <strong>✏️</strong>，或按 <strong>E</strong>。</li><li>进入编辑状态：<ul><li>滚动暂停；</li><li>窗口边框变成强调色；</li><li>状态显示「编辑中 · <kbd>Esc</kbd> 结束」；</li><li>光标出现在阅读线所在的行。</li></ul></li><li>直接点选、输入、删除、粘贴。支持<strong>中文输入法</strong>和<strong>撤销（<kbd>⌘Z</kbd>）</strong>。</li><li>修改会<strong>实时同步</strong>到主窗口的稿件和外接屏幕，字数和预计时长也会更新。</li><li>按 <strong>Esc</strong>、再次点工具栏的 <strong>✓</strong>，或直接点播放，即可结束编辑。</li></ol>
+<p><strong>说明</strong></p>
+<ul><li>开着镜像时，编辑期间会暂时显示为正向，结束后恢复。</li><li>开着鼠标穿透时，编辑期间会暂时关闭穿透，结束后恢复。</li><li>如果这篇稿件是从外部文件导入的，编辑后会自动停止与源文件的同步（见 5.4 节）。</li></ul>
+<h3>8a. 播出中改稿（操作员台）</h3>
+<p>提词窗开着的时候，<strong>主窗口的编辑区就是操作员台</strong>：在这里改稿，改动立刻送到提词窗、外接屏幕和 NDI，不用暂停。</p>
+<ul><li>主持人<strong>正在读的那一行不会动</strong>：在它前面插一段、删一段，画面会按改动量自动补偿；匀速滚动中改稿也不会跳。跟读位置、书签一起换算。AI 改稿、源文件自动同步这类前后同时变的情况，按正在读的那几个字到新稿子里重新定位。</li><li>编辑区上方出现操作员条：播出状态、开始 / 暂停、已用时间和进度；<ul><li><strong>从光标处提词</strong>：把光标点到要读的地方，提词窗平滑跳过去（导播临时调整顺序用）。</li><li><strong>跟随阅读位置</strong>：编辑区自动滚到主持人读到的那一行，那一行带浅色底；要专心改后面的内容时可以关掉。</li></ul></li><li>和「在提词窗里直接编辑」的区别：那个会暂停并取消镜像，适合自己一个人改；操作员台适合一人改稿、一人读稿。</li></ul>
+<h3>8b. 给主持人发消息、一键黑屏</h3>
+<p>提词窗开着时，编辑区上方的操作员条里：</p>
+<ul><li><strong>给主持人发一句话</strong>：输入后回车，或者从 💬 菜单里点常用的（请加快、请放慢、看镜头、还剩 1 分钟、还剩 30 秒、准备收尾、稍等别说话）。消息用黄底黑字的横幅显示在稿子最上方，<strong>提词窗、外接屏幕、所有从机（包括当主持人屏的 iPad）同时出现</strong>，8 秒后自动消失；「清掉消息」可以立刻收回。</li><li><strong>黑屏 / 恢复</strong>：主持人屏整块变黑（换场、出错时用），再点一次恢复。全局快捷键 <kbd>⌃⌥B</kbd>，也可以绑到踏板 / Stream Deck。</li><li>别的程序也能发：<code>http://本机IP:端口/api/cmd?k=配对码&amp;c=msg&amp;t=文字</code>（<code>t</code> 留空 = 清掉），黑屏是 <code>c=blackout</code>。</li></ul>
+</section><section class="chapter" id="s9"><h2><span class="marker" aria-hidden="true"></span><span class="num">9</span>隐形提词与鼠标穿透</h2>
+<h3>9.1 隐形提词（默认开启）</h3>
+<p>开启后，<strong>录屏、直播推流、腾讯会议 / Zoom 共享屏幕、系统截图</strong>时，提词窗不会出现在画面里，只有你自己看得到。</p>
+<ul><li>开关位置：提词窗工具栏的 👁 按钮、设置「提词窗 › 隐形提词」、菜单栏「提词 › 隐形提词」。</li><li>外接屏幕的输出也遵循这个开关。</li></ul>
+<aside class="note warn"><p><strong>重要</strong>：不同录屏 / 直播软件的抓屏方式不同，个别软件仍可能录到提词窗。<strong>正式使用前，请用你实际使用的软件（OBS、腾讯会议等）先录一小段确认。</strong></p><p>如果需要把提词窗本身录进去（比如教学演示），请关闭隐形提词。</p></aside>
+<h3>9.2 鼠标穿透</h3>
+<p>开启后，鼠标点击会<strong>穿过提词窗</strong>，直接操作下面的窗口（例如 OBS、PPT），适合提词窗盖在其他软件上方时使用。</p>
+<ul><li>开启：提词窗工具栏的 ⊹ 按钮，或全局快捷键 <strong><kbd>⌃⌥L</kbd></strong>。</li><li>关闭：开启后提词窗右上角会出现一个橙色浮标「点此关闭穿透」，点它就行；也可以按 <strong><kbd>⌃⌥L</kbd></strong>，或在主窗口设置 / 菜单栏里关闭。</li></ul>
+<h3>9.2a 刘海模式</h3>
+<p>「提词设置 › 提词窗 › 刘海模式」，或者在提词窗按 <strong>N</strong>、点工具条上的 💻 按钮。提词窗缩成一小条，贴在 MacBook 摄像头（刘海）正下方，字号自动调小——开视频会议、录课的时候，眼睛几乎不用离开镜头。</p>
+<ul><li>平时不显示工具条；<strong>鼠标移上去会暂停并显示工具条，移开自动继续</strong>。</li><li>退出刘海模式时，窗口位置、大小和字号恢复成原来的样子。</li><li>配合「隐形提词」，共享屏幕时对方看不到它。</li></ul>
+<h3>9.3 窗口置顶（默认开启）</h3>
+<p>提词窗始终浮在其他窗口上方，也能显示在全屏应用之上，切换桌面时跟着走。</p>
+</section><section class="chapter" id="s10"><h2><span class="marker" aria-hidden="true"></span><span class="num">10</span>读稿计时器</h2>
+<h3>10.1 打开</h3>
+<p>设置「计时器 › 显示计时器」，或在提词窗按 <strong>T</strong> / 点工具栏的 ⏱。</p>
+<h3>10.2 设置项</h3>
+<div class="scroll"><table><thead><tr><th>设置</th><th>选项</th><th>默认</th></tr></thead><tbody><tr><td>计时方式</td><td>正计时 / 倒计时 / 两者</td><td>两者</td></tr><tr><td>倒计时时长</td><td>按稿件预计时长 / 自定义（分钟 0–180，秒 0–59）</td><td>按稿件预计时长</td></tr></tbody></table></div>
+<p><strong>「按稿件预计时长」的倒计时怎么算</strong></p>
+<ul><li>智能跟读模式：按<strong>还没读的内容</strong>估算剩余时间，读得越多剩得越少，停顿时不减少，读完为 00:00；</li><li>匀速 / 手动模式：稿件预计时长减去已用时间；</li><li>节目单播出时：使用当前条目的<strong>计划时长</strong>。</li></ul>
+<div class="scroll"><table><thead><tr><th>计时器大小</th><th>12–96</th><th>26</th></tr></thead><tbody><tr><td>外接屏幕也显示</td><td>开 / 关</td><td>开</td></tr></tbody></table></div>
+<h3>10.3 计时规则</h3>
+<ul><li>⏱ 正计时：已经读了多久。⏳ 倒计时：还剩多少时间。</li><li>随提词<strong>开始 / 暂停</strong>；点「从头开始」<strong>归零</strong>；开始前的 3、2、1 倒计时不计入。</li><li>倒计时<strong>剩余 30 秒</strong>变<strong>橙色</strong>；时间用完后倒计时<strong>停在 00:00</strong>，旁边出现红色的「<strong>超时 00:15</strong>」，显示超出了多久。</li><li>三种提词模式都能计时（手动模式按空格开始 / 暂停）。</li></ul>
+<h3>10.4 当前时间</h3>
+<p>在「计时器」里打开「<strong>显示当前时间</strong>」（或在提词窗按 <strong>C</strong>），计时器前面会多一个 🕐 时钟，按系统的 12 / 24 小时制显示到秒，外接屏幕上也同步显示。可以只开时钟不开计时器，方便直播、播出时对表。</p>
+</section><section class="chapter" id="s11"><h2><span class="marker" aria-hidden="true"></span><span class="num">11</span>外接屏幕（演播室提词）</h2>
+<h3>11.1 用途</h3>
+<p>在第二块显示器上<strong>全屏</strong>显示提词内容：</p>
+<ul><li>放在<strong>提词玻璃（分光镜）</strong>下方，做演播室 / 摄像机提词；</li><li>或者给台上的主讲人看，操作员在笔记本上控制。</li></ul>
+<h3>11.2 准备</h3>
+<ol><li>用 HDMI / USB-C 连接显示器。</li><li>在 <strong>系统设置 › 显示器</strong> 里，把外接显示器设为「<strong>扩展</strong>」，<strong>不要</strong>用「镜像显示」。</li></ol>
+<h3>11.3 设置步骤</h3>
+<ol><li>打开设置「<strong>外接屏幕</strong>」模块，这里会按「<strong>外接屏幕一 / 外接屏幕二 …</strong>」列出所有已连接的显示器（下方标注显示器型号）。插拔显示器后列表会自动更新。</li><li>需要哪块就打开哪块的开关，<strong>可以同时输出到多块屏幕</strong>；提词窗工具栏的 📺 按钮是「全部打开 / 全部关闭」。</li><li>每块屏幕<strong>单独</strong>选「<strong>画面</strong>」：<ul><li><strong>镜像</strong>：左右翻转，用于提词玻璃，经玻璃反射后文字是正的；</li><li><strong>正常</strong>：直接观看。</li></ul></li></ol>
+<p>例如主播那块用镜像（配提词玻璃），台下返送那块用正常。</p>
+<ol><li>「<strong>左右边距</strong>」：0–30%（默认 5%），调整文字在屏幕上的宽度，所有输出通用。</li><li>打开提词窗后，外接屏幕会<strong>自动全屏显示</strong>；关闭提词窗时一起关闭。</li></ol>
+<h3>11.4 特点</h3>
+<ul><li>外接屏幕与笔记本上的提词窗<strong>换行位置完全一致、同步滚动</strong>，已读变暗、阅读线、计时器也同步。</li><li>外接屏幕的镜像与提词窗的镜像<strong>互相独立</strong>，每块外接屏之间也互相独立：一块镜像给主播、一块正常给台下返送、笔记本上保持正向给操作员看，三者互不影响。</li><li>滚动与外接显示器的刷新率同步，画面平稳不抖动。</li><li>外接屏幕上的字号由笔记本提词窗的<strong>宽度</strong>决定（等比放大）：想让外接屏的字更大，把笔记本上的提词窗<strong>拖窄</strong>，或减小左右边距。</li><li>工程文件里记录的显示器在其他电脑上找不到时，会自动改用第一块外接屏。</li></ul>
+</section><section class="chapter" id="s12"><h2><span class="marker" aria-hidden="true"></span><span class="num">12</span>节目单</h2>
+<h3>12.1 什么是节目单</h3>
+<p>节目单（Rundown）把多篇稿件按播出顺序排好，例如「开场 → 新闻一 → 连线 → 新闻二 → 结尾」。播出时一键切到下一条，软件自动计算节目总时长，并提示比计划<strong>超时</strong>还是<strong>提前</strong>。</p>
+<p>节目单随工程文件一起保存（见第 17 章）。</p>
+<h3>12.2 编辑节目单</h3>
+<ol><li>在侧边栏顶部切换到「<strong>节目单</strong>」。</li><li>添加稿件，两种方法：<ul><li>在「稿件」列表里的稿件上<strong>右键 → 加入节目单</strong>，或在编辑区底部点「<strong>标记 › 加入节目单</strong>」；</li><li>在节目单底部点「<strong>＋ 添加稿件</strong>」，从列表里选择。</li></ul></li><li><strong>调整顺序</strong>：直接上下拖动条目。</li><li><strong>移出</strong>：右键 → 移出节目单，或选中后按 <kbd>Delete</kbd>。删除稿件时，它也会自动从节目单移出。</li><li>点节目单里的条目，编辑区会显示对应的稿件，方便修改。</li></ol>
+<p>每一行显示：</p>
+<div class="scroll"><table><thead><tr><th>内容</th><th>说明</th></tr></thead><tbody><tr><td>序号</td><td>播出中的条目改为红点</td></tr><tr><td>标题</td><td>稿件标题</td></tr><tr><td>开始时间</td><td>按计划，这一条在节目中的开始时间</td></tr><tr><td>计划时长</td><td>带「(预计)」表示按稿件的预计时长；点它可以自定义</td></tr><tr><td>实际用时</td><td>播出过的条目显示实际用了多久</td></tr></tbody></table></div>
+<p>节目单底部显示<strong>条数</strong>和<strong>计划总时长</strong>。</p>
+<h3>12.3 设置计划时长</h3>
+<p>点某一条的计划时长（⏲ 图标），在弹出框里：</p>
+<ul><li>打开「按稿件预计时长」：跟随稿件字数自动计算（导演提示不计入）；</li><li>关闭后自定义分钟和秒，例如给连线、视频片段预留时间。</li></ul>
+<h3>12.4 播出</h3>
+<ol><li>点节目单底部的「<strong>▶ 从头开始节目单</strong>」，或在某一条上右键「从这一条开始提词」。</li><li>提词窗工具栏出现 <strong>‹ 2/5 ›</strong>，切换条目：</li></ol>
+<div class="scroll"><table><thead><tr><th>操作</th><th>方式</th></tr></thead><tbody><tr><td>下一条</td><td>工具栏 ›、全局快捷键 <kbd>⌃⌥→</kbd>、菜单「提词 › 节目单下一条」、手机遥控</td></tr><tr><td>上一条</td><td>工具栏 ‹、全局快捷键 <kbd>⌃⌥←</kbd>、菜单「提词 › 节目单上一条」、手机遥控</td></tr><tr><td>跳到任意一条</td><td>右键「从这一条开始提词」，或在手机遥控页点该条</td></tr></tbody></table></div>
+<ul><li>切换时如果正在播放，会自动继续播放下一条；每条的计时单独从 0 开始。</li><li>已经是最后一条时，状态栏提示「已是节目单最后一条」。</li><li>关闭提词窗、或从编辑区单独打开一篇稿件，节目单播出就会结束。</li></ul>
+<h3>12.5 节目时长与超时提示</h3>
+<p>开启计时器后（见第 10 章），节目单播出时计时器会多出一组：</p>
+<div class="scroll"><pre class="diagram">⏱ 00:32 │ ⏳ 00:13 │ ▤ 03:45  +00:20
+ 当前条用时  当前条剩余   节目总时长  超时 / 提前</pre></div>
+<ul><li><strong>节目总时长</strong>：从「从头开始节目单」起累计，暂停时不计。</li><li><strong>超时 / 提前</strong>：已播完的条目按实际用时与计划相比，当前条目只有超出计划时才计入。<ul><li><strong>+00:20</strong>（橙色）：比计划慢了 20 秒，后面需要压缩；</li><li><strong>−00:15</strong>（绿色）：比计划快了 15 秒，可以适当放慢或补充内容；</li><li>相差 5 秒以内显示为白色。</li></ul></li></ul>
+</section><section class="chapter" id="s13"><h2><span class="marker" aria-hidden="true"></span><span class="num">13</span>导演提示与格式标记</h2>
+<h3>13.1 三种标记</h3>
+<div class="scroll"><table><thead><tr><th>写法</th><th>效果</th><th>是否朗读</th></tr></thead><tbody><tr><td><code>【看 2 号机】</code>、<code>[播放 VCR]</code></td><td><strong>导演提示</strong>：换成提示颜色、小一号显示</td><td>不朗读，智能跟读自动跳过</td></tr><tr><td><code>**重点文字**</code></td><td><strong>重点</strong>：加粗、换成重点颜色，提词窗里隐藏星号</td><td>正常朗读</td></tr><tr><td><code>==文字==</code></td><td><strong>高亮</strong>：黄色底色、深色文字（底色可在设置里改）</td><td>正常朗读</td></tr><tr><td><code>__文字__</code></td><td><strong>下划线</strong>：提示需要重读</td><td>正常朗读</td></tr><tr><td><code>{红}文字{/}</code></td><td><strong>局部颜色</strong>：红、橙、黄、绿、蓝、紫、灰（也可写英文，如 <code>{red}</code>）</td><td>正常朗读</td></tr><tr><td><code> / </code>、<code> // </code></td><td><strong>停顿</strong>：短停顿 / 长停顿，以提示颜色显示</td><td>不朗读</td></tr><tr><td><code># 段落标题</code>（行首）</td><td><strong>段落标题</strong>：强调色小字显示，提词窗里隐藏 # 号，可以跳转</td><td>不朗读，智能跟读自动跳过</td></tr></tbody></table></div>
+<p>示例：</p>
+<div class="scroll"><pre class="diagram"># 开场白
+【看 1 号机，微笑】
+各位观众晚上好，欢迎收看今晚的**财经快讯**。
+[片头音乐起]
+我是主持人小李。
+# 今日要点
+今天我们关注三件事……</pre></div>
+<p>导演提示、停顿符号、段落标题和各种标记符号<strong>不计入字数和预计时长</strong>，智能跟读也会自动跳过；高亮、下划线、局部颜色里的文字照常朗读。</p>
+<p>停顿符号只识别单独的 <code>/</code> 和 <code>//</code>，网址（<code>http://</code>）、分数（<code>3/4</code>）、日期里的斜杠不受影响。</p>
+<h3>13.2 插入标记</h3>
+<p>编辑区会实时显示标记的颜色。在编辑区底部点「<strong>标记</strong>」：</p>
+<div class="scroll"><table><thead><tr><th>菜单项</th><th>作用</th></tr></thead><tbody><tr><td>导演提示【】</td><td>用【】包住选中的文字；没有选中时插入「【看 2 号机】」并选中提示文字，直接改写即可</td></tr><tr><td>重点 <code>**文字**</code></td><td>用 <code>**</code> 包住选中的文字</td></tr><tr><td>段落标题 #</td><td>把光标所在行变成段落标题；空行时插入「# 段落标题」</td></tr><tr><td>高亮 ==文字==</td><td>用 <code>==</code> 包住选中的文字</td></tr><tr><td>下划线 \_\_文字\_\_</td><td>用 <code>__</code> 包住选中的文字</td></tr><tr><td>文字颜色 › 红色 / 橙色 / …</td><td>用 <code>{红}…{/}</code> 等包住选中的文字</td></tr><tr><td>短停顿 / 、长停顿 //</td><td>在光标处插入停顿符号</td></tr><tr><td>加入节目单</td><td>把当前稿件加入节目单</td></tr></tbody></table></div>
+<p>也可以直接手动输入这些符号。</p>
+<h3>13.3 在提词窗里跳到段落</h3>
+<p>稿件里有段落标题时，提词窗工具栏会出现<strong>段落图标</strong>，点开选择段落，文字会滚到该段；智能跟读也会从这里继续跟。</p>
+<h3>13.3a 查找与书签</h3>
+<ul><li><strong>查找</strong>：在提词窗按 <strong><kbd>⌘F</kbd></strong>（或点工具条的 🔍），输入要找的词，所有出现的地方标成黄色，当前这一处是橙色并自动滚到阅读线；<strong>回车</strong>下一处、<strong>⇧回车</strong>上一处、<strong>Esc</strong> 关闭。不分大小写和全半角。跟读位置会一起带过去，找到以后直接接着读。</li><li><strong>书签</strong>：按 <strong>K</strong> 在阅读线所在的这一行加书签（再按一次去掉），行首两个字会出现浅色底；<strong>]</strong> / <strong>[</strong> 跳到下一个 / 上一个书签，也可以从工具条的「跳到段落」菜单里选。书签按稿件分别保存；稿子改过以后会按书签后面的几个字重新定位，那句话被删掉的书签自动消失。</li></ul>
+<h3>13.3b 多人稿按说话人着色</h3>
+<p>段首写「张三：」「李四：」的稿子（至少两个不同的名字、一共出现三次以上），提词窗会给每个人的段落用各自的颜色，名字本身缩小变淡，<strong>不参与跟读</strong>——主持人不用把自己的名字念出来。重点、导演提示、敏感词的颜色保持不变。不需要时在「文字设置 › 多人稿按说话人着色」关闭。</p>
+<h3>13.4 设置</h3>
+<p>在设置「<strong>导演提示</strong>」模块中：</p>
+<div class="scroll"><table><thead><tr><th>设置</th><th>默认</th><th>说明</th></tr></thead><tbody><tr><td>【】全角方括号</td><td>开</td><td></td></tr><tr><td>[ ] 半角方括号</td><td>开</td><td></td></tr><tr><td>（）全角圆括号</td><td>关</td><td>口播稿里常有正常的括号内容，默认照常朗读；需要时再打开</td></tr><tr><td>( ) 半角圆括号</td><td>关</td><td>同上</td></tr><tr><td>提示颜色</td><td>天蓝色</td><td>提词窗里导演提示的颜色</td></tr><tr><td>重点颜色</td><td>黄色</td><td>提词窗里重点文字的颜色</td></tr><tr><td>高亮底色</td><td>黄色</td><td><code>==高亮==</code> 的底色</td></tr></tbody></table></div>
+<p>段落标题使用「外观」里的强调色。</p>
+</section><section class="chapter" id="s14"><h2><span class="marker" aria-hidden="true"></span><span class="num">14</span>敏感词检测</h2>
+<h3>14.1 能做什么</h3>
+<p>在写稿、改稿和提词时，自动标出可能违规的词，帮助直播带货、广告口播避开风险：</p>
+<ul><li><strong>编辑区</strong>：敏感词加<strong>红色虚线下划线</strong>和浅红底色，鼠标停在上面显示分类和建议替换；</li><li><strong>稿件列表</strong>：含敏感词的稿件显示「⚠︎ 数量」；</li><li><strong>提词窗</strong>：敏感词显示为<strong>红字</strong>，提醒主持人避开（可关闭）；</li><li><strong>开始提词前</strong>：如果还有敏感词，会弹出提醒，可选「仍然开始」或「去修改」。</li></ul>
+<aside class="note warn"><p><strong>重要</strong>：敏感词检测只是<strong>辅助提醒</strong>。关键词匹配不理解上下文，可能误报也可能漏报；各平台规则也经常调整。请以平台规则和人工审核为准。</p></aside>
+<p>检测完全在本机进行，不联网。导演提示里的文字不参与检测。</p>
+<h3>14.2 查看与处理</h3>
+<p>点编辑区标题下方的「<strong>⚠︎ N 个敏感词</strong>」，弹出清单：</p>
+<div class="scroll"><table><thead><tr><th>操作</th><th>作用</th></tr></thead><tbody><tr><td>定位</td><td>在编辑区选中并滚动到这个词第一次出现的位置</td></tr><tr><td>替换</td><td>把这个词全部替换为建议词（只有带建议的词才有此按钮）</td></tr><tr><td>全部替换为建议词</td><td>一次替换清单中所有带建议的词</td></tr><tr><td>忽略</td><td>停用这个词（内置词可在词库里重新勾选恢复；自定义词会从词库删除）</td></tr></tbody></table></div>
+<p>每一项显示：词、出现次数、分类，以及建议替换（如果有）。</p>
+<h3>14.3 内置词库</h3>
+<p>内置词库收录《广告法》常见违规用语，共四类：</p>
+<div class="scroll"><table><thead><tr><th>分类</th><th>示例</th><th>建议替换示例</th></tr></thead><tbody><tr><td>极限用语</td><td>最好、最佳、第一、全网最低、顶级、绝对、100%、独家、唯一</td><td>最好 → 很好，顶级 → 高品质，绝对 → 非常</td></tr><tr><td>权威夸大</td><td>国家机关推荐、质量免检、驰名商标、专家推荐、特供</td><td>—</td></tr><tr><td>功效夸大</td><td>根治、治愈、药到病除、立竿见影、无副作用、特效</td><td>根治 → 改善</td></tr><tr><td>诱导营销</td><td>全民免单、万人疯抢、再不抢就没了、仅此一次</td><td>—</td></tr></tbody></table></div>
+<p>同时内置了<strong>例外词</strong>，避免常见误报，例如「第一次」「第一时间」「第一步」「绝对值」「最好是」。</p>
+<h3>14.4 管理词库</h3>
+<p>在设置「<strong>敏感词</strong>」模块点「<strong>管理敏感词库…</strong>」，有三个分页：</p>
+<p><strong>自定义词库</strong></p>
+<ul><li>输入「敏感词」，可选填「分类」（如：平台、品牌、医疗）和「建议替换」，点「添加」。</li><li>「<strong>从文件导入…</strong>」：支持 TXT / CSV，格式为每行一个词，或「词,分类,建议替换」（逗号或 Tab 分隔），<code>#</code> 开头的行会被忽略。例如：</li></ul>
+<div class="scroll"><pre class="diagram"># 抖音直播禁用词
+秒杀,平台,限时优惠
+暴利
+神器,平台,好物</pre></div>
+<ul><li>「<strong>导出…</strong>」：把自定义词库导出成同样格式的 TXT，方便团队共享。</li></ul>
+<p><strong>内置词库</strong></p>
+<ul><li>按分类列出全部内置词，取消勾选即可停用某个词。</li></ul>
+<p><strong>例外词</strong></p>
+<ul><li>添加不应被标出的词组，例如「第一时间」。例外词里包含的敏感词不会被标出。</li></ul>
+<h3>14.5 设置</h3>
+<div class="scroll"><table><thead><tr><th>设置</th><th>默认</th><th>说明</th></tr></thead><tbody><tr><td>启用敏感词检测</td><td>开</td><td>总开关</td></tr><tr><td>提词窗中标出敏感词</td><td>开</td><td>关闭后提词窗里不标红，编辑区仍会标出</td></tr><tr><td>开始提词前提醒</td><td>开</td><td>从编辑区、稿件右键菜单或节目单开始时检查；用快捷键和手机遥控开始时<strong>不会</strong>弹窗，以免影响直播</td></tr></tbody></table></div>
+<p>自定义词库、例外词和停用的内置词都会<strong>保存在工程文件里</strong>，不同主播、不同品牌可以各用一套词库。</p>
+</section><section class="chapter" id="s20"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>14a. 歌词同步</h2>
+<h3>14a.1 原理</h3>
+<p>歌词提词靠的是<strong>时间同步</strong>，而不是语音识别：歌词里每句都标有开始时间（LRC 格式），提词器以<strong>伴奏的播放进度</strong>作为时钟，播到哪一秒就把对应的那句滚到阅读线上。唱歌时旋律拉长、伴奏声大，语音识别不可靠，所以歌词稿不使用智能跟读。</p>
+<h3>14a.2 LRC 歌词格式</h3>
+<div class="scroll"><pre class="diagram">[ti:歌名]
+[ar:演唱者]
+[offset:+200]
+[00:04.00]第一句歌词
+[00:08.50][01:10.00]重复出现的副歌
+[00:12.00]&lt;00:12.00&gt;逐&lt;00:12.50&gt;字&lt;00:13.00&gt;时间
+[00:16.00]</pre></div>
+<ul><li><code>[分:秒.百分秒]</code>：这一句开始的时间；一行可以有多个时间（副歌重复）。</li><li><code>&lt;分:秒.百分秒&gt;</code>：逐字时间（可选），有的话按字变色，没有就按句子长度估算。</li><li><code>[ti:] [ar:] [al:] [by:]</code> 等歌曲信息行、以及所有时间标记，在提词窗里都会隐藏。</li><li><code>[offset:毫秒]</code>：整体偏移，正数让歌词提前。</li><li>只有时间、没有文字的行表示间奏。</li><li>至少有两句带时间的歌词，才会被识别为<strong>歌词稿</strong>。</li></ul>
+<aside class="note"><p>歌词需要你自己准备并确保有使用授权，软件不会自动下载歌词。</p></aside>
+<h3>14a.3 导入</h3>
+<ul><li>用「导入文件」或直接拖入 <code>.lrc</code> 文件。<strong>同一文件夹里有同名的音频</strong>（如 <code>晨光.lrc</code> 和 <code>晨光.mp3</code>）时，会自动关联为伴奏。</li><li>也可以在编辑区底部「<strong>歌词 › 选择伴奏…</strong>」手动选择，支持 MP3、M4A、WAV、AAC、AIFF、FLAC。</li><li>歌词稿的标题下方会显示「♪ 歌词稿 · N 句」，点它可以设置伴奏、时间偏移和提前显示。</li></ul>
+<h3>14a.4 播放</h3>
+<ol><li>打开歌词稿，点「开始提词」。提词窗会自动使用「<strong>歌词同步</strong>」模式（模式列表里的第四项），工具栏显示 ♪ 图标（点开可切换模式）、播放进度（如 00:17 / 03:45）和 <strong>后退 / 前进 5 秒</strong> 按钮。</li><li>点 ▶（或按空格），伴奏开始播放，歌词同步滚动：<ul><li>唱过的句子变暗；</li><li>正在唱的句子加色带，已唱部分逐字换成强调色（卡拉 OK 效果）；</li><li>前奏、间奏（间隔 5 秒以上）结束前，屏幕中央显示 <strong>3、2、1</strong> 倒数。</li></ul></li><li>暂停时伴奏同时暂停；按 <kbd>R</kbd> 回到开头；↑ / ↓、<kbd>PageUp</kbd> / <kbd>PageDown</kbd> 跳到上一句 / 下一句。</li><li>播放结束会自动停止，提示「播放结束，按 <kbd>R</kbd> 从头开始」。</li></ol>
+<p>没有伴奏时使用内部计时，从点播放开始计时，适合清唱或现场乐队（需要演唱者跟着歌词节奏）。</p>
+<p>外接屏幕、手机遥控、节目单、计时器、隐形提词都可以和歌词同步一起使用：例如一首歌一条，排成<strong>演出歌单</strong>。</p>
+<h3>14a.5 同步调整</h3>
+<div class="scroll"><table><thead><tr><th>设置</th><th>位置</th><th>说明</th></tr></thead><tbody><tr><td>时间偏移</td><td>歌词稿标题下方「♪ 歌词稿」</td><td>−10 ～ +10 秒，每首歌单独保存。歌词比伴奏慢就调大，快就调小</td></tr><tr><td>提前显示</td><td>同上</td><td>0 ～ 2 秒（默认 0.2 秒），让下一句稍早出现，所有歌词稿通用</td></tr></tbody></table></div>
+<h3>14a.6 打点生成时间轴</h3>
+<p>手上只有纯文字歌词时，可以边听边生成 LRC：</p>
+<ol><li>把歌词粘贴到稿件里（每句一行），选好伴奏。</li><li>编辑区底部「<strong>歌词 › 打点生成时间轴…</strong>」。</li><li>点「播放」，每句歌词<strong>开始唱的那一刻按一下空格</strong>；按错了按 ⌫ 撤销上一句（伴奏会跳回去）。</li><li>全部打完点「完成」，稿件自动变成带时间的 LRC 歌词稿。</li></ol>
+<p>打点时会自动扣除约 0.15 秒的按键反应时间；之后还可以用「时间偏移」整体微调，或在编辑区直接修改某一句的时间。</p>
+</section><section class="chapter" id="s21"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>14b. 读稿生成 SRT 字幕</h2>
+<h3>14b.1 能做什么</h3>
+<p>用<strong>智能跟读</strong>读稿时，软件按你实际的朗读节奏给每句话打上时间，读完自动保存成 <code>.srt</code> 字幕文件，剪映、Premiere、Final Cut、DaVinci Resolve 等剪辑软件都能直接导入。适合短视频口播、网课录制。</p>
+<h3>14b.2 使用步骤</h3>
+<ol><li>「提词设置 › 字幕」确认「读稿时生成 SRT 字幕」已开启（默认开启）。</li><li>选「智能跟读」模式，<strong>开始录制视频的同时</strong>按「开始」读稿。</li><li>读完后，提词窗状态栏显示「字幕已保存：稿件标题 日期时间.srt」。</li><li>在「字幕 › 打开文件夹」或菜单「提词 › 打开字幕文件夹」找到文件，拖进剪辑软件。</li></ol>
+<p>以下情况也会自动保存：关闭提词窗、点「从头开始」、切换到别的稿件、在提词窗里修改文字、退出软件。菜单「提词 › 保存本次字幕」可以随时手动保存。</p>
+<h3>14b.3 时间怎么算</h3>
+<div class="scroll"><table><thead><tr><th>规则</th><th>说明</th></tr></thead><tbody><tr><td>0 秒</td><td>按下「开始」的时刻；如果等了好几秒才开始收音（例如在等授权），就以开始收音的时刻为 0 秒</td></tr><tr><td>句子开始</td><td>取每句话被识别出来的时间，再用麦克风音量找到真正开口的时刻对齐，字幕比开口略早 0.1 秒出现</td></tr><tr><td>句子结束</td><td>延到这口气说完，但不会压到下一句</td></tr><tr><td>显示时长</td><td>按字数给足时间（每条至少 0.8 秒）；两条间隔很短时直接连上，避免闪烁</td></tr><tr><td>没读的段落</td><td>手动跳过、没读到一半的句子不出字幕</td></tr></tbody></table></div>
+<p>实测中，字幕开始时间与实际开口一般相差 0.1～0.5 秒。</p>
+<h3>14b.4 字幕怎么切</h3>
+<ul><li>按句号、问号、感叹号、分号、换行分句，再按逗号、顿号、冒号和停顿符号 <code>/</code> 分成短句；句末的问号、感叹号保留，其他标点去掉。</li><li>超过「每条最多字数」的长句会均分，只在词语之间断开（不会把「换成」拆成「换 / 成」），一行不以「的、了、吗、吧」等字开头；英文在空格处断开。</li><li>导演提示、段落标题、<code>**</code> <code>==</code> <code>__</code> <code>{红}</code> 等格式符号不进字幕；<code>1,299</code>、<code>10:30</code> 这类数字不拆开。</li></ul>
+<h3>14b.5 设置（提词设置 › 字幕）</h3>
+<div class="scroll"><table><thead><tr><th>设置</th><th>说明</th><th>默认</th></tr></thead><tbody><tr><td>读稿时生成 SRT 字幕</td><td>总开关</td><td>开</td></tr><tr><td>每条最多字数</td><td>8–40；中文按 1 个字、英文字母按半个字计算</td><td>16</td></tr><tr><td>识别延迟补偿</td><td>0–1.5 秒；字幕整体偏晚就调大，偏早就调小</td><td>0.5 秒</td></tr><tr><td>第一条字幕从 0 秒开始</td><td>适合把视频剪到开口第一句再导入字幕</td><td>关</td></tr><tr><td>保存位置</td><td>默认「影片 › FRMZONE 字幕」，可更改；文件名为「稿件标题 日期 时分.srt」</td><td>—</td></tr></tbody></table></div>
+<h3>14b.6 歌词稿</h3>
+<p>歌词稿不需要朗读：在编辑区「歌词 › 导出 SRT 字幕…」直接按 LRC 时间轴（含时间偏移）导出，每句显示到下一句开始为止。</p>
+<h3>14b.7 注意</h3>
+<ul><li>只有「智能跟读」会按朗读生成字幕；匀速滚动、手动翻页没有语音参考，不生成。</li><li>字幕文字来自<strong>稿件原文</strong>，不是语音识别结果，所以没有错别字；如果临场改了词，需要在剪辑软件里手动修改。</li><li>如果录制比按「开始」早或晚，在剪辑软件里整体拖动字幕轨即可对齐。</li></ul>
+</section><section class="chapter" id="s15"><h2><span class="marker" aria-hidden="true"></span><span class="num">15</span>手机遥控</h2>
+<h3>15.1 用途</h3>
+<p>不用翻页笔，用手机就能控制提词器：主持人自己拿着，或交给导播 / 助理操作。<strong>不需要安装任何 App</strong>，手机浏览器即可使用。</p>
+<h3>15.2 开启与连接</h3>
+<ol><li>让 Mac 和手机连接<strong>同一个 Wi-Fi</strong>。</li><li>打开设置「<strong>手机遥控</strong>」模块，打开「<strong>开启手机遥控</strong>」。</li><li>用手机相机扫描显示的<strong>二维码</strong>，在浏览器中打开遥控页。<ul><li>也可以点「复制链接」，发到手机上打开。</li></ul></li><li>连接成功后，设置里显示「<strong>手机已连接</strong>」。</li></ol>
+<aside class="note"><p>首次开启时，如果 macOS 询问是否允许「FRMZONE」接收传入的网络连接，请点「<strong>允许</strong>」。</p><p>建议把遥控页「添加到主屏幕」，下次直接点图标打开。</p></aside>
+<h3>15.3 遥控页功能</h3>
+<div class="scroll"><table><thead><tr><th>区域</th><th>内容</th></tr></thead><tbody><tr><td>顶部状态</td><td>当前模式、第几条、稿件标题、阅读进度、当前条用时 / 剩余、节目总时长与超时 / 提前、速度、字号、状态提示；右上角圆点：灰色未连接、绿色已连接、红色正在播放</td></tr><tr><td>大按钮</td><td>上一条 / <strong>开始·暂停</strong> / 下一条</td></tr><tr><td>翻页</td><td>向上翻页 / 向下翻页</td></tr><tr><td>调整</td><td>减速 / 加速 / 缩小字号 / 放大字号</td></tr><tr><td>其他</td><td>从头开始 / 切换模式 / 镜像翻转 / 计时器（亮起表示已开启）</td></tr><tr><td>节目单</td><td>全部条目和开始时间、计划时长；正在播的条目有红框；<strong>点任意一条直接跳过去</strong></td></tr></tbody></table></div>
+<ul><li>提词窗没打开时，点「开始 / 暂停」会打开上次的稿件（没有的话从节目单第一条开始）。</li><li>每次操作手机会轻微振动（支持的机型）。</li></ul>
+<h3>15.4 安全</h3>
+<ul><li>遥控需要 <strong>6 位配对码</strong>，配对码已包含在二维码里，其他人不知道配对码就无法控制。</li><li>点「<strong>更换配对码</strong>」后，已连接的手机需要重新扫码。</li><li>不用时建议关闭手机遥控。</li><li>遥控只在局域网内有效，外网无法访问。</li></ul>
+</section><section class="chapter" id="s23"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>15a. 外部控制器（踏板、Stream Deck、MIDI）</h2>
+<p>位置：「提词设置 › 外部控制器」。演播室常用的脚踏板、翻页器、MIDI 控制器、游戏手柄都能直接绑定提词操作，不需要把提词器切到前台。</p>
+<h3>15a.1 可以绑定的操作</h3>
+<p>开始 / 暂停、向下翻页、向上翻页、从头开始、加速、减速、节目单下一条 / 上一条、放大 / 缩小字号、镜像翻转、显示 / 隐藏计时器、隐藏 / 显示提词窗、切换鼠标穿透、反向滚动、添加 / 移除书签、下一个 / 上一个书签。每个操作可以绑定多个按键（例如左脚踏板和 MIDI 键都能翻页）。</p>
+<h3>15a.2 绑定步骤</h3>
+<ol><li>连接设备（USB 或蓝牙）。设置页上方会显示检测到的 MIDI 设备和手柄；踩一下踏板，「最近收到」会显示收到的信号，可用来确认设备是否正常。</li><li>在要绑定的操作右侧点「<strong>学习</strong>」。</li><li>踩一下踏板，或按一下控制器上的键，绑定就完成了，显示在操作下方。</li><li>点绑定右侧的 ⓧ 可以删除；学习时按 <kbd>Esc</kbd> 取消。</li></ol>
+<p>同一个按键不能同时绑定两个操作，也不能和「快捷键」里的组合键重复，冲突时会提示换一个。</p>
+<h3>15a.3 各类设备</h3>
+<div class="scroll"><table><thead><tr><th>设备</th><th>怎么识别</th><th>说明</th></tr></thead><tbody><tr><td><strong>脚踏板 / 翻页器</strong>（大多数）</td><td>当作键盘，识别它发出的按键（如 <kbd>PgDn</kbd>、空格、方向键）</td><td>默认<strong>只在提词窗打开时生效</strong>，此时这个按键在所有应用里都会被提词器接管；关闭提词窗后恢复成普通按键。可在「踏板按键只在提词窗打开时生效」关闭此限制。被其他应用占用的按键会标出「被占用」</td></tr><tr><td><strong>手柄式踏板 / 游戏手柄</strong></td><td>识别 HID 按钮（不模拟键盘的设备）</td><td>不需要「输入监控」权限</td></tr><tr><td><strong>MIDI 控制器 / MIDI 踏板</strong></td><td>音符按下、CC（从 64 以下变到 64 以上算一次，适合延音踏板）、音色切换</td><td>按「通道 + 编号」区分，插拔设备后自动重新连接；同时适用于 USB MIDI、蓝牙 MIDI 和 IAC 虚拟总线</td></tr></tbody></table></div>
+<h3>15a.3a 连续变速（旋钮 / 推子 / 摇杆）</h3>
+<p>和专业提词控制器一样：<strong>推多少滚多快，回到中间就停，往回拉就倒着滚</strong>。任何提词模式下都能用，松手以后照原来的方式继续（跟读时位置会一起带过去）。</p>
+<ul><li><strong>MIDI 旋钮 / 推子</strong>：点「学习」，转一下要用的旋钮，之后这个 CC 的 64 是中点，往上往前、往下往回。</li><li><strong>游戏手柄 / 多轴控制器</strong>：打开「手柄 / 摇杆的前后轴」，往前推是往前滚。</li><li>中间留了一小段死区，回中不太准的摇杆不会慢慢漂；轻推是微调，推到底大约是当前速度的 4 倍。</li></ul>
+<h3>15a.4 Stream Deck / Bitfocus Companion</h3>
+<ul><li><strong>方法一（推荐）</strong>：Stream Deck 的「热键」动作，填入「快捷键」里的全局快捷键，例如 <code>⌃⌥Space</code> 开始 / 暂停、<code>⌃⌥→</code> 节目单下一条。不需要网络，提词器不会被切到前台。</li><li><strong>方法二</strong>：「网站」动作并勾选「<strong>在后台访问</strong>」，填入设置页里复制的网址，例如 <code>http://127.0.0.1:8866/api/cmd?c=toggle&amp;k=配对码</code>。需要先打开「手机遥控」；更换配对码后要重新复制。Companion 可用「HTTP GET」动作填写同样的网址，局域网内的其他电脑把 <code>127.0.0.1</code> 换成本机 IP 即可。</li></ul>
+<p>可用的网址命令：<code>toggle</code> 开始 / 暂停、<code>pageDown</code> / <code>pageUp</code> 翻页、<code>restart</code> 从头开始、<code>faster</code> / <code>slower</code> 调速、<code>next</code> / <code>prev</code> 节目单、<code>fontUp</code> / <code>fontDown</code> 字号、<code>mirror</code> 镜像、<code>timer</code> 计时器、<code>visibility</code> 隐藏 / 显示提词窗、<code>clickThrough</code> 鼠标穿透、<code>mode</code> 切换模式、<code>reverse</code> 反向滚动、<code>bookmark</code> 添加 / 移除书签、<code>nextBookmark</code> / <code>prevBookmark</code> 跳书签、<code>clock</code> 时钟、<code>open</code> / <code>close</code> 打开 / 关闭提词窗。</p>
+<h3>15a.5 注意</h3>
+<ul><li>绑定保存在这台电脑上，不随工程文件保存，新建或切换工程也不会清除。</li><li>学习踏板按键时，已有的全局快捷键会暂停，学习结束后自动恢复。</li></ul>
+</section><section class="chapter" id="s24"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>15a-b. 实时字幕源（直播上字幕）</h2>
+<p>位置：「提词设置 › 手机遥控」里，浏览器源网址下面还有一条<strong>实时字幕源</strong>网址。</p>
+<p>在 OBS / vMix 里再加一个「浏览器」来源填这个网址：<strong>主持人读到哪一句，直播画面下方就出哪一句字幕</strong>，透明背景，直接叠在画面上。</p>
+<ul><li>字就是稿子上的字，<strong>不会像语音转字幕那样听错</strong>；导演提示【…】、说话人名字「张三：」、格式标记都不会出现在字幕里。</li><li>跟读模式下跟着你念到的句子走；匀速 / 手动模式下跟着阅读线走。</li><li>暂停两三秒后字幕自动收起；提词窗关掉、黑屏时字幕也会消失，不会有一句话僵在画面上。</li><li>网址后面可以加参数：<code>&amp;size=60</code> 改字号、<code>&amp;pos=top</code> 放到画面上方、<code>&amp;box=1</code> 给文字加半透明底条、<code>&amp;color=FFE14D</code> 改颜色、<code>&amp;bg=black</code> 或 <code>&amp;bg=green</code> 换成黑底 / 绿底（做抠像用）、<code>&amp;hold=4</code> 改暂停后保留几秒。</li></ul>
+<aside class="note"><p>和「OBS / vMix 浏览器源」的区别：那一路是给<strong>主持人自己</strong>看的整篇提词画面；这一路是给<strong>观众</strong>看的一句话字幕。两路可以同时用。</p></aside>
+</section><section class="chapter" id="s25"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>15b. 多机同步与主备热切换</h2>
+<p>位置：「提词设置 › 多机同步」。演播室里两台以上的电脑同时提词：<strong>一台当主机，其余当从机</strong>，从机的画面跟着主机走；主机出问题，从机从同一个位置接着播。</p>
+<h3>15b.1 设置步骤</h3>
+<ol><li><strong>主机</strong>：打开「手机遥控」就行，这台电脑会在局域网里广播自己。「多机同步」里会显示配对码。</li><li><strong>从机</strong>：在「这台当从机」里填主机的配对码，从「选择主机」里点主机的名字（或者直接把主机「手机遥控」二维码下面那一行网址粘进来），点「<strong>开始跟随</strong>」。</li><li>在主机上正常打开稿件、开始提词。从机会自动把稿件拉过来、打开提词窗并跟上位置；主机换稿、节目单切下一条、播出中改稿，从机都会跟着变。</li></ol>
+<p>两台电脑要在同一个局域网里（建议网线）。第一次使用时 macOS 会询问是否允许访问本地网络，要点允许。</p>
+<h3>15b.2 跟随时</h3>
+<ul><li>从机每秒向主机对 10 次位置，画面平滑跟随；各台的字号、镜像、窗口大小<strong>各管各的</strong>，所以主持人屏可以用大字镜像，操作员屏用小字。</li><li>在从机上按开始 / 暂停、翻页、调速、节目单上一条 / 下一条（包括踏板、快捷键、手机遥控），会<strong>转给主机执行</strong>，所有机器一起动——任何一台都能控制。</li><li>从机把主机的稿件存在自己的稿件库里，接管时稿子在自己手里，不依赖网络。</li><li><strong>同时可用设备</strong>：跟随各版本都能用。主机把自己、连上来的从机、遥控手机、网页改稿的浏览器一起清点：免费版一共 2 台（主机 + 1 台），Pro 3 台，MAX 5 台；MAX 授权码的机位比 5 多就按机位（8 个机位 = 1 台主机 + 7 台）。先连上的先占位，超出的新设备会提示「这台主设备最多同时连 N 台…先断开一台，或升级」，已经在跟的不会被挤掉；一台设备 15 秒没动静就算断开，位置自动空出来。主机设置里显示「已连接 1 / 2 台」。只有主机的版本算数，试用期内按 MAX。</li><li><strong>主备</strong>：主机失联时自动接管是 MAX 的功能，主机或从机有一边是 MAX 就行；否则画面停在原地，等主机回来。</li></ul>
+<h3>15b.2a 用 iPad / iPhone 当从机（主持人屏）</h3>
+<p>手机版首页右上角菜单 ›「跟随电脑（主持人屏）」，扫主机「手机遥控」里的二维码即可。iPhone / iPad 也可以当从机：跟随、改稿同步、失联接管、Tally 红绿框都和电脑从机一样，算一台同时可用设备。适合把 iPad 放在提词器玻璃下面给主持人看，电脑留给操作员。</p>
+<h3>15b.3 主机失联</h3>
+<ul><li>主机程序退出或崩溃：约 <strong>0.3 秒</strong>发现；主机死机、断网：约 <strong>0.8 秒</strong>发现。</li><li>打开了「<strong>主机失联时自动接管</strong>」（默认开）：从机用主机当时的模式、速度和方向，从同一个位置接着播；智能跟读会在从机上打开麦克风继续跟。状态显示「主机失联，已接管」。</li><li>没开自动接管：画面停在原地，等你手动操作。</li><li>主机恢复以后<strong>不会自动切回</strong>（来回切比晚一点切更糟），状态变成「已接管 · 主机已恢复」，由你点「<strong>重新跟随主机</strong>」。</li></ul>
+<aside class="note"><p>接管会把从机的提词模式和速度改成主机当时的值。</p></aside>
+</section><section class="chapter" id="s26"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>15c. Tally 灯</h2>
+<p>位置：「提词设置 › Tally 灯」。打开后，这一路<strong>正在播出</strong>时提词窗和外接屏幕四周亮<strong>红框</strong>并显示 ON AIR，<strong>预监</strong>时亮<strong>绿框</strong>显示 PREVIEW，主持人不用看导播就知道现在是不是在直播。</p>
+<p>两个信号来源，可以同时用：</p>
+<ul><li><strong>NDI</strong>：打开了「NDI 输出」时，导播软件（OBS、vMix、TriCaster 等）把这一路切上播出 / 预监，会自动回传，不用设置。</li><li><strong>TSL UMD（UDP）</strong>：硬件切换台、导播台常用的 Tally 协议，支持 3.1 和 5.0。打开「接收导播台的 TSL 信号」，设好<strong>端口</strong>（默认 8900）和<strong>本机位地址</strong>（这个机位在切换台里的编号）；在切换台里把 Tally 输出指到这台电脑的 IP 和端口。设置页的小圆点会显示有没有收到信号。3.1 版里灯 1 算播出、灯 2 算预监；5.0 版里任意一盏红灯算播出、绿灯算预监、琥珀两个都算。</li></ul>
+</section><section class="chapter" id="s27"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>15d. 跟随幻灯片翻页</h2>
+<p>位置：「提词设置 › 跟随幻灯片翻页」（仅官网版；App Store 版在沙盒里不能控制其他应用，没有这一项）。</p>
+<p>讲 PPT 的时候，<strong>Keynote 或 PowerPoint 翻到第几页，提词窗就自动跳到稿子里这一页的讲稿</strong>，不用一只手翻 PPT、一只手翻提词。</p>
+<ol><li>导入 .pptx（默认会在每页前加「# 第 N 页」），或者自己写稿子：用「# 第 3 页」「# Slide 3」这样的标题分页；没写页码的话按段落标题的顺序对页，连标题都没有就按空行分段对页。</li><li>打开开关，打开提词窗，在 Keynote / PowerPoint 里开始放映。</li><li>第一次用时 macOS 会问「是否允许 FRMZONE 控制 Keynote / PowerPoint」，点<strong>允许</strong>。点错了可以在「系统设置 › 隐私与安全性 › 自动化」里改。</li></ol>
+<ul><li>每 0.3 秒对一次页码；稿子里找不到这一页（比如那页没写讲稿）就停在原地。</li><li>和提词模式不冲突：跳过去以后，智能跟读从这一页接着跟，匀速滚动从这一页接着滚。</li><li>提词器只<strong>读取</strong>当前页码，不会替你翻页，也不会改动演示文稿。</li></ul>
+</section><section class="chapter" id="s16"><h2><span class="marker" aria-hidden="true"></span><span class="num">16</span>设置面板详解</h2>
+<p>点主窗口右上角的滑杆按钮打开。每个模块点标题可<strong>折叠 / 展开</strong>，收起时右侧显示当前设置摘要；面板顶部两个小按钮可「展开全部 / 收起全部」。所有滑块<strong>拖动时即时生效</strong>，打开的提词窗会实时变化。</p>
+<h3>16.0 使用模式</h3>
+<p>面板最上面四张卡片可以选 <strong>全部 / 口播 / 直播 / 演播室</strong>。它只决定设置里先露出哪些模块，<strong>功能一个都不会关</strong>，随时可以切回「全部」：</p>
+<div class="scroll"><table><thead><tr><th>场景</th><th>收起的模块</th></tr></thead><tbody><tr><td><strong>口播</strong></td><td>NDI 输出、直播弹幕、外接屏幕、多机同步、Tally 灯、外部控制器、安全</td></tr><tr><td><strong>直播</strong></td><td>字幕、iCloud 同步、多机同步、安全</td></tr><tr><td><strong>演播室</strong></td><td>字幕、直播弹幕、iCloud 同步</td></tr></tbody></table></div>
+<h3>16.0a 安全：退出时清空稿件</h3>
+<p>给涉密场合用，默认关闭。打开后每次退出应用，这台电脑上的<strong>全部稿件、节目单和书签都会删除，不能恢复</strong>；打开时会再确认一次，并同时关闭 iCloud 同步（否则下次启动稿子又会同步回来）。已经导出的工程文件、字幕文件不在清理范围内，需要自己处理。</p>
+<h3>16.1 外观</h3>
+<div class="scroll"><table><thead><tr><th>设置</th><th>说明</th></tr></thead><tbody><tr><td>界面风格</td><td>12 种，点一下立即切换，见下表</td></tr><tr><td>强调色</td><td>橙、红、粉、紫、靛蓝、蓝、冰蓝、青、薄荷、绿、青柠、石墨；或点「自定义颜色」任选</td></tr><tr><td>开屏动画</td><td><strong>光点球</strong>（默认：几千个光点组成的球慢慢转，随后朝你散开，后面的界面从模糊变清楚；深色风格下光点颜色跟着风格走）或<strong>取景框</strong>；可以关掉启动音效</td></tr><tr><td>首页动态效果</td><td>首页四张数据卡（稿件、总字数、累计念稿、今天念了）颜色像液体一样慢慢流动、一呼一吸，颜色跟界面风格和强调色走，呼吸快慢跟你上一次的语速走；念完回到首页，「今天念了」会跳到新数字并亮一下。提词窗不动；系统开了「减弱动态效果」或低电量模式时自动停</td></tr></tbody></table></div>
+<div class="scroll"><table><thead><tr><th>风格</th><th>样子</th><th>选中时自动换上的强调色</th></tr></thead><tbody><tr><td><strong>浅色</strong></td><td>系统原生浅色界面</td><td>不变</td></tr><tr><td><strong>深色</strong></td><td>系统原生深色界面</td><td>不变</td></tr><tr><td><strong>暗夜</strong></td><td>带冷色调的深灰分层，只用一个强调色，沉稳耐看</td><td>薄荷</td></tr><tr><td><strong>霓光</strong></td><td>深紫底色，编辑区角落有强调色光晕，信息卡带渐变</td><td>紫</td></tr><tr><td><strong>清透</strong></td><td>浅色渐变底，白色卡片带柔和阴影</td><td>蓝</td></tr><tr><td><strong>炫彩</strong></td><td>深色底，三张信息卡分别是绿、紫粉、橙色渐变</td><td>青柠</td></tr><tr><td><strong>云白</strong></td><td>白灰渐变底，白色悬浮卡片</td><td>薄荷</td></tr><tr><td><strong>玻璃</strong></td><td>浅灰底透出淡紫、薄荷、蜜桃三团柔光，卡片像磨砂厚玻璃（上沿白高光、下沿一点彩边），主按钮和主入口是带颜色的玻璃，工具图标是玻璃珠</td><td>紫</td></tr><tr><td><strong>浅色光影</strong></td><td>白底，白卡片边缘透出彩色光影</td><td>紫</td></tr><tr><td><strong>深色光影</strong></td><td>纯黑底，深色卡片边缘透出彩色光影</td><td>紫</td></tr><tr><td><strong>极光</strong></td><td>深邃黑蓝底，橙蓝光晕环绕</td><td>紫</td></tr><tr><td><strong>星空</strong></td><td>纯黑底铺满蓝色星点</td><td>蓝</td></tr></tbody></table></div>
+<p>除「浅色」「深色」外，其余风格在编辑区顶部用三张<strong>信息卡</strong>显示字数、预计时长和提词模式，稿件正文放在圆角卡片里。选好风格后仍可以再换强调色；强调色较浅时（如薄荷、青柠），上面的文字会自动变成深色。</p>
+<p>强调色会用在：模块图标、按钮、开关、滑块、选中的稿件、跟读音柱等。<strong>提词窗始终使用深色</strong>，方便阅读。</p>
+<h3>16.2 语言</h3>
+<div class="scroll"><table><thead><tr><th>设置</th><th>说明</th></tr></thead><tbody><tr><td>界面语言</td><td>跟随系统 / 简体中文 / 繁體中文 / English / 日本語 / 한국어 / Español / Français，切换后立即生效</td></tr><tr><td>跟读识别语言</td><td>跟随界面语言，或单独指定</td></tr></tbody></table></div>
+<aside class="note"><p>菜单栏里的系统菜单（文件、编辑、窗口等）在<strong>重启应用后</strong>才会切换语言。</p></aside>
+<h3>16.3 提词模式</h3>
+<p>四种模式的切换（两行两列按钮，这里设置的是默认模式）；智能跟读的<strong>麦克风</strong>、<strong>跟读提前量</strong>、<strong>专有名词</strong>；匀速模式的<strong>滚动速度</strong>和<strong>开始前倒计时</strong>；歌词同步的<strong>提前显示</strong>。详见第 7 章。</p>
+<h3>16.4 文字</h3>
+<div class="scroll"><table><thead><tr><th>设置</th><th>范围</th><th>默认</th></tr></thead><tbody><tr><td>字体</td><td>系统默认 / 推荐字体（苹方、圆体、黑体、冬青黑体等）/ 本机全部字体</td><td>系统默认</td></tr><tr><td>字重</td><td>常规 / 中等 / 半粗 / 粗体 / 特粗</td><td>半粗</td></tr><tr><td>字号</td><td>18–160</td><td>40</td></tr><tr><td>字间距</td><td>0–12</td><td>0</td></tr><tr><td>行距</td><td>0–60</td><td>10</td></tr><tr><td>段间距</td><td>0–80</td><td>15</td></tr><tr><td>左右边距</td><td>0–160</td><td>36</td></tr><tr><td>居中对齐</td><td>开 / 关</td><td>关</td></tr><tr><td>文字颜色</td><td>任选</td><td>白色</td></tr><tr><td>高亮当前句</td><td>开 / 关</td><td>开</td></tr><tr><td>当前句颜色</td><td>跟随强调色 / 自选</td><td>跟随强调色</td></tr><tr><td>已读文字变暗</td><td>开 / 关</td><td>开</td></tr><tr><td>已读颜色</td><td>任选</td><td>灰色</td></tr></tbody></table></div>
+<p><strong>字体提示</strong></p>
+<ul><li>宋体、楷体、仿宋笔画较细，远距离或提词玻璃上不易看清，选择时会有提示，建议配合粗体使用。</li><li>字体设置保存在工程文件里。换到没有安装该字体的电脑时，会自动改用系统字体，并在设置里提示。</li><li>字体、字重、字间距、段间距、边距同时作用于提词窗和外接屏幕；编辑区保持系统字体，方便编辑。</li></ul>
+<h3>16.5 提词窗</h3>
+<div class="scroll"><table><thead><tr><th>设置</th><th>范围</th><th>默认</th></tr></thead><tbody><tr><td>背景颜色</td><td>任选</td><td>近黑色</td></tr><tr><td>背景不透明度</td><td>10%–100%</td><td>82%</td></tr><tr><td>显示阅读线</td><td>开 / 关</td><td>开</td></tr><tr><td>阅读线位置</td><td>距顶部 10%–80%</td><td>30%</td></tr><tr><td>镜像翻转</td><td>开 / 关</td><td>关</td></tr><tr><td>隐形提词</td><td>开 / 关</td><td>开</td></tr><tr><td>鼠标穿透</td><td>开 / 关</td><td>关</td></tr><tr><td>窗口置顶</td><td>开 / 关</td><td>开</td></tr></tbody></table></div>
+<h3>16.6 敏感词</h3>
+<p>检测开关、提词窗标红、播前提醒和词库管理，详见第 14 章。</p>
+<h3>16.7 导演提示</h3>
+<p>标记识别范围和颜色，详见第 13 章。</p>
+<h3>16.8 计时器</h3>
+<p>见第 10 章。</p>
+<h3>16.9 手机遥控</h3>
+<p>见第 15 章。</p>
+<h3>16.10 外接屏幕</h3>
+<p>见第 11 章。</p>
+<h3>16.11 快捷键</h3>
+<p>见第 18 章。</p>
+<h3>16.12 恢复默认外观</h3>
+<p>面板最下方的按钮，把<strong>滚动速度、倒计时、字号、行距、对齐、文字 / 已读 / 背景颜色、不透明度、阅读线、镜像</strong>恢复为默认值。不影响语言、界面风格、强调色、快捷键和稿件。</p>
+</section><section class="chapter" id="s29"><h2><span class="marker" aria-hidden="true"></span><span class="num"></span>16a. 版本与授权</h2>
+<p>三个版本：<strong>免费版</strong>（提词永久免费，智能跟读每天 20 分钟）、<strong>Pro</strong>（个人创作者：不限时长，专业录制和输出）、<strong>MAX</strong>（团队 / 工作室：多人协作、多机主备、机构授权）。手机和电脑是同一张表：</p>
+<p><strong>终身 MAX</strong>：¥1999 一次买断，终身享有 MAX 全部功能（含团队功能）和以后的更新；App Store 版在订阅页「终身买断」里买，官网版用终身序列号（授权码）激活。AI 算力点不含，另外买。Pro 只有订阅。</p>
+<div class="scroll"><table><thead><tr><th>功能</th><th>免费版</th><th>Pro</th><th>MAX</th></tr></thead><tbody><tr><td>声控 / 匀速 / 手动翻页，稿件不限，提词板，极简模式</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>智能跟读</td><td>每天 20 分钟</td><td>不限</td><td>不限</td></tr><tr><td>拍摄提词（美颜、滤镜、换背景）</td><td>每天 20 分钟</td><td>不限</td><td>不限</td></tr><tr><td>4K / 60 帧拍摄</td><td>1080p / 30 帧</td><td>✓</td><td>✓</td></tr><tr><td>浮窗提词</td><td>每天 20 分钟（和拍摄共用）</td><td>不限</td><td>不限</td></tr><tr><td>口播复盘</td><td>每天 3 次</td><td>不限</td><td>不限</td></tr><tr><td>剪掉重读、去气口、人声增强、识别字幕</td><td>每天 3 条</td><td>不限</td><td>不限</td></tr><tr><td>SRT 字幕导出</td><td>—</td><td>✓</td><td>✓</td></tr><tr><td>眼神校正</td><td>—</td><td>✓</td><td>✓</td></tr><tr><td>内容日历：排期、今天要拍、到期提醒</td><td>最多排 10 条</td><td>不限</td><td>不限</td></tr><tr><td>录音转文字、变成稿件</td><td>每天 10 分钟</td><td>每天 1 小时</td><td>不限</td></tr><tr><td>AI 写稿、AI 助手</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>工程：全部稿件和设置存成一个文件</td><td>—</td><td>—</td><td>✓</td></tr><tr><td>历史版本</td><td>最近 5 版</td><td>每篇 80 版</td><td>每篇 80 版</td></tr><tr><td>手机遥控、跟随电脑（从机）、多机同步</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>同时使用的设备（主设备 + 遥控 / 从机）</td><td>2 台</td><td>3 台</td><td>5 台</td></tr><tr><td>Apple Watch 遥控、手机与电脑互传、OBS / vMix 浏览器源</td><td>—</td><td>✓</td><td>✓</td></tr><tr><td>外接屏幕 / 多屏输出</td><td>—</td><td>✓</td><td>✓</td></tr><tr><td>电脑版：NDI 输出、直播弹幕</td><td>—</td><td>✓</td><td>✓</td></tr><tr><td>电脑版：显示当前时间</td><td>—</td><td>✓</td><td>✓</td></tr><tr><td>电脑版：网页多人改稿（团队协作、在线名单、自动合并）</td><td>—</td><td>—</td><td>✓</td></tr><tr><td>电脑版：团队排期（给每条内容指定负责人，按人看日历和看板）</td><td>—</td><td>—</td><td>✓</td></tr><tr><td>电脑版：多机主备热切换、Tally 灯、退出清空稿件</td><td>—</td><td>—</td><td>✓</td></tr><tr><td>机构多机位授权码、发票</td><td>—</td><td>—</td><td>✓</td></tr></tbody></table></div>
+<ul><li><strong>App Store 版</strong>：在「FRMZONE › 授权…」里订阅 Pro 或 MAX，和 iPhone / iPad 版是同一个订阅；Pro 升级到 MAX 由 Apple 按升级处理。</li><li><strong>官网版</strong>：装上以后 <strong>14 天</strong>内全部功能可用（按 MAX）。之后在「授权…」里粘贴授权码激活（从 <code>VP1-</code> 开始的一长串）。授权码<strong>在本机离线验证</strong>，不用联网，内网机器也能激活；上面写着授权单位、版本、机位数和有效期。以前的「演播室版」授权码就是 MAX，照常可用。</li><li>「授权…」窗口并排列出三个版本和上面这张表，标着你现在是哪个版本。</li><li>没解锁的功能在设置里带「Pro」或「MAX」标记，点开能看到包含什么。网页改稿在 Pro 下只能遥控和看稿，保存修改时网页会提示「需要 MAX」。授权到期或移除后，你原来的开关设置不会被改动，重新激活就恢复原样。</li><li>官网版会每天检查一次有没有新版本，也可以从「FRMZONE › 检查更新…」手动查；只提示、不自动替换程序。</li></ul>
+</section><section class="chapter" id="s17"><h2><span class="marker" aria-hidden="true"></span><span class="num">17</span>工程文件（多人使用）</h2>
+<h3>17.1 什么是工程</h3>
+<p>工程文件（扩展名 <strong>.fpproj</strong>）保存：</p>
+<ul><li><strong>全部稿件</strong>；</li><li><strong>当时的全部设置</strong>：外观、语言、提词模式、文字、提词窗、计时器、外接屏幕；</li><li><strong>自定义快捷键</strong>；</li><li><strong>节目单</strong>；</li><li><strong>敏感词库</strong>（自定义词、例外词、停用的内置词）。</li></ul>
+<p>适合多人共用一台电脑：每个人保存一个自己的工程，使用前打开即可恢复到自己的稿件和习惯。</p>
+<h3>17.2 工程栏</h3>
+<p>左侧稿件列表顶部：</p>
+<div class="scroll"><pre class="diagram">┌────────────────────────────────────┐
+│ 📁  工程 ● 已修改              [⬇ 保存] │
+│     张老师的直播 ⌄                     │
+└────────────────────────────────────┘</pre></div>
+<ul><li><strong>工程名</strong>：点击弹出工程菜单。</li><li><strong>已修改</strong>：有未保存的修改时显示。</li><li><strong>保存按钮</strong>：有修改时高亮；保存后显示「✓ 已保存」。</li></ul>
+<p>主页（没选中稿件时）「开始提词」下面也有一张<strong>工程卡片</strong>：显示工程名和状态（还没存成文件 / 有未保存的修改 / 已保存 · 保存时间），旁边是「保存工程」「另存为…」「打开…」（含最近打开的工程和新建工程）。标题栏左侧的工具栏也有一个保存按钮，和 <kbd>⌘S</kbd> 一样。</p>
+<h3>17.3 工程操作</h3>
+<div class="scroll"><table><thead><tr><th>操作</th><th>位置</th><th>快捷键</th></tr></thead><tbody><tr><td>新建工程</td><td>工程菜单 / 文件菜单</td><td><kbd>⇧⌘N</kbd></td></tr><tr><td>打开工程…</td><td>同上</td><td><kbd>⌘O</kbd></td></tr><tr><td>最近打开的工程</td><td>同上（最多 8 个）</td><td>—</td></tr><tr><td>保存工程</td><td>同上 / 工程栏保存按钮</td><td><kbd>⌘S</kbd></td></tr><tr><td>工程另存为…</td><td>同上</td><td><kbd>⇧⌘S</kbd></td></tr><tr><td>导入文件…</td><td>工程菜单 / 文件菜单</td><td><kbd>⇧⌘I</kbd></td></tr></tbody></table></div>
+<h3>17.4 第一次保存</h3>
+<ol><li>按 <strong><kbd>⌘S</kbd></strong> 或点工程栏的「保存」。</li><li>在弹出的窗口里选择文件夹（例如「文稿」），输入名字，例如「张老师的直播」。</li><li>点「存储」，生成 <code>张老师的直播.fpproj</code>。</li><li>之后再按 <kbd>⌘S</kbd> 会直接保存到这个文件，不再弹窗。</li></ol>
+<h3>17.5 打开工程</h3>
+<ul><li>工程菜单「打开工程…」或 <kbd>⌘O</kbd>；</li><li>「最近打开的工程」里直接点；</li><li>在访达里<strong>双击 .fpproj 文件</strong>；</li><li>把 .fpproj 文件拖到侧边栏或程序坞图标上。</li></ul>
+<p>打开后，稿件和所有设置都会切换成这个工程保存时的状态，界面语言也会切换成该工程的设置。</p>
+<h3>17.6 防止误覆盖</h3>
+<ul><li>打开或新建工程前，如果当前有未保存的修改，会询问「<strong>保存 / 不保存 / 取消</strong>」。</li><li>还没保存成工程的内容，只要有稿件，也会提示。</li><li>退出应用时不会提示，当前内容会自动保留，下次打开还在（仍显示「已修改」）。</li></ul>
+<h3>17.7 新建工程</h3>
+<p>稿件清空（自动新建一篇空白稿件），设置恢复默认，快捷键恢复默认；<strong>界面语言保留</strong>不变。</p>
+<h3>17.8 移动与分享</h3>
+<ul><li>.fpproj 是普通文件，可以拷贝到 U 盘、通过网盘分享给同事，对方打开即可使用。</li><li>文件被移动或删除后，「最近打开的工程」里点它会提示打不开，并自动从列表移除。</li></ul>
+</section><section class="chapter" id="s18"><h2><span class="marker" aria-hidden="true"></span><span class="num">18</span>快捷键</h2>
+<h3>18.1 全局快捷键（在任何应用中都可用）</h3>
+<div class="scroll"><table><thead><tr><th>功能</th><th>默认快捷键</th></tr></thead><tbody><tr><td>开始 / 暂停</td><td><kbd>⌃⌥Space</kbd></td></tr><tr><td>加速</td><td><kbd>⌃⌥↑</kbd></td></tr><tr><td>减速</td><td><kbd>⌃⌥↓</kbd></td></tr><tr><td>从头开始</td><td><kbd>⌃⌥R</kbd></td></tr><tr><td>隐藏 / 显示提词窗</td><td><kbd>⌃⌥H</kbd></td></tr><tr><td>切换鼠标穿透</td><td><kbd>⌃⌥L</kbd></td></tr><tr><td>节目单下一条</td><td><kbd>⌃⌥→</kbd></td></tr><tr><td>节目单上一条</td><td><kbd>⌃⌥←</kbd></td></tr><tr><td>黑屏 / 恢复</td><td><kbd>⌃⌥B</kbd></td></tr></tbody></table></div>
+<aside class="note"><p>⌃ = Control，⌥ = Option，⌘ = Command，⇧ = Shift</p></aside>
+<h3>18.2 提词窗快捷键（提词窗在前台时可用）</h3>
+<div class="scroll"><table><thead><tr><th>功能</th><th>默认快捷键</th></tr></thead><tbody><tr><td>向下翻页</td><td><kbd>PageDown</kbd></td></tr><tr><td>向上翻页</td><td><kbd>PageUp</kbd></td></tr><tr><td>放大字号</td><td>+ （或 =）</td></tr><tr><td>缩小字号</td><td>−</td></tr><tr><td>显示 / 隐藏计时器</td><td>T</td></tr><tr><td>镜像翻转</td><td>M</td></tr><tr><td>从头开始</td><td>R</td></tr><tr><td>编辑稿件</td><td>E</td></tr><tr><td>刘海模式</td><td>N</td></tr><tr><td>反向滚动</td><td>B</td></tr><tr><td>在稿件里查找</td><td><kbd>⌘F</kbd></td></tr><tr><td>添加 / 移除书签</td><td>K</td></tr><tr><td>下一个 / 上一个书签</td><td>] / [</td></tr><tr><td>显示 / 隐藏时钟</td><td>C</td></tr></tbody></table></div>
+<h3>18.3 固定按键（不可修改）</h3>
+<div class="scroll"><table><thead><tr><th>按键</th><th>功能</th></tr></thead><tbody><tr><td><kbd>Space</kbd></td><td>开始 / 暂停</td></tr><tr><td><kbd>Esc</kbd></td><td>关闭提词窗（编辑中为结束编辑）</td></tr><tr><td>↑ / ↓</td><td>匀速模式下调速；其他模式逐行翻动</td></tr><tr><td>← / →</td><td>向上 / 向下翻页</td></tr><tr><td>数字键盘 + / −</td><td>放大 / 缩小字号</td></tr></tbody></table></div>
+<h3>18.4 主窗口快捷键</h3>
+<div class="scroll"><table><thead><tr><th>功能</th><th>快捷键</th></tr></thead><tbody><tr><td>新建稿件</td><td><kbd>⌘N</kbd></td></tr><tr><td>开始提词</td><td><kbd>⌘↩</kbd></td></tr><tr><td>导入文件</td><td><kbd>⇧⌘I</kbd></td></tr><tr><td>新建工程</td><td><kbd>⇧⌘N</kbd></td></tr><tr><td>打开工程</td><td><kbd>⌘O</kbd></td></tr><tr><td>保存工程</td><td><kbd>⌘S</kbd></td></tr><tr><td>工程另存为</td><td><kbd>⇧⌘S</kbd></td></tr></tbody></table></div>
+<h3>18.5 自定义快捷键</h3>
+<p>在设置「<strong>快捷键</strong>」模块中：</p>
+<ol><li>点某一项右侧的快捷键按钮，显示「按下新的快捷键…」。</li><li>按下新的组合键即保存。<ul><li>按 <strong>Esc</strong> 取消；</li><li>按 <strong>Delete</strong> 清除这一项（不使用快捷键）。</li></ul></li><li>改过的项右侧出现 <strong>↺</strong>，点它恢复这一项的默认值。</li><li>最下方「<strong>恢复默认快捷键</strong>」恢复全部。</li></ol>
+<p><strong>规则与提示</strong></p>
+<ul><li><strong>全局快捷键必须包含 ⌘、⌃ 或 ⌥</strong>，否则会影响其他软件的正常打字。</li><li>与其他功能冲突时提示「与『某功能』冲突」，不会保存，可直接重按一个。</li><li>被其他应用占用的全局快捷键会提示「已被系统或其他应用占用」。</li><li>被 macOS 自己的系统快捷键（如 <kbd>⌘Space</kbd>）占用的组合键无法检测，请避免使用。</li><li>自定义快捷键会保存在工程文件里。</li></ul>
+</section><section class="chapter" id="s19"><h2><span class="marker" aria-hidden="true"></span><span class="num">19</span>菜单栏速查</h2>
+<p><strong>文件</strong></p>
+<ul><li>新建稿件（<kbd>⌘N</kbd>）</li><li>导入文件…（<kbd>⇧⌘I</kbd>）</li><li>新建工程（<kbd>⇧⌘N</kbd>）</li><li>打开工程…（<kbd>⌘O</kbd>）</li><li>最近打开的工程 ›</li><li>保存工程（<kbd>⌘S</kbd>）</li><li>工程另存为…（<kbd>⇧⌘S</kbd>）</li></ul>
+<p><strong>提词</strong></p>
+<ul><li>开始 / 暂停</li><li>从头开始</li><li>节目单下一条</li><li>节目单上一条</li><li>智能跟读 / 匀速滚动 / 手动翻页（✓ 表示当前模式）</li><li>隐形提词</li><li>镜像翻转</li><li>鼠标穿透</li><li>外接屏幕输出</li><li>外接屏幕镜像</li><li>隐藏 / 显示提词窗</li><li>关闭提词窗</li></ul>
+</section><section class="chapter" id="s20"><h2><span class="marker" aria-hidden="true"></span><span class="num">20</span>常见场景推荐设置</h2>
+<h3>20.1 直播带货 / 口播（摄像头在屏幕上方）</h3>
+<ul><li>模式：<strong>智能跟读</strong></li><li>提词窗：拖到<strong>摄像头正下方</strong>，调窄调矮，避免眼神偏移</li><li>阅读线：15%–25%（靠上，视线更接近镜头）</li><li>隐形提词：<strong>开</strong>；鼠标穿透：按需开启，方便操作直播软件</li><li>字号：36–48</li></ul>
+<h3>20.2 录网课 / 录屏讲解</h3>
+<ul><li>模式：智能跟读或匀速滚动</li><li>隐形提词：<strong>开</strong>（录屏里不会出现提词窗）</li><li>计时器：开，倒计时按课程时长<strong>自定义</strong></li><li>全局快捷键 <kbd>⌃⌥Space</kbd> 开始 / 暂停，不用切换窗口</li></ul>
+<h3>20.3 线上会议 / 视频面试</h3>
+<ul><li>模式：<strong>手动翻页</strong>（按要点翻看，更自然）</li><li>背景不透明度调低到 50%–60%，字号小一些，只看关键词</li><li>隐形提词：<strong>开</strong>，共享屏幕时不会被看到</li><li>正式开始前，先用会议软件自己共享一次屏幕确认</li></ul>
+<h3>20.4 演讲 / 发布会（有翻页笔）</h3>
+<ul><li>模式：<strong>手动翻页</strong>，翻页笔的 <kbd>PageUp</kbd> / <kbd>PageDown</kbd> 直接可用</li><li>导入 PPT 时选「<strong>备注优先</strong>」，提词内容就是你的演讲备注</li><li>计时器：两者都显示，超时变红提醒</li></ul>
+<h3>20.5 演播室 / 摄像机提词玻璃</h3>
+<ul><li>外接屏幕：<strong>开</strong>，画面选「<strong>镜像</strong>」，左右边距按玻璃尺寸调整</li><li>笔记本提词窗保持正向，给操作员看</li><li>模式：智能跟读（主讲人自由节奏）或匀速滚动（操作员用 <kbd>⌃⌥↑</kbd> / <kbd>⌃⌥↓</kbd> 调速）</li><li>计时器：「外接屏幕也显示」开，主讲人能看到剩余时间</li><li>背景不透明度：100%，文字颜色白色，背景黑色</li></ul>
+<h3>20.6 新闻 / 访谈节目（多条稿件）</h3>
+<ul><li>把每条新闻、每个环节做成一篇稿件，按播出顺序加入<strong>节目单</strong>，给连线、短片等环节设置<strong>计划时长</strong></li><li>稿件里用【切 2 号机】[插入 VCR] 写导演提示，主持人一眼看到又不会念出来</li><li>导播用<strong>手机遥控</strong>切换下一条，主持人专心读稿</li><li>计时器开启，关注节目总时长后面的<strong>超时 / 提前</strong>提示，及时压缩或补充</li></ul>
+<h3>20.7 多人轮流使用</h3>
+<ul><li>每个人整理好稿件和设置后，<strong><kbd>⌘S</kbd> 保存成自己的工程</strong>（如「张老师.fpproj」「李主播.fpproj」）</li><li>轮到谁用，就从「最近打开的工程」里打开谁的工程</li></ul>
+</section><section class="chapter" id="s21"><h2><span class="marker" aria-hidden="true"></span><span class="num">21</span>常见问题与故障排除</h2>
+<p class="question"><strong>Q：智能跟读点了开始，文字不动？</strong></p>
+<ol><li>看工具栏音柱：灰色说明麦克风没接通，状态栏会显示原因。</li><li>到「系统设置 › 隐私与安全性」检查<strong>麦克风</strong>和<strong>语音识别</strong>是否允许了「FRMZONE」。</li><li>提示「语音识别当前不可用」时，检查网络，或在「系统设置 › 键盘 › 听写」中开启听写。</li><li>确认「跟读识别语言」和稿件语言一致。</li><li>读得太快或位置差太远时，用滚轮把要读的行滚到阅读线附近再读。</li></ol>
+<p class="question"><strong>Q：人名、品牌总是识别错？</strong> 把它们填进「提词模式 › 专有名词」，一行一个；英文品牌名也可以用 <code>**</code> 标成重点词自动加入。</p>
+<p class="question"><strong>Q：跟读时总觉得字幕跟得太紧 / 太超前？</strong> 调整「跟读提前量」：觉得赶就调大，觉得太超前就调小。</p>
+<p class="question"><strong>Q：跟读位置跳错了？</strong> 稿件里有大量重复句子时可能误判。用滚轮或方向键把位置调回来，继续读即可自动校正。</p>
+<p class="question"><strong>Q：录屏 / 直播里还是能看到提词窗？</strong></p>
+<ul><li>确认隐形提词已开启（👁 按钮带斜线）。</li><li>部分软件的抓屏方式不受隐形设置影响，这种情况下可以改用「窗口捕获」只采集需要的窗口，或把提词窗放到不被采集的屏幕上。</li></ul>
+<p class="question"><strong>Q：开了鼠标穿透后点不到提词窗了？</strong> 点提词窗右上角的橙色浮标关闭鼠标穿透（或按 <strong><kbd>⌃⌥L</kbd></strong>）。</p>
+<p class="question"><strong>Q：提词窗找不到了？</strong></p>
+<ul><li>按 <strong><kbd>⌃⌥H</kbd></strong> 显示；</li><li>或在主窗口点「开始提词」重新打开。</li></ul>
+<p class="question"><strong>Q：外接屏幕没有显示？</strong></p>
+<ul><li>确认显示器在系统设置里是「扩展」而不是「镜像显示」；</li><li>确认「输出到外接屏幕」已打开，并且提词窗是打开的；</li><li>设置里出现「未检测到外接屏幕」时，检查连接线，或在「显示器」里改选「自动」。</li></ul>
+<p class="question"><strong>Q：外接屏幕的字太小 / 太大？</strong> 外接屏幕的字号随笔记本提词窗的宽度等比放大：提词窗<strong>拖窄 → 外接屏字变大</strong>；也可以调整「左右边距」。</p>
+<p class="question"><strong>Q：导入的 PDF 没有文字？</strong> 这是扫描版 PDF（整页是图片），需要先用其他软件做文字识别（OCR），再导入。</p>
+<p class="question"><strong>Q：导入 .ppt 或 Keynote 失败？</strong> 请在 PowerPoint / Keynote 里另存为 <strong>.pptx</strong> 或 <strong>PDF</strong> 后再导入。</p>
+<p class="question"><strong>Q：源文件改了，稿件没有更新？</strong></p>
+<ul><li>看标题下方状态：如果是「已停止同步」，说明你在提词器里改过这篇稿件；点 ⋯ →「从源文件重新导入」即可恢复同步（会覆盖当前内容）。</li><li>如果是「源文件找不到了」，说明源文件被移动或删除了。</li></ul>
+<p class="question"><strong>Q：手机扫码后打不开遥控页？</strong></p>
+<ul><li>确认手机和 Mac 连接的是<strong>同一个 Wi-Fi</strong>（手机不要用 4G / 5G 流量）；</li><li>确认设置里「开启手机遥控」已打开，并且显示了二维码；</li><li>公司 / 酒店等网络可能禁止设备互访，可以改用手机热点：让 Mac 连接手机热点后重新扫码；</li><li>检查「系统设置 › 网络 › 防火墙」是否阻止了「FRMZONE」的传入连接。</li></ul>
+<p class="question"><strong>Q：遥控页提示「配对码不正确」？</strong> 在 Mac 上点过「更换配对码」后，旧链接会失效，请重新扫码。</p>
+<p class="question"><strong>Q：导演提示被念出来了 / 括号里的正常内容不见了？</strong> 到设置「导演提示」里调整识别哪些括号。圆括号默认<strong>不作为</strong>提示；如果打开了，括号里的内容就不会朗读。</p>
+<p class="question"><strong>Q：歌词和伴奏对不上？</strong> 在「♪ 歌词稿」里调整「时间偏移」：歌词慢了调大，快了调小；个别句子不准可以直接改那一句的时间，或重新打点。</p>
+<p class="question"><strong>Q：导入 LRC 后没有变成歌词稿？</strong> 至少要有两句带 <code>[分:秒.百分秒]</code> 时间的歌词；检查时间格式是否正确。</p>
+<p class="question"><strong>Q：正常的词被标成了敏感词？</strong> 在敏感词清单里点「忽略」停用这个词；如果只是某个固定搭配被误标（如「第一时间」），到「管理敏感词库 › 例外词」里添加这个词组。</p>
+<p class="question"><strong>Q：开始提词时总弹出敏感词提醒？</strong> 到设置「敏感词」里关闭「开始提词前提醒」；编辑区仍会标出敏感词。</p>
+<p class="question"><strong>Q：节目单里显示「稿件已删除」？</strong> 这一条引用的稿件被删掉了，右键「移出节目单」即可。</p>
+<p class="question"><strong>Q：全局快捷键没反应？</strong></p>
+<ul><li>在设置「快捷键」里看是否提示「已被系统或其他应用占用」，换一个组合键；</li><li>正在录入快捷键时，全局快捷键会暂时停用。</li></ul>
+<p class="question"><strong>Q：某个颜色设置自己变了？</strong> 系统的「颜色」面板如果一直开着，可能会把颜色写入当前关联的取色框。调完颜色后请关闭颜色面板。</p>
+<p class="question"><strong>Q：界面语言改了，菜单栏还是旧语言？</strong> 菜单栏里的系统菜单需要<strong>重启应用</strong>后才会切换。</p>
+<p class="question"><strong>Q：每次更新软件后都要重新允许麦克风？</strong> 自行编译的版本每次编译签名都会变化，系统会把它当作新程序重新询问，正式签名的版本不会出现这个问题。</p>
+</section><section class="chapter" id="s22"><h2><span class="marker" aria-hidden="true"></span><span class="num">22</span>数据存放位置</h2>
+<div class="scroll"><table><thead><tr><th>数据</th><th>位置</th></tr></thead><tbody><tr><td>稿件</td><td><code>~/Library/Application Support/FollowPrompter/scripts.json</code>（自动保存）</td></tr><tr><td>节目单</td><td><code>~/Library/Application Support/FollowPrompter/rundown.json</code>（自动保存）</td></tr><tr><td>敏感词库</td><td><code>~/Library/Application Support/FollowPrompter/lexicon.json</code>（自动保存）</td></tr><tr><td>伴奏文件</td><td>保留在原位置，稿件里只记录路径；移动或删除后需要重新选择</td></tr><tr><td>设置与快捷键</td><td>系统偏好设置（应用标识：正式版 <code>com.duanyuanfei.myteleprompter</code>，自己编译的是 <code>local.followprompter.app</code>；第一次用正式版会把旧设置搬过来）</td></tr><tr><td>工程文件</td><td>你保存时选择的位置（<code>.fpproj</code>）</td></tr><tr><td>读稿字幕</td><td><code>~/Movies/FRMZONE 字幕/</code>（可在「字幕 › 保存位置」更改）</td></tr></tbody></table></div>
+<aside class="note"><p><strong>备份建议</strong>：定期把自己的工程另存一份到网盘或 U 盘，就等于备份了全部稿件和设置。</p></aside></section>
+  </main>
+</div>
+
+<footer>FRMZONE · 使用说明书</footer>
+
+<script>
+  // 目录高亮当前阅读的章节
+  (function () {
+    const links = new Map();
+    document.querySelectorAll('.toc a').forEach(a => links.set(a.getAttribute('href').slice(1), a));
+    if (!('IntersectionObserver' in window)) return;
+    const visible = new Set();
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => e.isIntersecting ? visible.add(e.target.id) : visible.delete(e.target.id));
+      const first = [...document.querySelectorAll('.chapter')].find(s => visible.has(s.id));
+      links.forEach(a => a.classList.remove('active'));
+      if (first && links.get(first.id)) links.get(first.id).classList.add('active');
+    }, { rootMargin: '-10% 0px -70% 0px' });
+    document.querySelectorAll('.chapter').forEach(s => io.observe(s));
+  })();
+</script>
