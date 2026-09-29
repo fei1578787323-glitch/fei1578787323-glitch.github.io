@@ -39,6 +39,6 @@ title: FRMZONE · 课程录制套件
 按录制间授权，14 天全功能试用。
 
 <!-- TODO：报价和联系方式 -->
-联系方式待补充。
+机构采购、报价和发票：请在 FRMZONE 里点「意见反馈」联系我们，写上单位和需要的机位数，我们会尽快回复。
 
-[下载官网版](https://github.com/fei1578787323-glitch/my-teleprompter/releases) · [使用说明书](使用说明书.html) · [直播间套件](live) · [播报套件](broadcast)
+[官网首页](./)（官网版即将开放下载） · [使用说明书](使用说明书.html) · [直播间套件](live) · [播报套件](broadcast)
