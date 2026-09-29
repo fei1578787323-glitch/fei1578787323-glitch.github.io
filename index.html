@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FRMZONE 提词器</title>
-<meta name="description" content="念到哪，字就滚到哪。给口播、录课、直播和演讲用的智能跟读提词器，iPhone、iPad、Mac 都能用。">
+<title>FRMZONE Teleprompter</title>
+<meta name="description" content="A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac.">
 <style>
   :root {
     --ink: #0b0b14;
@@ -133,6 +133,10 @@
     .shots { grid-template-columns: repeat(2, 1fr); }
     .nav-links { display: none; }
   }
+  .nav-right { display: flex; align-items: center; gap: 22px; }
+  .lang { font: inherit; font-size: 13px; font-weight: 600; color: inherit; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+  .lang:hover { background: rgba(255,255,255,0.16); }
+  .lang:focus-visible { outline: 2px solid #9b6bf2; outline-offset: 2px; }
 </style>
 </head>
 <body>
@@ -146,25 +150,28 @@
         </span>
         FRMZONE
       </div>
+      <div class="nav-right">
       <nav class="nav-links">
-        <a href="#features">功能</a>
-        <a href="#pricing">价格</a>
-        <a href="#suites">机构方案</a>
-        <a href="#help">帮助</a>
-      </nav>
+        <a href="#features" data-en="Features">功能</a>
+        <a href="#pricing" data-en="Pricing">价格</a>
+        <a href="#suites" data-en="For teams">机构方案</a>
+        <a href="#help" data-en="Help">帮助</a>
+            </nav>
+      <button class="lang" id="langBtn" type="button" aria-label="切换语言 / Switch language">中文</button>
+      </div>
     </div>
     <div class="hero-body">
       <div>
-        <h1>念到哪，<br><em>字就滚到哪</em></h1>
-        <p class="lead">给口播、录课、直播和演讲用的智能跟读提词器。对着手机念，文字跟着你的语速走；停下来，它也停下来。</p>
+        <h1 data-en="Say it, and&lt;br&gt;&lt;em&gt;the script keeps up&lt;/em&gt;">念到哪，<br><em>字就滚到哪</em></h1>
+        <p class="lead" data-en="A voice-following teleprompter for videos, courses, livestreams and talks. Read to your phone and the text moves with your voice; pause, and it pauses too.">给口播、录课、直播和演讲用的智能跟读提词器。对着手机念，文字跟着你的语速走；停下来，它也停下来。</p>
         <div class="cta">
           <span class="btn btn-primary" aria-disabled="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.2 8.5c0-1.7 1.4-2.5 1.4-2.5-.8-1.1-2-1.3-2.4-1.3-1-.1-2 .6-2.5.6s-1.3-.6-2.2-.6C4.4 4.7 3.3 5.4 2.7 6.5c-1.2 2.1-.3 5.2.9 6.9.6.8 1.2 1.8 2.1 1.7.9 0 1.2-.5 2.2-.5s1.3.5 2.2.5c.9 0 1.5-.9 2-1.7.6-.9.9-1.8.9-1.9 0 0-1.8-.7-1.8-3zM9.6 3.5c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.6-.4 2.2-1.1z"/></svg>
-            App Store 下载 <small>即将上架</small>
+            <span data-en="Download on the App Store">App Store 下载</span> <small data-en="Coming soon">即将上架</small>
           </span>
-          <span class="btn btn-ghost" aria-disabled="true">Mac 官网版 <small>14 天全功能试用 · 即将开放</small></span>
+          <span class="btn btn-ghost" aria-disabled="true"><span data-en="Mac (direct download)">Mac 官网版</span> <small data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</small></span>
         </div>
-        <p class="hero-note">iPhone、iPad、Mac 通用 · 提词板永久免费</p>
+        <p class="hero-note" data-en="iPhone, iPad and Mac · The basic prompter is free forever">iPhone、iPad、Mac 通用 · 提词板永久免费</p>
       </div>
       <div class="hero-visual">
         <canvas id="orb" aria-label="光点球"></canvas>
@@ -177,39 +184,39 @@
 <main>
   <section id="features">
     <div class="wrap">
-      <div class="eyebrow">功能</div>
-      <h2>从想法到成片，一个 App 走完</h2>
-      <p class="sub">写稿、排期、提词、拍摄、复盘都在这里，手机和电脑通过 iCloud 同步。</p>
+      <div class="eyebrow" data-en="Features">功能</div>
+      <h2 data-en="From idea to finished video, in one app">从想法到成片，一个 App 走完</h2>
+      <p class="sub" data-en="Write, plan, prompt, shoot and review — all here, synced between phone and Mac via iCloud.">写稿、排期、提词、拍摄、复盘都在这里，手机和电脑通过 iCloud 同步。</p>
       <div class="grid3">
         <div class="card">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h2M8 8v8M12 5v14M16 8v8M20 11v2"/></svg></div>
-          <h3>智能跟读</h3>
-          <p>识别你念到哪一句，文字跟着走；念错退回去重念，它也跟着退。另有声控、匀速、手动翻页三种模式。</p>
+          <h3 data-en="Voice follow">智能跟读</h3>
+          <p data-en="It hears which line you’re on and keeps pace; go back to re-read and it follows you back. Voice-activated, constant-speed and manual modes too.">识别你念到哪一句，文字跟着走；念错退回去重念，它也跟着退。另有声控、匀速、手动翻页三种模式。</p>
         </div>
         <div class="card">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></div>
-          <h3>拍摄提词</h3>
-          <p>一边看稿一边录，美颜、滤镜、换背景、4K / 60 帧；录完一键剪掉重读、去气口、出字幕。</p>
+          <h3 data-en="Record with the script">拍摄提词</h3>
+          <p data-en="Read and record at once, with beauty, filters, background swap and 4K / 60 fps. Then cut retakes, remove breaths and add captions in one tap.">一边看稿一边录，美颜、滤镜、换背景、4K / 60 帧；录完一键剪掉重读、去气口、出字幕。</p>
         </div>
         <div class="card">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><rect x="12" y="11" width="7" height="7" rx="1.5"/></svg></div>
-          <h3>浮窗提词</h3>
-          <p>提词浮在抖音、视频号、剪映、相机上面，切到别的应用照样滚动。</p>
+          <h3 data-en="Floating prompter">浮窗提词</h3>
+          <p data-en="Your script floats over TikTok, the Camera or your editing app — and keeps scrolling when you switch apps.">提词浮在抖音、视频号、剪映、相机上面，切到别的应用照样滚动。</p>
         </div>
         <div class="card">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
-          <h3>内容日历</h3>
-          <p>灵感、写稿、待拍、已拍、已剪、已发布，排好日子，每天打开就知道拍什么；团队可以按人排期。</p>
+          <h3 data-en="Content calendar">内容日历</h3>
+          <p data-en="Idea, drafting, ready, shot, edited, published — schedule it and know what to shoot each day. Teams can plan by person.">灵感、写稿、待拍、已拍、已剪、已发布，排好日子，每天打开就知道拍什么；团队可以按人排期。</p>
         </div>
         <div class="card">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div>
-          <h3>灵感录音与 AI</h3>
-          <p>想到就录，自动转成文字、整理成稿；AI 帮你改成口语、压时长、出一周选题。</p>
+          <h3 data-en="Voice notes and AI">灵感录音与 AI</h3>
+          <p data-en="Record ideas as they come; they’re transcribed and tidied into scripts. AI makes them conversational, fits them to time and plans a week of topics.">想到就录，自动转成文字、整理成稿；AI 帮你改成口语、压时长、出一周选题。</p>
         </div>
         <div class="card">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2" y="4" width="14" height="10" rx="1.5"/><rect x="12" y="10" width="10" height="8" rx="1.5"/><path d="M6 18h4"/></svg></div>
-          <h3>电脑版演播室</h3>
-          <p>多块外接屏同时输出、NDI、手机遥控、多机主备热切换、Tally 灯，直播间和电视台都能用。</p>
+          <h3 data-en="Studio on Mac">电脑版演播室</h3>
+          <p data-en="Multiple external displays, NDI, phone remote, hot-standby backup across machines and tally lights — ready for livestream rooms and broadcast.">多块外接屏同时输出、NDI、手机遥控、多机主备热切换、Tally 灯，直播间和电视台都能用。</p>
         </div>
       </div>
     </div>
@@ -218,90 +225,90 @@
   <section id="shots" style="padding-top: 0;">
     <div class="wrap">
       <div class="shots">
-        <figure class="shot"><img src="site/home.jpg" alt="首页：念稿数据、内容日历、拍摄提词和提词板入口" loading="lazy"><figcaption>首页</figcaption></figure>
-        <figure class="shot"><img src="site/prompter.jpg" alt="提词板：阅读线和当前句高亮" loading="lazy"><figcaption>提词板</figcaption></figure>
-        <figure class="shot"><img src="site/calendar.jpg" alt="内容日历" loading="lazy"><figcaption>内容日历</figcaption></figure>
-        <figure class="shot"><img src="site/voice.jpg" alt="灵感录音" loading="lazy"><figcaption>灵感录音</figcaption></figure>
+        <figure class="shot"><img src="site/home.jpg" alt="首页：念稿数据、内容日历、拍摄提词和提词板入口" loading="lazy"><figcaption data-en="Home">首页</figcaption></figure>
+        <figure class="shot"><img src="site/prompter.jpg" alt="提词板：阅读线和当前句高亮" loading="lazy"><figcaption data-en="Prompter">提词板</figcaption></figure>
+        <figure class="shot"><img src="site/calendar.jpg" alt="内容日历" loading="lazy"><figcaption data-en="Calendar">内容日历</figcaption></figure>
+        <figure class="shot"><img src="site/voice.jpg" alt="灵感录音" loading="lazy"><figcaption data-en="Voice notes">灵感录音</figcaption></figure>
       </div>
     </div>
   </section>
 
   <section id="pricing">
     <div class="wrap">
-      <div class="eyebrow">价格</div>
-      <h2>先免费用，觉得好再开通</h2>
-      <p class="sub">手机和电脑同一个 Apple 账号通用；首次订阅可免费试用 7 天。价格以 App Store 显示为准。</p>
+      <div class="eyebrow" data-en="Pricing">价格</div>
+      <h2 data-en="Start free, upgrade when you’re ready">先免费用，觉得好再开通</h2>
+      <p class="sub" data-en="One Apple ID covers phone and Mac; first-time subscribers get a 7-day free trial. Prices below are in CNY — your local App Store price applies.">手机和电脑同一个 Apple 账号通用；首次订阅可免费试用 7 天。价格以 App Store 显示为准。</p>
       <div class="plans">
         <div class="card plan">
-          <h3>免费版</h3>
+          <h3 data-en="Free">免费版</h3>
           <div class="price">¥0</div>
           <ul>
-            <li>提词板永久免费，稿件不限</li>
-            <li>智能跟读每天 20 分钟</li>
-            <li>拍摄 / 浮窗每天 20 分钟</li>
-            <li>口播复盘每天 3 次</li>
-            <li>AI 写稿、内容日历（排 10 条）</li>
+            <li data-en="Prompter free forever, unlimited scripts">提词板永久免费，稿件不限</li>
+            <li data-en="Voice follow 20 min a day">智能跟读每天 20 分钟</li>
+            <li data-en="Recording / floating 20 min a day">拍摄 / 浮窗每天 20 分钟</li>
+            <li data-en="Delivery review 3 times a day">口播复盘每天 3 次</li>
+            <li data-en="AI writing, content calendar (10 items)">AI 写稿、内容日历（排 10 条）</li>
           </ul>
         </div>
         <div class="card plan featured">
-          <span class="tag">最多人选</span>
+          <span class="tag" data-en="Most popular">最多人选</span>
           <h3>Pro</h3>
-          <div class="price">¥99 <span>/ 年 · 或 ¥29 / 月</span></div>
+          <div class="price" data-en="¥99 &lt;span&gt;/ year · or ¥29 / month&lt;/span&gt;">¥99 <span>/ 年 · 或 ¥29 / 月</span></div>
           <ul>
-            <li>跟读、拍摄、浮窗不限时长</li>
-            <li>4K / 60 帧、眼神校正、SRT 字幕</li>
-            <li>录完处理、口播复盘不限</li>
-            <li>外接屏幕、NDI、手机遥控</li>
-            <li>Apple Watch 遥控、与电脑互传</li>
+            <li data-en="Unlimited voice follow, recording and floating">跟读、拍摄、浮窗不限时长</li>
+            <li data-en="4K / 60 fps, eye contact, SRT captions">4K / 60 帧、眼神校正、SRT 字幕</li>
+            <li data-en="Unlimited post-processing and delivery review">录完处理、口播复盘不限</li>
+            <li data-en="External displays, NDI, phone remote">外接屏幕、NDI、手机遥控</li>
+            <li data-en="Apple Watch remote, phone–Mac transfer">Apple Watch 遥控、与电脑互传</li>
           </ul>
         </div>
         <div class="card plan">
           <h3>MAX</h3>
-          <div class="price">¥299 <span>/ 年 · 或 ¥69 / 月</span></div>
+          <div class="price" data-en="¥299 &lt;span&gt;/ year · or ¥69 / month&lt;/span&gt;">¥299 <span>/ 年 · 或 ¥69 / 月</span></div>
           <ul>
-            <li>Pro 全部功能</li>
-            <li>团队排期、网页多人改稿</li>
-            <li>多机主备、Tally 灯、退出清稿</li>
-            <li>工程文件、同时 5 台设备</li>
-            <li>机构按机位授权、开发票</li>
+            <li data-en="Everything in Pro">Pro 全部功能</li>
+            <li data-en="Team scheduling, multi-person web editing">团队排期、网页多人改稿</li>
+            <li data-en="Hot standby, tally lights, wipe on quit">多机主备、Tally 灯、退出清稿</li>
+            <li data-en="Project files, 5 devices at once">工程文件、同时 5 台设备</li>
+            <li data-en="Per-seat licenses and invoices for organizations">机构按机位授权、开发票</li>
           </ul>
         </div>
       </div>
       <div class="card lifetime">
-        <div><b>终身 MAX · ¥1999</b><br><span style="color: var(--muted); font-size: 14px;">一次买断，MAX 全部功能和以后的更新都包含；AI 算力点另购。</span></div>
-        <a href="studio">机构采购与授权 →</a>
+        <div data-en="&lt;b&gt;Lifetime MAX · ¥1999&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color: var(--muted); font-size: 14px;&quot;&gt;Pay once for every MAX feature and all future updates; AI credits sold separately.&lt;/span&gt;"><b>终身 MAX · ¥1999</b><br><span style="color: var(--muted); font-size: 14px;">一次买断，MAX 全部功能和以后的更新都包含；AI 算力点另购。</span></div>
+        <a href="studio" data-en="Organization licensing →">机构采购与授权 →</a>
       </div>
 
       <details>
-        <summary>查看完整版本对比</summary>
+        <summary data-en="Compare all plans">查看完整版本对比</summary>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>功能</th><th>免费版</th><th>Pro</th><th>MAX</th></tr></thead>
+            <thead><tr><th data-en="Feature">功能</th><th data-en="Free">免费版</th><th>Pro</th><th>MAX</th></tr></thead>
             <tbody>
-              <tr><td>声控 / 匀速 / 手动翻页，稿件不限，提词板，极简模式</td><td>✓</td><td>✓</td><td>✓</td></tr>
-              <tr><td>智能跟读</td><td>每天 20 分钟</td><td>不限</td><td>不限</td></tr>
-              <tr><td>拍摄提词（美颜、滤镜、换背景）</td><td>每天 20 分钟</td><td>不限</td><td>不限</td></tr>
-              <tr><td>4K / 60 帧拍摄</td><td>1080p / 30 帧</td><td>✓</td><td>✓</td></tr>
-              <tr><td>浮窗提词</td><td>每天 20 分钟（和拍摄共用）</td><td>不限</td><td>不限</td></tr>
-              <tr><td>口播复盘</td><td>每天 3 次</td><td>不限</td><td>不限</td></tr>
-              <tr><td>剪掉重读、去气口、人声增强、识别字幕</td><td>每天 3 条</td><td>不限</td><td>不限</td></tr>
-              <tr><td>SRT 字幕导出</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td>眼神校正</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td>内容日历：排期、今天要拍、到期提醒</td><td>最多排 10 条</td><td>不限</td><td>不限</td></tr>
-              <tr><td>录音转文字、变成稿件</td><td>每天 10 分钟</td><td>每天 1 小时</td><td>不限</td></tr>
-              <tr><td>AI 写稿、AI 助手</td><td>✓</td><td>✓</td><td>✓</td></tr>
-              <tr><td>工程：全部稿件和设置存成一个文件</td><td>—</td><td>—</td><td>✓</td></tr>
-              <tr><td>历史版本</td><td>最近 5 版</td><td>每篇 80 版</td><td>每篇 80 版</td></tr>
-              <tr><td>手机遥控、跟随电脑（从机）、多机同步</td><td>✓</td><td>✓</td><td>✓</td></tr>
-              <tr><td>同时使用的设备（主设备 + 遥控 / 从机）</td><td>2 台</td><td>3 台</td><td>5 台</td></tr>
-              <tr><td>Apple Watch 遥控、手机与电脑互传、OBS / vMix 浏览器源</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td>外接屏幕 / 多屏输出</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td>电脑版：NDI 输出、直播弹幕</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td>电脑版：显示当前时间</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td>电脑版：网页多人改稿（团队协作、在线名单、自动合并）</td><td>—</td><td>—</td><td>✓</td></tr>
-              <tr><td>电脑版：团队排期（给每条内容指定负责人，按人看日历和看板）</td><td>—</td><td>—</td><td>✓</td></tr>
-              <tr><td>电脑版：多机主备热切换、Tally 灯、退出清空稿件</td><td>—</td><td>—</td><td>✓</td></tr>
-              <tr><td>机构多机位授权码、发票</td><td>—</td><td>—</td><td>✓</td></tr>
+              <tr><td data-en="Voice-activated / constant / manual modes, unlimited scripts, prompter, minimal mode">声控 / 匀速 / 手动翻页，稿件不限，提词板，极简模式</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Voice follow">智能跟读</td><td data-en="20 min / day">每天 20 分钟</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="Record with script (beauty, filters, background)">拍摄提词（美颜、滤镜、换背景）</td><td data-en="20 min / day">每天 20 分钟</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="4K / 60 fps recording">4K / 60 帧拍摄</td><td data-en="1080p / 30 fps">1080p / 30 帧</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Floating prompter">浮窗提词</td><td data-en="20 min / day (shared with recording)">每天 20 分钟（和拍摄共用）</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="Delivery review">口播复盘</td><td data-en="3 / day">每天 3 次</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="Cut retakes, remove breaths, voice enhance, captions">剪掉重读、去气口、人声增强、识别字幕</td><td data-en="3 videos / day">每天 3 条</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="SRT caption export">SRT 字幕导出</td><td>—</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Eye contact correction">眼神校正</td><td>—</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Content calendar: scheduling, today’s shoots, reminders">内容日历：排期、今天要拍、到期提醒</td><td data-en="Up to 10 items">最多排 10 条</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="Voice notes to text and scripts">录音转文字、变成稿件</td><td data-en="10 min / day">每天 10 分钟</td><td data-en="1 hr / day">每天 1 小时</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="AI writing and assistant">AI 写稿、AI 助手</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Projects: all scripts and settings in one file">工程：全部稿件和设置存成一个文件</td><td>—</td><td>—</td><td>✓</td></tr>
+              <tr><td data-en="Version history">历史版本</td><td data-en="Last 5">最近 5 版</td><td data-en="80 per script">每篇 80 版</td><td data-en="80 per script">每篇 80 版</td></tr>
+              <tr><td data-en="Phone remote, follow Mac (secondary), multi-machine sync">手机遥控、跟随电脑（从机）、多机同步</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Devices at once (main + remotes / secondaries)">同时使用的设备（主设备 + 遥控 / 从机）</td><td data-en="2">2 台</td><td data-en="3">3 台</td><td data-en="5">5 台</td></tr>
+              <tr><td data-en="Apple Watch remote, phone–Mac transfer, OBS / vMix browser source">Apple Watch 遥控、手机与电脑互传、OBS / vMix 浏览器源</td><td>—</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="External / multi-display output">外接屏幕 / 多屏输出</td><td>—</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Mac: NDI output, live comments">电脑版：NDI 输出、直播弹幕</td><td>—</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Mac: show current time">电脑版：显示当前时间</td><td>—</td><td>✓</td><td>✓</td></tr>
+              <tr><td data-en="Mac: multi-person web editing (presence, auto-merge)">电脑版：网页多人改稿（团队协作、在线名单、自动合并）</td><td>—</td><td>—</td><td>✓</td></tr>
+              <tr><td data-en="Mac: team scheduling (assignees, filter by person)">电脑版：团队排期（给每条内容指定负责人，按人看日历和看板）</td><td>—</td><td>—</td><td>✓</td></tr>
+              <tr><td data-en="Mac: hot standby, tally lights, wipe on quit">电脑版：多机主备热切换、Tally 灯、退出清空稿件</td><td>—</td><td>—</td><td>✓</td></tr>
+              <tr><td data-en="Per-seat license codes and invoices">机构多机位授权码、发票</td><td>—</td><td>—</td><td>✓</td></tr>
             </tbody>
           </table>
         </div>
@@ -311,13 +318,13 @@
 
   <section id="suites" class="suites" style="padding-top: 0;">
     <div class="wrap">
-      <div class="eyebrow">机构方案</div>
-      <h2>给直播间、课程团队和演播室</h2>
-      <p class="sub">按场景配好的三套用法，MAX 授权按机位购买，内网机器离线激活。</p>
+      <div class="eyebrow" data-en="For teams">机构方案</div>
+      <h2 data-en="For livestream rooms, course teams and studios">给直播间、课程团队和演播室</h2>
+      <p class="sub" data-en="Three setups tuned for each scenario. MAX licenses are sold per seat, with offline activation for air-gapped machines.">按场景配好的三套用法，MAX 授权按机位购买，内网机器离线激活。</p>
       <div class="grid3">
-        <a class="card" href="live"><h3>直播间套件</h3><p>循环话术、声控滚动、场控远程改词、弹幕插播、多直播间主备。</p><span class="go">了解 →</span></a>
-        <a class="card" href="course"><h3>课程录制套件</h3><p>PPT 联动翻页、读错重读自动剪、去气口、字幕、口播复盘。</p><span class="go">了解 →</span></a>
-        <a class="card" href="broadcast"><h3>播报套件</h3><p>多机同步主备、Tally、NDI、节目单超时预警、离线授权。</p><span class="go">了解 →</span></a>
+        <a class="card" href="live"><h3 data-en="Livestream kit">直播间套件</h3><p data-en="Looping scripts, voice-activated scrolling, remote edits from the producer, live comments and backup across rooms.">循环话术、声控滚动、场控远程改词、弹幕插播、多直播间主备。</p><span class="go" data-en="Learn more →">了解 →</span></a>
+        <a class="card" href="course"><h3 data-en="Course recording kit">课程录制套件</h3><p data-en="Slide-synced paging, automatic retake cuts, breath removal, captions and delivery review.">PPT 联动翻页、读错重读自动剪、去气口、字幕、口播复盘。</p><span class="go" data-en="Learn more →">了解 →</span></a>
+        <a class="card" href="broadcast"><h3 data-en="Broadcast kit">播报套件</h3><p data-en="Multi-machine sync and backup, tally, NDI, rundown overtime alerts and offline licensing.">多机同步主备、Tally、NDI、节目单超时预警、离线授权。</p><span class="go" data-en="Learn more →">了解 →</span></a>
       </div>
     </div>
   </section>
@@ -327,11 +334,11 @@
   <div class="wrap foot">
     <div>© 2026 FRMZONE · See It. Say It.</div>
     <nav>
-      <a href="手机版说明书">手机版说明书</a>
-      <a href="使用说明书.html">电脑版说明书</a>
-      <a href="privacy">隐私政策</a>
-      <a href="terms">用户协议</a>
-      <a href="studio">机构采购</a>
+      <a href="手机版说明书" data-en="iPhone guide (Chinese)">手机版说明书</a>
+      <a href="使用说明书.html" data-en="Mac guide (Chinese)">电脑版说明书</a>
+      <a href="privacy" data-en="Privacy Policy">隐私政策</a>
+      <a href="terms" data-en="Terms of Use">用户协议</a>
+      <a href="studio" data-en="For organizations">机构采购</a>
     </nav>
   </div>
 </footer>
@@ -378,6 +385,35 @@
   window.addEventListener('resize', () => { size(); draw((performance.now() - t0) / 1000); });
   function frame(now) { draw((now - t0) / 1000); if (!reduce) requestAnimationFrame(frame); }
   requestAnimationFrame(frame);
+})();
+</script>
+<script>
+// 中英切换：默认英文；点右上角按钮切换，选过的语言记在浏览器里
+(function () {
+  const els = [...document.querySelectorAll('[data-en]')];
+  els.forEach(e => { e.dataset.zh = e.innerHTML; });
+  const meta = document.querySelector('meta[name=description]');
+  const text = {
+    en: { title: 'FRMZONE Teleprompter', desc: 'A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac.', btn: '中文', orb: 'Particle orb' },
+    zh: { title: 'FRMZONE 提词器', desc: '念到哪，字就滚到哪。给口播、录课、直播和演讲用的智能跟读提词器，iPhone、iPad、Mac 都能用。', btn: 'EN', orb: '光点球' }
+  };
+  function apply(lang) {
+    els.forEach(e => { e.innerHTML = lang === 'en' ? e.dataset.en : e.dataset.zh; });
+    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+    document.title = text[lang].title;
+    if (meta) meta.content = text[lang].desc;
+    document.getElementById('langBtn').textContent = text[lang].btn;
+    document.getElementById('orb').setAttribute('aria-label', text[lang].orb);
+  }
+  let lang = 'en';
+  try { lang = localStorage.getItem('frmzone.lang') || 'en'; } catch (e) {}
+  if (new URLSearchParams(location.search).get('lang') === 'zh') lang = 'zh';
+  apply(lang);
+  document.getElementById('langBtn').addEventListener('click', () => {
+    lang = lang === 'en' ? 'zh' : 'en';
+    try { localStorage.setItem('frmzone.lang', lang); } catch (e) {}
+    apply(lang);
+  });
 })();
 </script>
 </body>
