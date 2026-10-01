@@ -510,8 +510,22 @@ async function applyLicense(code, quiet) {
   return true;
 }
 
+// ── 滑块填色：Chrome / Safari 的滑块轨道画不出「已经拖过的那段」，按数值算个比例给样式用（--fill）；
+// 程序里改了数值不会触发 input 事件，所以再每 0.3 秒对一遍（就十来个滑块，不费事）
+function paintRangeFill(el) {
+  const min = +el.min || 0, max = +el.max || 100, v = +el.value;
+  el.style.setProperty('--fill', ((v - min) / Math.max(1e-9, max - min) * 100).toFixed(1) + '%');
+}
+function watchRanges() {
+  const all = () => [...document.querySelectorAll('input[type=range]')];
+  for (const el of all()) el.addEventListener('input', () => paintRangeFill(el));
+  setInterval(() => all().forEach(paintRangeFill), 300);
+  all().forEach(paintRangeFill);
+}
+
 // ── 启动 ──
 function init() {
+  watchRanges();
   $('search').oninput = renderList;
   $('btnNew').onclick = () => newScript();
   $('btnBack').onclick = () => document.body.classList.remove('editing');

@@ -219,6 +219,62 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .drawer .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; border-bottom: 1px solid #2e3036; font-size: 15px; }
 .drawer .row input[type=range] { width: 150px; accent-color: var(--accent); }
 .drawer .row input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); }
+
+/* ── 开关和滑块：仿 iOS 26 液态玻璃（和手机、电脑版一致）——平时白色胶囊圆钮；按住开关、拖动滑块时圆钮变大、变成透明的玻璃 ── */
+.drawer .row input[type=checkbox] {
+  -webkit-appearance: none; appearance: none; flex-shrink: 0; cursor: pointer; margin: 0;
+  width: 51px; height: 31px; border-radius: 16px;
+  background: rgba(120,120,128,.32) radial-gradient(ellipse 18px 13.5px at 21px 50%, #fff 0 96%, transparent 100%) no-repeat;
+  transition: background-color .25s, background-position .25s;
+  box-shadow: inset 0 0 0 .5px rgba(0,0,0,.04);
+}
+.drawer .row input[type=checkbox]:checked {
+  background-color: var(--accent);
+  background-image: radial-gradient(ellipse 18px 13.5px at 30px 50%, #fff 0 96%, transparent 100%);
+}
+/* 按住：圆钮变成横着拉长的玻璃胶囊，透出后面的颜色 */
+.drawer .row input[type=checkbox]:active {
+  background-image: radial-gradient(ellipse 19px 15px at 18px 50%, rgba(255,255,255,.28) 0 92%, rgba(255,255,255,.85) 96%, transparent 100%);
+}
+.drawer .row input[type=checkbox]:checked:active {
+  background-image: radial-gradient(ellipse 19px 15px at 33px 50%, rgba(255,255,255,.28) 0 92%, rgba(255,255,255,.85) 96%, transparent 100%);
+}
+.drawer .row input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.drawer .row input[type=range], .hslider input[type=range], .duo-slider input[type=range] {
+  -webkit-appearance: none; appearance: none; height: 28px; background: transparent; cursor: pointer;
+}
+.drawer .row input[type=range]::-webkit-slider-runnable-track, .hslider input[type=range]::-webkit-slider-runnable-track,
+.duo-slider input[type=range]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 3px; background: linear-gradient(var(--accent), var(--accent)) 0 / var(--fill, 50%) 100% no-repeat, rgba(120,120,128,.3);
+}
+.drawer .row input[type=range]::-webkit-slider-thumb, .hslider input[type=range]::-webkit-slider-thumb,
+.duo-slider input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 38px; height: 24px; margin-top: -9px; border-radius: 12px; background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25); transition: transform .15s, background-color .15s, box-shadow .15s;
+}
+/* 拖动：圆钮放大成透明的玻璃透镜，下面的轨道能透过来 */
+.drawer .row input[type=range]:active::-webkit-slider-thumb, .hslider input[type=range]:active::-webkit-slider-thumb,
+.duo-slider input[type=range]:active::-webkit-slider-thumb {
+  transform: scale(1.35, 1.25); background: rgba(255,255,255,.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.75), inset 0 1px 6px rgba(255,255,255,.35), 0 4px 14px rgba(0,0,0,.25);
+}
+.drawer .row input[type=range]::-moz-range-track, .hslider input[type=range]::-moz-range-track, .duo-slider input[type=range]::-moz-range-track {
+  height: 6px; border-radius: 3px; background: rgba(120,120,128,.3);
+}
+.drawer .row input[type=range]::-moz-range-progress, .hslider input[type=range]::-moz-range-progress, .duo-slider input[type=range]::-moz-range-progress {
+  height: 6px; border-radius: 3px; background: var(--accent);
+}
+.drawer .row input[type=range]::-moz-range-thumb, .hslider input[type=range]::-moz-range-thumb, .duo-slider input[type=range]::-moz-range-thumb {
+  width: 38px; height: 24px; border: 0; border-radius: 12px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.25);
+}
+.drawer .row input[type=range]:active::-moz-range-thumb, .hslider input[type=range]:active::-moz-range-thumb, .duo-slider input[type=range]:active::-moz-range-thumb {
+  background: rgba(255,255,255,.18); box-shadow: inset 0 0 0 1px rgba(255,255,255,.75), 0 4px 14px rgba(0,0,0,.25);
+}
+/* 工具条上地方小：圆钮小一号 */
+.hslider input[type=range]::-webkit-slider-thumb { width: 26px; height: 18px; margin-top: -6px; border-radius: 9px; }
+.hslider input[type=range]::-webkit-slider-runnable-track { height: 6px; }
+.hslider input[type=range]::-moz-range-thumb { width: 26px; height: 18px; border-radius: 9px; }
 .drawer select { background: #2c2c2e; border: 0; border-radius: 10px; height: 34px; padding: 0 10px; color: #fff; }
 .swatches { display: flex; gap: 8px; }
 .swatches button { width: 28px; height: 28px; border-radius: 14px; border: 2px solid #444; background: linear-gradient(135deg, var(--bg) 50%, var(--fg) 50%); }
