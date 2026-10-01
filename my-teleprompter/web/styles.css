@@ -58,7 +58,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0 12px; max-width: 1200px; width: 100%; margin: 0 auto; }
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .brand-icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 0 0 .5px rgba(0,0,0,.1); }
-.brand-name { font-size: 20px; font-weight: 700; letter-spacing: .01em; }
+.brand-name { font-size: 20px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .brand-sub { font-size: 14px; color: var(--muted); }
 .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .chip { height: 36px; padding: 0 14px; border-radius: 18px; border: 0; background: var(--card); box-shadow: var(--shadow); font-size: 14px; font-weight: 500; white-space: nowrap; }
@@ -112,11 +112,17 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
   .brand-sub { display: none; }
   .brand-icon { width: 30px; height: 30px; border-radius: 7px; }
   .brand-name { font-size: 17px; }
+  .brand { flex: 1 1 auto; }
   .topbar-actions { flex-wrap: nowrap; gap: 6px; }
   .topbar-actions .chip { padding-inline: 11px; }
+  .topbar-actions { flex-shrink: 0; }
   .primary { margin-left: 0; flex: 1; justify-content: center; }
   .segment { width: 100%; }
   .segment button { flex: 1; padding: 0 6px; }
+}
+/* 很窄的手机（375 宽）：名字加右边三个按钮放不下一行，只留图标，不再折成「AI魔方提词 / 器」两行 */
+@media (max-width: 400px) {
+  .brand-name { display: none; }
 }
 
 /* ── 提词画面 ── */

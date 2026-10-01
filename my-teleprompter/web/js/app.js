@@ -383,6 +383,8 @@ let libSelected = null;
 async function openLibrary() {
   const dlg = $('libraryDialog');
   if (!library) {
+    // 第一次打开要下载 200 多篇台本（约 200 KB）：先提示一下，别让人以为没点上
+    toast('正在加载台本库…');
     try {
       library = await (await fetch('library.json')).json();
     } catch {
