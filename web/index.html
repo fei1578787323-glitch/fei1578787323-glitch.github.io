@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI魔方提词器 · 网页版</title>
+<meta name="description" content="打开浏览器就能用的提词器：智能跟读、匀速、声控、手动四种模式，镜像、全屏、计时、台本库。">
+<meta name="theme-color" content="#E2ECFA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0F14" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AI魔方提词器">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/icon-192.png" alt="" class="brand-icon">
+      <span class="brand-name">AI魔方提词器</span>
+      <span class="brand-sub">网页提词器</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="chip" id="btnLibrary" type="button">台本库</button>
+      <button class="chip" id="btnImport" type="button">导入</button>
+      <button class="chip tier" id="btnTier" type="button">免费版</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <!-- 稿件列表 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <input id="search" class="search" type="search" placeholder="搜索稿件" aria-label="搜索稿件">
+        <button class="icon-btn accent" id="btnNew" type="button" aria-label="新建稿件" title="新建稿件">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <ul class="script-list" id="scriptList"></ul>
+      <div class="sidebar-foot">
+        <button class="link" id="btnExport" type="button">把全部稿件存成工程文件</button>
+      </div>
+    </aside>
+
+    <!-- 编辑区 -->
+    <section class="editor" id="editor">
+      <div class="editor-head">
+        <button class="icon-btn back" id="btnBack" type="button" aria-label="返回稿件列表">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+        </button>
+        <input id="title" class="title-input" placeholder="未命名稿件" aria-label="标题">
+        <button class="icon-btn" id="btnDelete" type="button" aria-label="删除这篇稿件" title="删除">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+        </button>
+      </div>
+      <div class="stats" id="stats"></div>
+      <textarea id="body" class="body-input" placeholder="在这里输入或粘贴稿件…&#10;&#10;【方括号】是导演提示，不朗读；**两个星号**标重点；行首 # 是段落标题。" aria-label="正文"></textarea>
+      <div class="start-bar">
+        <div class="segment" id="modeSeg" role="radiogroup" aria-label="提词模式">
+          <button type="button" data-mode="follow" role="radio">智能跟读</button>
+          <button type="button" data-mode="auto" role="radio">匀速</button>
+          <button type="button" data-mode="voice" role="radio">声控</button>
+          <button type="button" data-mode="manual" role="radio">手动</button>
+        </div>
+        <button class="secondary" id="btnDuo" type="button" title="开一个窗口给主持人看（可以拖到提词显示器上），这个窗口当导播台：改稿、控速、跳段">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="11" height="9" rx="1.5"/><rect x="10.5" y="10" width="11" height="9" rx="1.5"/></svg>
+          双窗口
+        </button>
+        <button class="primary" id="btnStart" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none"/></svg>
+          开始提词
+        </button>
+      </div>
+      <p class="quota-line" id="quotaLine"></p>
+    </section>
+  </main>
+</div>
+
+<!-- 双窗口：这个窗口当导播台 -->
+<aside class="duo" id="duoPanel" hidden aria-label="导播台">
+  <div class="duo-head">
+    <div>
+      <b>导播台</b>
+      <div class="duo-conn" id="duoConn">等待主持窗口…</div>
+    </div>
+    <div class="duo-timer" id="duoTimer">0:00</div>
+  </div>
+  <div class="duo-progress"><div id="duoBar"></div></div>
+  <div class="duo-row">
+    <button class="round" id="duoRestart" type="button" aria-label="从头开始" title="从头开始">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5 9 12l10 7z"/></svg>
+    </button>
+    <button class="round play" id="duoPlay" type="button" aria-label="开始 / 暂停">
+      <svg viewBox="0 0 24 24" aria-hidden="true" id="duoPlayIcon"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <select id="duoMode" aria-label="提词模式">
+      <option value="follow">智能跟读</option>
+      <option value="auto">匀速</option>
+      <option value="voice">声控</option>
+      <option value="manual">手动</option>
+    </select>
+  </div>
+  <label class="duo-slider" id="duoSpeedWrap"><span>速度</span><input type="range" id="duoSpeed" min="10" max="300" step="5"><b id="duoSpeedVal"></b></label>
+  <label class="duo-slider"><span>字号</span><input type="range" id="duoFont" min="24" max="160" step="2"><b id="duoFontVal"></b></label>
+  <div class="duo-row checks">
+    <label><input type="checkbox" id="duoMirrorH"> 左右镜像</label>
+    <label><input type="checkbox" id="duoMirrorV"> 上下镜像</label>
+  </div>
+  <div class="duo-sub">稿件段落 · 点一段让主持窗口跳过去</div>
+  <ol class="duo-paras" id="duoParas"></ol>
+  <p class="note">左边改稿，主持窗口会跟着更新。主持窗口可以拖到外接屏或提词显示器上，点它再按 F 全屏。</p>
+  <button class="secondary" id="duoEnd" type="button">结束双窗口</button>
+</aside>
+
+<!-- 双窗口：主持窗口在等导播台发稿子 -->
+<div class="talent-wait" id="talentWait" hidden>
+  <div>
+    <b>主持窗口</b>
+    <p id="talentMsg">正在连接导播台…</p>
+    <p class="note">把这个窗口拖到提词显示器上，稿子到了以后按 F 全屏。</p>
+  </div>
+</div>
+
+<!-- 提词画面 -->
+<div class="prompter" id="prompter" hidden>
+  <div class="stage" id="stage">
+    <div class="flip" id="flip">
+      <div class="content" id="content"></div>
+    </div>
+    <div class="reading-line" id="readingLine"><span class="tri"></span></div>
+  </div>
+  <!-- 工具条：和电脑版提词窗同一排布（播放 · 从头 · 模式 · 速度 / 字号 · 状态 · 镜像 · 计时 · 浮窗 · 全屏 · 设置 · 关闭） -->
+  <div class="hud" id="hud">
+    <button class="hb" id="pPlay" type="button" aria-label="开始 / 暂停（空格）" title="开始 / 暂停（空格）">
+      <svg viewBox="0 0 24 24" aria-hidden="true" id="playIcon"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <button class="hb" id="pRestart" type="button" aria-label="从头开始" title="从头开始（R）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14" /><path d="M19 5 9 12l10 7z" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <label class="hmode" title="提词模式">
+      <svg viewBox="0 0 24 24" aria-hidden="true" id="modeIcon"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/></svg>
+      <select id="pMode" aria-label="提词模式">
+        <option value="follow">智能跟读</option>
+        <option value="auto">匀速滚动</option>
+        <option value="voice">声控滚动</option>
+        <option value="manual">手动</option>
+      </select>
+    </label>
+    <span class="meter" id="pMeter" title="麦克风接通后变成强调色" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+    <label class="hslider" id="speedWrap" title="滚动速度（↑ / ↓）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-5"/></svg>
+      <input type="range" id="pSpeed" min="10" max="300" step="5" aria-label="滚动速度"><b id="pSpeedVal"></b>
+    </label>
+    <label class="hslider" title="字号（+ / -）">
+      <span class="aa">Aa</span>
+      <input type="range" id="pFont" min="24" max="140" step="2" aria-label="字号"><b id="pFontVal"></b>
+    </label>
+    <span class="hspace"></span>
+    <span class="hstatus" id="pStatus"></span>
+    <span class="hpct" id="pPct"></span>
+    <button class="hb" id="pMirror" type="button" aria-label="镜像翻转（M）" title="镜像翻转（M）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M9 7 4 17h5zM15 7l5 10h-5z"/></svg>
+    </button>
+    <button class="hb" id="pTimerBtn" type="button" aria-label="显示 / 隐藏计时器" title="显示 / 隐藏计时器">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M10 3h4M18.5 6.5l1.5-1.5"/></svg>
+    </button>
+    <button class="hb" id="pPip" type="button" aria-label="浮窗（P）" title="浮窗：盖在其他软件上面提词（P）" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="11" width="7" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <button class="hb" id="pFull" type="button" aria-label="全屏（F）" title="全屏（F）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+    <button class="hb" id="pSettings" type="button" aria-label="提词设置" title="快捷设置">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+    </button>
+    <button class="hb" id="pClose" type="button" aria-label="关闭提词（Esc）" title="关闭（Esc）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="timer-pill" id="pTimer"></div>
+  <span id="pTitle" hidden></span>
+  <div class="countdown" id="countdown" hidden></div>
+
+  <!-- 提词设置抽屉 -->
+  <aside class="drawer" id="drawer" hidden aria-label="提词设置">
+    <div class="drawer-head">
+      <b>提词设置</b>
+      <button class="round small" id="drawerClose" type="button" aria-label="关闭设置">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <h4>文字</h4>
+      <label class="row">行距<input type="range" id="sLine" min="1.1" max="2.4" step="0.05"></label>
+      <label class="row">左右边距<input type="range" id="sMargin" min="0" max="30" step="1"></label>
+      <label class="row">居中对齐<input type="checkbox" id="sCenter"></label>
+      <label class="row">已读变暗<input type="checkbox" id="sDim"></label>
+      <label class="row">当前句色带<input type="checkbox" id="sBand"></label>
+      <div class="row">配色
+        <div class="swatches" id="sColors">
+          <button type="button" data-fg="#ffffff" data-bg="#000000" aria-label="黑底白字" style="--fg:#fff;--bg:#000"></button>
+          <button type="button" data-fg="#ffd60a" data-bg="#000000" aria-label="黑底黄字" style="--fg:#ffd60a;--bg:#000"></button>
+          <button type="button" data-fg="#30d158" data-bg="#000000" aria-label="黑底绿字" style="--fg:#30d158;--bg:#000"></button>
+          <button type="button" data-fg="#111111" data-bg="#ffffff" aria-label="白底黑字" style="--fg:#111;--bg:#fff"></button>
+          <button type="button" data-fg="#f2f2f7" data-bg="#1c2a3a" aria-label="深蓝底白字" style="--fg:#f2f2f7;--bg:#1c2a3a"></button>
+        </div>
+      </div>
+      <h4>阅读线</h4>
+      <label class="row">显示阅读线<input type="checkbox" id="sShowLine"></label>
+      <label class="row">位置<input type="range" id="sLinePos" min="0.1" max="0.8" step="0.01"></label>
+      <h4>画面</h4>
+      <label class="row">上下镜像<input type="checkbox" id="sFlipV"></label>
+      <label class="row">开始前倒计时
+        <select id="sCountdown"><option value="0">不倒计时</option><option value="3">3 秒</option><option value="5">5 秒</option></select>
+      </label>
+      <label class="row">显示计时<input type="checkbox" id="sTimer"></label>
+      <h4>智能跟读</h4>
+      <label class="row">识别语言
+        <select id="sLang">
+          <option value="zh-CN">普通话</option>
+          <option value="zh-TW">國語（台灣）</option>
+          <option value="yue-Hant-HK">粤语</option>
+          <option value="en-US">English</option>
+          <option value="ja-JP">日本語</option>
+        </select>
+      </label>
+      <p class="note">智能跟读用浏览器自带的语音识别：Chrome、Edge、Safari 可用；识别过程由浏览器厂商的服务处理，AI魔方提词器收不到你的声音和文字。</p>
+    </div>
+  </aside>
+</div>
+
+<!-- 台本库 -->
+<dialog class="sheet" id="libraryDialog" aria-label="台本库">
+  <div class="sheet-head">
+    <b>台本库</b>
+    <input type="search" id="libSearch" class="search" placeholder="搜台本" aria-label="搜台本">
+    <button class="round small" type="button" data-close aria-label="关闭">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="chips-row" id="libCats"></div>
+  <div class="lib-body">
+    <ul class="lib-list" id="libList"></ul>
+    <article class="lib-preview" id="libPreview"></article>
+  </div>
+</dialog>
+
+<!-- 版本与授权码 -->
+<dialog class="sheet small" id="tierDialog" aria-label="版本">
+  <div class="sheet-head">
+    <b>版本</b>
+    <button class="round small" type="button" data-close aria-label="关闭">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="tier-body">
+    <p id="tierStatus" class="tier-status"></p>
+    <ul class="tier-list">
+      <li><b>免费版</b>：提词、稿件、台本库、匀速 / 声控 / 手动都不限；智能跟读每天 20 分钟。</li>
+      <li><b>Pro / MAX</b>：智能跟读不限时长。手机和电脑 App 里还有拍摄提词、浮窗、字幕、外接屏等更多功能。</li>
+    </ul>
+    <label class="license">
+      <span>已经在官网买了授权码？粘贴到这里解锁：</span>
+      <textarea id="licenseInput" rows="3" placeholder="VP1-…"></textarea>
+    </label>
+    <div class="tier-actions">
+      <button class="primary small" id="btnLicense" type="button">解锁</button>
+      <button class="link" id="btnLicenseClear" type="button" hidden>移除授权码</button>
+    </div>
+    <p class="note" id="licenseMsg"></p>
+    <p class="note">还没有授权码？<a href="../#pricing" target="_blank" rel="noopener">去官网购买 →</a>（付款后马上收到，电脑版、手机版、网页版通用）</p>
+    <p class="note">App Store 上订阅的 Pro / MAX 在网页版上暂时没法验证（网页拿不到你的 Apple 订阅），需要不限时长可以用 App，或用官网授权码。</p>
+  </div>
+</dialog>
+
+<input type="file" id="fileInput" accept=".txt,.md,.markdown,.fpproj,.json,text/plain" multiple hidden>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

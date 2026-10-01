@@ -1,0 +1,15 @@
+{
+  "name": "AI魔方提词器 · 网页版",
+  "short_name": "AI魔方提词器",
+  "description": "智能跟读、匀速、声控、手动四种模式的网页提词器",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5fb",
+  "theme_color": "#e2ecfa",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

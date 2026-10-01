@@ -111,6 +111,22 @@
     background: linear-gradient(120deg, rgba(155, 107, 242, 0.16), rgba(155, 107, 242, 0.05));
   }
   .lifetime b { font-size: 18px; }
+  .lifetime-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+  /* 购买按钮：链接在页面底部 BUY 里填；没填的显示「即将开放」、点不了 */
+  .plan { display: flex; flex-direction: column; }
+  .plan ul { flex: 1; }
+  .btn-buy { margin-top: 18px; justify-content: center; border-color: var(--accent); color: var(--accent); cursor: pointer; flex-wrap: wrap; }
+  .lifetime .btn-buy { margin-top: 0; }
+  .btn-buy.primary { background: var(--accent); color: #fff; }
+  .btn-buy .soon { display: none; }
+  .btn-buy.off { opacity: .55; cursor: default; pointer-events: none; }
+  .btn-buy.off .soon { display: inline; }
+  .btn-buy:focus-visible, .btn-go:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+  .btn-go { cursor: pointer; }
+  .btn-go:hover { border-color: #fff; }
+  .activate { margin-top: 16px; }
+  .activate p { margin: 6px 0 0; line-height: 1.7; }
+  .activate code { background: var(--chip); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
   details { margin-top: 20px; }
   summary { cursor: pointer; color: var(--accent); font-weight: 600; }
   .table-wrap { overflow-x: auto; margin-top: 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); }
@@ -155,6 +171,7 @@
       <div class="nav-right">
       <nav class="nav-links">
         <a href="#features" data-en="Features">功能</a>
+        <a href="web/" target="_blank" rel="noopener" data-en="Web app">网页版</a>
         <a href="#pricing" data-en="Pricing">价格</a>
         <a href="#suites" data-en="For teams">机构方案</a>
         <a href="#help" data-en="Help">帮助</a>
@@ -172,6 +189,7 @@
             <span data-en="Download on the App Store">App Store 下载</span> <small data-en="Coming soon">即将上架</small>
           </span>
           <span class="btn btn-ghost" aria-disabled="true"><span data-en="Mac (direct download)">Mac 官网版</span> <small data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</small></span>
+          <a class="btn btn-ghost btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use it in your browser">用网页版</span> <small data-en="No install · Windows / Android too">免安装 · Windows、安卓也能用</small></a>
         </div>
         <p class="hero-note" data-en="iPhone, iPad and Mac · The basic prompter is free forever">iPhone、iPad、Mac 通用 · 提词板永久免费</p>
       </div>
@@ -239,7 +257,7 @@
     <div class="wrap">
       <div class="eyebrow" data-en="Pricing">价格</div>
       <h2 data-en="Start free, upgrade when you’re ready">先免费用，觉得好再开通</h2>
-      <p class="sub" data-en="One Apple ID covers phone and Mac; first-time subscribers get a 7-day free trial. Prices below are in CNY — your local App Store price applies.">手机和电脑同一个 Apple 账号通用；首次订阅可免费试用 7 天。价格以 App Store 显示为准。</p>
+      <p class="sub" data-en="One Apple ID covers phone and Mac; first-time subscribers get a 7-day free trial. Prices below are in CNY — your local App Store price applies. You can also buy a license code here; it works in the Mac app, the iPhone app and the web app.">手机和电脑同一个 Apple 账号通用；首次订阅可免费试用 7 天。价格以 App Store 显示为准。也可以在官网直接买授权码，电脑版、手机版、网页版通用。</p>
       <div class="plans">
         <div class="card plan">
           <h3 data-en="Free">免费版</h3>
@@ -263,6 +281,7 @@
             <li data-en="External displays, NDI, phone remote">外接屏幕、NDI、手机遥控</li>
             <li data-en="Apple Watch remote, phone–Mac transfer">Apple Watch 遥控、与电脑互传</li>
           </ul>
+          <a class="btn btn-buy primary" data-buy="pro"><span data-en="Buy 1-year Pro code · ¥99">买 Pro 年卡授权码 · ¥99</span><small class="soon" data-en="Coming soon">即将开放</small></a>
         </div>
         <div class="card plan">
           <h3>MAX</h3>
@@ -274,11 +293,19 @@
             <li data-en="Project files, 5 devices at once">工程文件、同时 5 台设备</li>
             <li data-en="Per-seat licenses and invoices for organizations">机构按机位授权、开发票</li>
           </ul>
+          <a class="btn btn-buy" data-buy="max"><span data-en="Buy 1-year MAX code · ¥299">买 MAX 年卡授权码 · ¥299</span><small class="soon" data-en="Coming soon">即将开放</small></a>
         </div>
       </div>
       <div class="card lifetime">
         <div data-en="&lt;b&gt;Lifetime MAX · ¥1999&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color: var(--muted); font-size: 14px;&quot;&gt;Pay once for every MAX feature and all future updates; AI credits sold separately.&lt;/span&gt;"><b>终身 MAX · ¥1999</b><br><span style="color: var(--muted); font-size: 14px;">一次买断，MAX 全部功能和以后的更新都包含；AI 算力点另购。</span></div>
-        <a href="studio" data-en="Organization licensing →">机构采购与授权 →</a>
+        <div class="lifetime-actions">
+          <a class="btn btn-buy" data-buy="lifetime"><span data-en="Buy Lifetime MAX · ¥1999">买终身 MAX · ¥1999</span><small class="soon" data-en="Coming soon">即将开放</small></a>
+          <a href="studio" data-en="Organization licensing →">机构采购与授权 →</a>
+        </div>
+      </div>
+      <div class="card activate">
+        <b data-en="After you buy">买完怎么用</b>
+        <p data-en="You’ll get a code that starts with &lt;code&gt;VP1-&lt;/code&gt; right after paying. Paste it in: &lt;b&gt;Mac&lt;/b&gt; — the app menu › “License…”; &lt;b&gt;iPhone&lt;/b&gt; — Settings › Plan &amp;amp; License › Enter serial; &lt;b&gt;Web app&lt;/b&gt; — the plan button at the top right. One code works on one person’s devices; keep it safe.">付款后会马上收到一串 <code>VP1-</code> 开头的授权码，复制粘贴就能用：<b>电脑版</b>在屏幕左上角「AI魔方提词器」菜单 ›「授权…」；<b>手机版</b>在「设置 › 版本与授权 › 输入序列号」；<b>网页版</b>点右上角的版本按钮。一个授权码给一个人自己的设备用，请妥善保存。</p>
       </div>
 
       <details>
@@ -388,6 +415,19 @@
   function frame(now) { draw((now - t0) / 1000); if (!reduce) requestAnimationFrame(frame); }
   requestAnimationFrame(frame);
 })();
+</script>
+<script>
+// 官网购买：在发卡平台上架商品后，把商品链接填到这里，再跑 scripts/publish-site.sh。没填的按钮显示「即将开放」
+const BUY = {
+  pro: '',       // Pro 年卡授权码 ¥99
+  max: '',       // MAX 年卡授权码 ¥299
+  lifetime: '',  // 终身 MAX ¥1999
+};
+document.querySelectorAll('[data-buy]').forEach((a) => {
+  const url = BUY[a.dataset.buy];
+  if (url) { a.href = url; a.target = '_blank'; a.rel = 'noopener'; }
+  else { a.classList.add('off'); a.setAttribute('aria-disabled', 'true'); }
+});
 </script>
 <script>
 // 中英切换：默认英文；点右上角按钮切换，选过的语言记在浏览器里
