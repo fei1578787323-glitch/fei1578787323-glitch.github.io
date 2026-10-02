@@ -150,10 +150,11 @@
       </select>
     </label>
     <span class="meter" id="pMeter" title="麦克风接通后变成强调色" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-    <label class="hslider" id="speedWrap" title="滚动速度（↑ / ↓）">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-5"/></svg>
-      <input type="range" id="pSpeed" min="10" max="300" step="5" aria-label="滚动速度"><b id="pSpeedVal"></b>
-    </label>
+    <!-- 速度（和手机、电脑一样，照 Teleprompter）：显示每分钟多少字，点开气泡——上面整篇多久，拖滑条定速度；旁边常驻稿件时长 -->
+    <button class="hb hspeed" id="pSpeedBtn" type="button" aria-label="滚动速度" aria-haspopup="dialog" title="滚动速度（字/分）：点开拖动，看整篇念多久（↑ / ↓）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-5"/></svg><b id="pSpeedVal"></b>
+    </button>
+    <button class="hdur" id="pDur" type="button" title="稿件时长：匀速时按现在的速度算，拖速度跟着变">0:00</button>
     <label class="hslider" title="字号（+ / -）">
       <span class="aa">Aa</span>
       <input type="range" id="pFont" min="24" max="140" step="2" aria-label="字号"><b id="pFontVal"></b>
@@ -179,6 +180,15 @@
     <button class="hb" id="pClose" type="button" aria-label="关闭提词（Esc）" title="关闭（Esc）">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
     </button>
+  </div>
+  <div class="speed-pop" id="speedPop" role="dialog" aria-label="滚动速度" hidden>
+    <div class="sp-hint" id="spHint" hidden><span id="spHintText"></span><button type="button" id="spAuto">切到匀速</button></div>
+    <div class="sp-head"><small id="spLabel">整篇</small><b id="spTotal">0:00</b><span id="spLeft"></span></div>
+    <div class="sp-row">
+      <span class="sp-end">60<sup>字/分</sup></span>
+      <input type="range" id="pSpeed" min="60" max="600" step="5" aria-label="滚动速度（字/分）">
+      <span class="sp-end">600<sup>字/分</sup></span>
+    </div>
   </div>
   <div class="timer-pill" id="pTimer"></div>
   <span id="pTitle" hidden></span>

@@ -365,3 +365,44 @@ body.pip #pSettings, body.pip #pFull, body.pip .hslider:not(#speedWrap), body.pi
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ── 速度气泡 + 稿件时长（和手机、电脑一样，照 Teleprompter）── */
+.hspeed { width: auto; padding: 0 8px; gap: 5px; }
+.hspeed b { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hdur { flex-shrink: 0; height: 24px; padding: 0 8px; border: 0; border-radius: 7px; cursor: pointer;
+  background: color-mix(in srgb, var(--accent) 22%, transparent); color: var(--accent);
+  font: 700 13px/1 ui-rounded, -apple-system, system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.hdur:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.speed-pop { position: absolute; z-index: 30; box-sizing: border-box; padding: 14px 16px 12px; border-radius: 20px; color: #fff;
+  background: rgba(38, 38, 40, .82); -webkit-backdrop-filter: blur(24px) saturate(1.6); backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+  display: flex; flex-direction: column; gap: 10px; animation: spIn .18s ease-out; }
+.speed-pop[hidden] { display: none; }
+.speed-pop::before { content: ""; position: absolute; top: -7px; left: calc(var(--ax, 50%) - 7px); width: 14px; height: 14px;
+  background: inherit; border-left: 1px solid rgba(255,255,255,.12); border-top: 1px solid rgba(255,255,255,.12);
+  transform: rotate(45deg); border-top-left-radius: 3px; -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* 入场只做位移和缩放、不从全透明开始：页面在后台时浏览器会停住动画，停在第一帧也看得见 */
+@keyframes spIn { from { transform: translateY(-4px) scale(.97); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .speed-pop { animation: none; } }
+.sp-head { display: flex; align-items: baseline; gap: 8px; padding: 0 2px; }
+.sp-head small { font-size: 13px; color: rgba(255,255,255,.7); }
+.sp-head b { font: 700 28px/1 ui-rounded, -apple-system, system-ui, sans-serif; font-variant-numeric: tabular-nums; color: var(--accent); }
+.sp-head span { margin-left: auto; font-size: 13px; color: rgba(255,255,255,.7); font-variant-numeric: tabular-nums; }
+.sp-hint { display: flex; align-items: center; gap: 10px; font-size: 12px; color: rgba(255,255,255,.75); }
+.sp-hint[hidden] { display: none; }
+.sp-hint span { flex: 1; }
+.sp-hint button { border: 0; background: none; color: var(--accent); font-weight: 600; font-size: 12px; cursor: pointer; white-space: nowrap; padding: 4px 0; }
+.sp-row { display: flex; align-items: center; gap: 10px; }
+.sp-end { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sp-end sup { font-size: 8px; font-weight: 500; color: rgba(255,255,255,.65); margin-left: 1px; }
+/* 滑条平时只有一条带颜色的轨道，按住才出现圆钮（照 iOS 26 系统滑条） */
+.speed-pop input[type=range] { flex: 1; min-width: 0; -webkit-appearance: none; appearance: none; height: 30px; background: transparent; cursor: pointer; }
+.speed-pop input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px;
+  background: linear-gradient(var(--accent), var(--accent)) 0 / var(--fill, 50%) 100% no-repeat, rgba(255,255,255,.18); }
+.speed-pop input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 22px; margin-top: -7px; border-radius: 11px;
+  background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.3); opacity: 0; transform: scale(.6); transition: opacity .15s, transform .15s; }
+.speed-pop input[type=range].grab::-webkit-slider-thumb, .speed-pop input[type=range]:focus-visible::-webkit-slider-thumb { opacity: 1; transform: none; }
+.speed-pop input[type=range]::-moz-range-track { height: 8px; border-radius: 4px; background: rgba(255,255,255,.18); }
+.speed-pop input[type=range]::-moz-range-progress { height: 8px; border-radius: 4px; background: var(--accent); }
+.speed-pop input[type=range]::-moz-range-thumb { width: 30px; height: 22px; border: 0; border-radius: 11px; background: #fff; opacity: 0; transition: opacity .15s; }
+.speed-pop input[type=range].grab::-moz-range-thumb { opacity: 1; }

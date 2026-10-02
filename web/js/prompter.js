@@ -510,12 +510,101 @@ export class Prompter {
     if (this.lastPct !== pct) { this.lastPct = pct; $('pPct').textContent = pct; }
     if (this.s.timer) {
       // 和电脑版计时器一样：已读多久 · 预计还剩多久（超了变橙）
-      const left = this.estimate - this.elapsed;
+      // 匀速滚动：还剩多久按现在的速度和位置算（拖速度跟着变）；别的模式按字数估
+      const left = this.s.mode === 'auto' ? this.remainingSeconds() : this.estimate - this.elapsed;
       const html = `<span><small>已读</small>${clock(this.elapsed)}</span><span class="${left < 0 ? 'over' : ''}"><small>${left < 0 ? '超出' : '还剩'}</small>${clock(Math.abs(left))}</span>`;
       if (this.lastTimer !== html) { this.lastTimer = html; $('pTimer').innerHTML = html; }
     }
+    this.paintDuration();
     this.paintBands();
     this.paintDim();
+  }
+
+  // ── 速度换算成「字/分」、稿件时长（和手机、电脑一样，照 Teleprompter：拖速度就是在定这条稿子念多久） ──
+
+  /** 每秒滚多少像素（设置里的速度按 56 号字算，字大了滚得快一些） */
+  pxPerSec(speed = this.s.speed) { return speed * (this.s.fontSize / 56) * 1.2; }
+  /** 从头滚到尾的距离 */
+  travel() { return Math.max(0, (this.endOffset || 0) - (this.startOffset || 0)); }
+  /** 每分钟过多少字（取整到 5）；排版还没好时 0 */
+  cpm(speed = this.s.speed) {
+    const t = this.travel(), n = this.units?.length || 0;
+    if (t < 2 || !n) return 0;
+    return Math.round(this.pxPerSec(speed) * (n / t) * 60 / 5) * 5;
+  }
+  /** 拖滑条：字/分 → 速度 */
+  setCpm(cpm) {
+    const t = this.travel(), n = this.units?.length || 0;
+    if (t < 2 || !n) return;
+    const px = cpm / 60 / (n / t);
+    this.s.speed = Math.max(10, Math.min(300, px / ((this.s.fontSize / 56) * 1.2)));
+    this.onSettings(this.s);
+    this.syncSpeed();
+  }
+  /** 按现在的速度从头滚到尾一共多少秒 */
+  totalSeconds() { const v = this.pxPerSec(); return v > 0 ? this.travel() / v : 0; }
+  /** 按现在的速度从现在的位置滚到结尾还要多少秒 */
+  remainingSeconds() { const v = this.pxPerSec(); return v > 0 ? Math.max(0, (this.endOffset - this.offset)) / v : 0; }
+  /** 已经往下滚过一段了 */
+  pastStart() { return this.offset > (this.startOffset || 0) + 4; }
+
+  /** 时长框：没开始是整篇多久（匀速按速度算，别的模式按字数估），滚起来是还剩多久 */
+  paintDuration() {
+    const auto = this.s.mode === 'auto';
+    const progress = Math.max(0, Math.min(1, (this.offset - this.startOffset) / Math.max(1, this.travel())));
+    const sec = auto ? (this.pastStart() ? this.remainingSeconds() : this.totalSeconds())
+      : this.estimate * (this.pastStart() ? 1 - progress : 1);
+    const m = Math.floor(Math.round(sec) / 60), r = Math.round(sec) % 60;
+    const text = `${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`;
+    if (this.lastDur !== text) { this.lastDur = text; $('pDur').textContent = text; }
+    if (!$('speedPop').hidden) this.paintSpeedPop();
+  }
+
+  syncSpeed() {
+    const cpm = this.cpm();
+    $('pSpeedVal').textContent = cpm ? cpm : this.s.speed;
+    if (cpm && document.activeElement !== $('pSpeed')) $('pSpeed').value = Math.max(60, Math.min(600, cpm));
+    if (!$('speedPop').hidden) this.paintSpeedPop();
+  }
+
+  paintSpeedPop() {
+    const applies = this.s.mode === 'auto' || this.s.mode === 'voice';
+    $('spHint').hidden = applies;
+    if (!applies) $('spHintText').textContent = this.s.mode === 'follow' ? '智能跟读跟着你念的快慢走，速度在匀速滚动时才用' : '手动模式自己翻，速度在匀速滚动时才用';
+    $('spLabel').textContent = applies ? '整篇' : '匀速时整篇';
+    const total = clock(Math.round(this.totalSeconds()));
+    if ($('spTotal').textContent !== total) $('spTotal').textContent = total;
+    const left = this.pastStart() ? `还剩 ${clock(Math.round(this.remainingSeconds()))}` : '';
+    if ($('spLeft').textContent !== left) $('spLeft').textContent = left;
+  }
+
+  /** 气泡开在「速度」按钮下面，小尖角对着按钮 */
+  toggleSpeedPop() {
+    const pop = $('speedPop');
+    if (!pop.hidden) { this.closeSpeedPop(); return; }
+    this.syncSpeed();
+    pop.hidden = false;
+    const box = this.el.getBoundingClientRect(), btn = $('pSpeedBtn').getBoundingClientRect();
+    const w = Math.min(340, box.width - 24);
+    const left = Math.max(12, Math.min(box.width - 12 - w, btn.left - box.left + btn.width / 2 - w / 2));
+    pop.style.width = w + 'px';
+    pop.style.left = left + 'px';
+    pop.style.top = (btn.bottom - box.top + 10) + 'px';
+    pop.style.setProperty('--ax', (btn.left - box.left + btn.width / 2 - left) + 'px');
+    this.paintSpeedPop();
+    this.touchSpeedPop();
+    $('pSpeedBtn').classList.add('on');
+  }
+  /** 3 秒不碰自己收起 */
+  touchSpeedPop() {
+    clearTimeout(this.speedPopTimer);
+    this.speedPopTimer = setTimeout(() => this.closeSpeedPop(), 3000);
+    this.poke?.();
+  }
+  closeSpeedPop() {
+    clearTimeout(this.speedPopTimer);
+    $('speedPop').hidden = true;
+    $('pSpeedBtn').classList.remove('on');
   }
 
   // ── 当前句色带（和电脑版一样：每行一条圆角条贴着字；超过 3 行只标正在读的这行和下面两行；
@@ -668,11 +757,9 @@ export class Prompter {
   syncControls() {
     const s = this.s;
     $('pMode').value = s.mode;
-    $('pSpeed').value = s.speed;
-    $('pSpeedVal').textContent = s.speed;
+    this.syncSpeed();
     $('pFont').value = s.fontSize;
     $('pFontVal').textContent = s.fontSize;
-    $('speedWrap').hidden = !(s.mode === 'auto' || s.mode === 'voice');
     $('pMirror').classList.toggle('on', s.mirrorH);
     $('pTimerBtn').classList.toggle('on', !!s.timer);
     $('pPlay').classList.toggle('on', this.playing);
@@ -720,10 +807,20 @@ export class Prompter {
     $('pPlay').onclick = () => this.toggle();
     $('pRestart').onclick = () => { this.restart(); this.poke(); };
     $('pMode').onchange = (e) => { this.setMode(e.target.value); e.target.blur(); };
-    $('pSpeed').oninput = (e) => { this.s.speed = +e.target.value; $('pSpeedVal').textContent = this.s.speed; this.onSettings(this.s); };
+    // 速度气泡：滑条按「字/分」拖，换算回每秒滚多少（和字号、排版有关）
+    $('pSpeed').oninput = (e) => { this.setCpm(+e.target.value); this.touchSpeedPop(); };
+    $('pSpeedBtn').onclick = (e) => { e.stopPropagation(); this.toggleSpeedPop(); };
+    $('pDur').onclick = (e) => { e.stopPropagation(); this.toggleSpeedPop(); };
+    $('spAuto').onclick = () => { this.setMode('auto'); this.syncSpeed(); this.touchSpeedPop(); };
+    $('speedPop').addEventListener('pointerdown', (e) => { e.stopPropagation(); this.touchSpeedPop(); });
+    for (const id of ['pSpeedBtn', 'pDur']) $(id).addEventListener('pointerdown', (e) => e.stopPropagation());
+    this.el.ownerDocument.addEventListener('pointerdown', () => { if (!$('speedPop').hidden) this.closeSpeedPop(); });
     $('pFont').oninput = (e) => { this.s.fontSize = +e.target.value; this.onSettings(this.s); this.update(this.s); };
     // 松手后把焦点还给画面，空格、Esc 这些快捷键接着能用
     for (const id of ['pSpeed', 'pFont']) $(id).addEventListener('change', (e) => e.target.blur());
+    // 按住滑条时才显示圆钮（照 iOS 26 的滑条：平时只有一条带颜色的轨道）
+    $('pSpeed').addEventListener('pointerdown', () => $('pSpeed').classList.add('grab'));
+    for (const ev of ['pointerup', 'pointercancel', 'blur']) $('pSpeed').addEventListener(ev, () => $('pSpeed').classList.remove('grab'));
     $('pMirror').onclick = () => { this.s.mirrorH = !this.s.mirrorH; this.onSettings(this.s); this.update(this.s); };
     $('pTimerBtn').onclick = () => { this.s.timer = !this.s.timer; this.onSettings(this.s); this.update(this.s); this.lastTimer = null; };
     $('pFull').onclick = () => this.fullscreen();
@@ -758,7 +855,7 @@ export class Prompter {
       if (t?.matches('select') && (e.key === ' ' || e.key === 'Enter')) { t.blur(); }
       const k = e.key;
       if (k === ' ' || k === 'Enter') { e.preventDefault(); this.toggle(); }
-      else if (k === 'Escape') { if (!$('drawer').hidden) $('drawer').hidden = true; else this.close(); }
+      else if (k === 'Escape') { if (!$('speedPop').hidden) this.closeSpeedPop(); else if (!$('drawer').hidden) $('drawer').hidden = true; else this.close(); }
       else if (k === 'ArrowUp' || k === 'ArrowDown') {
         e.preventDefault();
         const dir = k === 'ArrowDown' ? 1 : -1;
@@ -766,7 +863,8 @@ export class Prompter {
           this.s.speed = Math.max(10, Math.min(300, this.s.speed + dir * 5));
           this.onSettings(this.s);
           this.syncControls();
-          this.toast(`速度 ${this.s.speed}`);
+          const cpm = this.cpm(), total = this.totalSeconds();
+          this.toast(cpm ? `约 ${cpm} 字/分 · 整篇约 ${clock(total)}` : `速度 ${this.s.speed}`);
         } else {
           this.nudge(dir * this.lineH);
         }
