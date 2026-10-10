@@ -122,7 +122,9 @@ export function exportProject(list) {
     version: 1,
     savedAt: iso(Date.now()),
     platform: 'web',
-    scripts: list.map(s => ({ id: s.id, title: s.title, body: s.body, updatedAt: iso(s.updatedAt || Date.now()) })),
+    scripts: list.map(s => ({ id: s.id, title: s.title, body: s.body, updatedAt: iso(s.updatedAt || Date.now()),
+      ...(typeof s.stage === 'string' ? { stage: s.stage } : {}),
+      ...(s.plannedDate ? { plannedDate: s.plannedDate } : {}) })),
     settings: {},
     shortcuts: {},
   };
@@ -136,10 +138,12 @@ export function parseProject(text) {
     if (p.format !== 'FollowPrompterProject' || !Array.isArray(p.scripts)) return null;
     return p.scripts.map(s => ({
       id: typeof s.id === 'string' ? s.id.toUpperCase() : uuid(),
-      title: s.title || '',
-      body: s.body || '',
+      title: typeof s.title === 'string' ? s.title : '',
+      body: typeof s.body === 'string' ? s.body : '',
       updatedAt: Date.parse(s.updatedAt) || Date.now(),
-      folder: s.folder || '',
+      folder: typeof s.folder === 'string' ? s.folder : '',
+      stage: ['idea', 'writing', 'ready', 'shot', 'edited', 'published'].includes(s.stage) ? s.stage : undefined,
+      plannedDate: typeof s.plannedDate === 'string' && Number.isFinite(Date.parse(s.plannedDate)) ? s.plannedDate : undefined,
     }));
   } catch {
     return null;

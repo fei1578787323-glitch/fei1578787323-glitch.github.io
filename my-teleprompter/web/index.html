@@ -24,6 +24,8 @@
       <span class="brand-sub">网页提词器</span>
     </div>
     <div class="topbar-actions">
+      <button class="chip" id="btnHome" type="button">主页</button>
+      <button class="chip" id="btnAppearance" type="button" aria-haspopup="dialog">外观</button>
       <button class="chip" id="btnLibrary" type="button">台本库</button>
       <button class="chip" id="btnImport" type="button">导入</button>
       <button class="chip tier" id="btnTier" type="button">免费版</button>
@@ -45,6 +47,7 @@
       </div>
     </aside>
 
+    <section class="home-workspace" id="homeWorkspace" aria-label="创作工作台" hidden></section>
     <!-- 编辑区 -->
     <section class="editor" id="editor">
       <div class="editor-head">
@@ -241,6 +244,16 @@
     </div>
   </aside>
 </div>
+
+<dialog class="sheet appearance-sheet" id="appearanceDialog" aria-label="外观">
+  <div class="sheet-head"><b>外观</b><button class="round small" type="button" data-close aria-label="关闭外观">×</button></div>
+  <div class="appearance-fields">
+    <label>界面风格<select id="uiTheme"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="ice">冰光拟态</option><option value="graphite">石墨微光</option><option value="liquid">liquid glass</option><option value="luminous">流光智核</option></select></label>
+    <fieldset><legend>强调色</legend><div id="uiAccents" class="appearance-swatches"></div></fieldset>
+    <label>主页布局<select id="uiLayout"><option value="classic">经典工作台</option><option value="accordion">折叠工作台</option><option value="dashboard">蓝曜工作台</option></select></label>
+    <label class="appearance-toggle">界面动态效果<input id="uiMotion" type="checkbox"></label>
+  </div>
+</dialog>
 
 <!-- 台本库 -->
 <dialog class="sheet" id="libraryDialog" aria-label="台本库">

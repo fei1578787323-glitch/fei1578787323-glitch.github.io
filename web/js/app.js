@@ -3,6 +3,7 @@ import * as store from './store.js';
 import { countWords, estimateSeconds, formatDuration, clock, previewHTML, plainText } from './markup.js';
 import { verifyLicense, loadRevocations, refreshRevocations } from './license.js';
 import { Prompter, findEl } from './prompter.js';
+import { HomeWorkspace } from './workspace.js';
 
 // 提词画面放进浮窗后，它里面的元素在浮窗的 document 里
 const $ = (id) => document.getElementById(id) || findEl(id);
@@ -13,6 +14,7 @@ let settings = store.loadSettings();
 let currentId = store.loadCurrent();
 if (!scripts.some(s => s.id === currentId)) currentId = scripts[0].id;
 let license = null;          // 验证过的授权码信息
+let homeWorkspace;
 
 const current = () => scripts.find(s => s.id === currentId);
 const unlimited = () => !!license && (license.tier === 'pro' || license.tier === 'max');
@@ -56,9 +58,11 @@ function renderList() {
     li.textContent = q ? '没有找到' : '还没有稿件';
     ul.appendChild(li);
   }
+  homeWorkspace?.render();
 }
 
 function select(id) {
+  homeWorkspace?.setOpen(false);
   currentId = id;
   store.saveCurrent(id);
   const s = current();
@@ -525,6 +529,9 @@ function watchRanges() {
 
 // ── 启动 ──
 function init() {
+  if (!TALENT) homeWorkspace = new HomeWorkspace({ getScripts: () => scripts, getCurrent: current,
+    onOpen: select, onStart: start, onNew: newScript, onImport: () => $('fileInput').click(), onLibrary: openLibrary,
+    countWords, plainText, hasContent: s => !!s && !!plainText(s.body).trim() });
   watchRanges();
   $('search').oninput = renderList;
   $('btnNew').onclick = () => newScript();
@@ -563,6 +570,7 @@ function init() {
   select(currentId);
   if (window.innerWidth <= 760) document.body.classList.remove('editing');
   renderMode();
+  homeWorkspace?.open();
   const saved = store.loadLicense();
   if (saved) {
     // 先用本机记着的停用名单验一遍，再联网拉最新的（只有本机有授权码时才拉，和电脑 / 手机版一样）
