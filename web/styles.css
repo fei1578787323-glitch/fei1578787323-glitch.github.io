@@ -58,6 +58,8 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0 12px; max-width: 1200px; width: 100%; margin: 0 auto; }
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .brand-icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 0 0 .5px rgba(0,0,0,.1); }
+.brand-logo { display: inline-flex; flex-shrink: 0; border-radius: 9px; background: var(--accent); isolation: isolate; }
+.brand-logo .brand-icon { filter: grayscale(1); mix-blend-mode: multiply; }
 .brand-name { font-size: 20px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .brand-sub { font-size: 14px; color: var(--muted); }
 .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
@@ -449,7 +451,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
 @container (max-width: 620px) { .home-columns { grid-template-columns: 1fr; } .home-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); } .home-rail .home-tools { grid-column: 1/-1; grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 760px) { body.home-open .sidebar { display: none; } .home-heading { flex-wrap: wrap; } .home-accordion { flex-direction: column; } .home-fold { min-height: 62px; } .home-fold.expanded { min-height: 210px; } }
 @media (max-width: 600px) { .topbar { flex-wrap: wrap; } .brand { flex-basis: 100%; } .brand-name { display: block; } .topbar-actions { width: 100%; justify-content: space-between; gap: 4px; } .topbar-actions .chip { padding: 0 10px; font-size: 12px; } #app { padding-inline: 12px; } .home-rail { grid-template-columns: 1fr; } .home-stats strong { font-size: 21px; } .home-command { font-size: 18px; min-height: 112px; } }
-@media (prefers-reduced-motion: no-preference) { :root[data-motion="on"] .brand-icon { animation: brand-breathe 4s ease-in-out infinite; } }
+@media (prefers-reduced-motion: no-preference) { :root[data-motion="on"] .brand-logo { animation: brand-breathe 4s ease-in-out infinite; } }
 @keyframes brand-breathe { 50% { box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 35%, transparent); } }
 :root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after { animation: none !important; transition: none !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

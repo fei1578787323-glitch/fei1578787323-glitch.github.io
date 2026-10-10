@@ -1,11 +1,11 @@
 // 离线可用：第一次打开后把页面文件缓存下来，没网也能打开提词（智能跟读要联网识别除外）。
 // 改了网页文件发布时把 VERSION 加一，旧缓存会被换掉。
-const VERSION = 'frmzone-web-20261011-brand-1';
-const FILES = ['./', 'index.html', 'styles.css', 'manifest.webmanifest', 'library.json',
+const VERSION = 'frmzone-web-20261011-brand-4';
+const FILES = ['./', 'index.html', 'styles.css', 'styles.css?v=20261011-plain', 'manifest.webmanifest', 'library.json',
   'js/app.js', 'js/store.js', 'js/markup.js', 'js/follow.js', 'js/prompter.js', 'js/license.js', 'js/workspace.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png',
-  'icons/icon-192.png?v=20261011', 'icons/icon-512.png?v=20261011',
-  'icons/apple-touch-icon.png?v=20261011', 'icons/favicon-32.png?v=20261011'];
+  'icons/icon-192.png?v=20261011-plain', 'icons/icon-512.png?v=20261011-plain',
+  'icons/apple-touch-icon.png?v=20261011-plain', 'icons/favicon-32.png?v=20261011-plain'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Cube Prompter</title>
-<link rel="icon" href="site/favicon-32.png?v=20261011">
-<link rel="apple-touch-icon" href="site/apple-touch-icon.png?v=20261011">
+<link rel="icon" href="site/favicon-32.png?v=20261011-plain">
+<link rel="apple-touch-icon" href="site/apple-touch-icon.png?v=20261011-plain">
 <meta name="description" content="A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac.">
 <style>
   :root {
@@ -56,7 +56,8 @@
   }
   .nav { display: flex; align-items: center; justify-content: space-between; }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: 3px; font-size: 17px; color: #fff; }
-  .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; }
+  .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 6px; background: var(--accent); isolation: isolate; }
+  .brand-mark img { filter: grayscale(1); mix-blend-mode: multiply; }
   .nav-links { display: flex; gap: 22px; font-size: 14px; }
   .nav-links a { color: rgba(255, 255, 255, 0.72); }
   .hero-body { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 24px; align-items: center; margin-top: 36px; }
@@ -164,7 +165,7 @@
     <div class="nav">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">
-          <img src="site/apple-touch-icon.png?v=20261011" width="30" height="30" alt="" style="border-radius:6px">
+          <img src="site/apple-touch-icon.png?v=20261011-plain" width="30" height="30" alt="" style="border-radius:6px">
         </span>
         <span data-en="AI Cube Prompter">AI魔方提词器</span>
       </div>
