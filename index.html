@@ -56,7 +56,8 @@
   }
   .nav { display: flex; align-items: center; justify-content: space-between; }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: 3px; font-size: 17px; color: #fff; }
-  .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 6px; background: var(--accent); isolation: isolate; }
+  .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; background: var(--accent); isolation: isolate;
+    mask: url('web/icons/brand-logo.png') center/contain no-repeat; -webkit-mask: url('web/icons/brand-logo.png') center/contain no-repeat; }
   .brand-mark img { filter: grayscale(1); mix-blend-mode: multiply; }
   .nav-links { display: flex; gap: 22px; font-size: 14px; }
   .nav-links a { color: rgba(255, 255, 255, 0.72); }
@@ -165,7 +166,7 @@
     <div class="nav">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">
-          <img src="site/apple-touch-icon.png?v=20261011-plain" width="30" height="30" alt="" style="border-radius:6px">
+          <img src="web/icons/brand-logo.png" width="30" height="30" alt="">
         </span>
         <span data-en="AI Cube Prompter">AI魔方提词器</span>
       </div>
@@ -257,11 +258,11 @@
 
   <section id="updates">
     <div class="wrap">
-      <div class="eyebrow" data-en="Updated October 10, 2026">2026年10月10日更新</div>
+      <div class="eyebrow" data-en="Updated October 15, 2026">2026年10月15日更新</div>
       <h2 data-en="A clearer workspace, with themes that follow you">布局更清晰，交互跟着主题走</h2>
       <p class="sub" data-en="The browser workspace now includes switchable home layouts, theme colors and quieter controls. Native camera and video-processing features remain in the Mac and iOS apps; the browser does not offer those tools yet.">网页版新增可切换主页、主题强调色和统一控件。拍摄、刘海提词、AI成片等能力仍由 Mac / iOS 原生版提供，网页版暂不提供这些工具。</p>
       <div class="grid3">
-        <div class="card"><h3 data-en="Available in the browser">网页版已同步</h3><p data-en="Classic, accordion and dashboard homes; light, dark, ice, graphite, glass and luminous appearances; themed selection, search, menus and button feedback. Existing scripts and licenses are retained.">经典、折叠、蓝曜三种主页；浅色、深色、冰光、石墨、玻璃和流光外观；选中态、搜索、菜单和按钮反馈统一主题色，不清空已有稿件和授权。</p><p style="margin-top:16px"><a href="web/" data-en="Open the browser workspace →">打开在线工作台 →</a></p></div>
+        <div class="card"><h3 data-en="Available in the browser">网页版已同步</h3><p data-en="Themed feature banners below the daily quote crossfade every 3 seconds, without extra branding or a footer toolbar. The in-app cube has a transparent background; compact switches and selection follow your theme. Home layouts, scripts and licenses are retained.">今日成长下方新增主题横幅，每 3 秒淡入淡出切换，去除重复品牌和底部工具栏；软件内魔方改为透明背景，紧凑开关与选中态跟随主题。保留原有主页布局、稿件和授权数据。</p><p style="margin-top:16px"><a href="web/" data-en="Open the browser workspace →">打开在线工作台 →</a></p></div>
         <div class="card"><h3 data-en="Native app workflows">原生版近期功能</h3><p data-en="AI video processing integrates speech recognition, editing and subtitle export. Notch prompting includes script selection and per-platform controls. Mobile home layouts are switchable; material collection and help controls have been refined.">AI成片接入识别、剪辑与字幕导出；刘海提词增加稿件选择和平台内调节；手机主页可切换布局，素材集和功能说明控件持续优化。具体能力以所安装版本为准。</p></div>
         <div class="card"><h3 data-en="New Mac interface previews">Mac 新界面预览</h3><p data-en="Lumen and accordion workspaces preserve existing actions. Luminous Core adds theme-colored task tiles and a clearer source preview to the AI workspace. These newest Mac layouts are preview builds, not a claim of a new public app release.">蓝曜、折叠工作台保留现有功能；流光智核为 AI 工作区加入主题色任务磁贴和清晰原稿预览。最新 Mac 布局目前为独立预览，不代表已发布新的正式安装包。</p></div>
       </div>

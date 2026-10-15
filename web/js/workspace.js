@@ -1,3 +1,5 @@
+import { HomeFeatureBanners } from './home-banners.js';
+
 export const ACCENTS = { mint: ['薄荷', '#34d9a2'], ice: ['冰蓝', '#8cdbf2'], coral: ['珊瑚', '#f2a497'], lime: ['青柠', '#cef56b'], violet: ['紫色', '#a46bff'], blue: ['蓝色', '#369af5'] };
 const THEMES = ['system', 'light', 'dark', 'ice', 'graphite', 'liquid', 'luminous'];
 const LAYOUTS = ['classic', 'accordion', 'dashboard'];
@@ -47,6 +49,7 @@ export class HomeWorkspace {
   constructor(api) {
     this.api = api; this.root = document.getElementById('homeWorkspace'); this.filter = 'all'; this.query = ''; this.showAll = false;
     try { this.appearance = normalizeAppearance(JSON.parse(localStorage.getItem(KEY) || '{}')); } catch { this.appearance = normalizeAppearance(); }
+    this.banners = new HomeFeatureBanners(kind => this.api.onBanner(kind));
     this.bindAppearance(); this.apply();
     document.getElementById('btnHome').onclick = () => this.open();
     document.getElementById('btnAppearance').onclick = () => document.getElementById('appearanceDialog').showModal();
@@ -77,12 +80,14 @@ export class HomeWorkspace {
     html.style.setProperty('--accent-text', `color-mix(in srgb, ${ACCENTS[accent][1]} 40%, var(--text))`);
     html.style.setProperty('--on-accent', accentForeground(ACCENTS[accent][1]));
     for (const b of document.querySelectorAll('[data-accent]')) b.setAttribute('aria-pressed', String(b.dataset.accent === accent));
+    this.banners.setAppearance(this.appearance, ACCENTS[accent][1]);
   }
   open() { this.setOpen(true); this.render(); }
   setOpen(open) {
     this.root.hidden = !open; document.getElementById('editor').hidden = open;
     document.body.classList.toggle('home-open', open);
     document.getElementById('btnHome').setAttribute('aria-pressed', String(open));
+    this.banners.setOpen(open);
   }
   edit(script) { this.setOpen(false); this.api.onOpen(script.id); }
   prompt(script) { this.api.onOpen(script.id); this.api.onStart(); }
@@ -103,7 +108,7 @@ export class HomeWorkspace {
     }
     layout.value = this.appearance.layout;
     layout.onchange = () => { document.getElementById('uiLayout').value = layout.value; document.getElementById('uiLayout').dispatchEvent(new Event('change')); };
-    header.append(layout); this.root.append(header);
+    header.append(layout); this.root.append(header, this.banners.growth, this.banners.node);
     const stats = element('div', 'home-stats');
     for (const [title, value] of [['稿件', `${scripts.length} 篇`], ['总字数', `${scripts.reduce((n, s) => n + this.api.countWords(s.body), 0)} 字`], ['待拍摄', `${scripts.filter(s => s.stage === 'ready').length} 篇`]]) {
       const item = element('div'); item.append(element('span', '', title), element('strong', '', value)); stats.append(item);

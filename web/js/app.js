@@ -2,7 +2,7 @@
 import * as store from './store.js';
 import { countWords, estimateSeconds, formatDuration, clock, previewHTML, plainText } from './markup.js';
 import { verifyLicense, loadRevocations, refreshRevocations } from './license.js';
-import { Prompter, findEl } from './prompter.js';
+import { Prompter, findEl, PIP_SUPPORTED } from './prompter.js';
 import { HomeWorkspace } from './workspace.js';
 
 // 提词画面放进浮窗后，它里面的元素在浮窗的 document 里
@@ -157,6 +157,24 @@ function start() {
   if (!plainText(s.body).trim()) { toast('先写点稿子再开始'); $('body').focus(); return; }
   store.saveScripts(scripts);
   prompter.open(s, settings);
+}
+
+function openHomeBanner(kind) {
+  if (kind === 'modes') { $('bannerModesDialog').showModal(); return; }
+  if (kind === 'board' || (kind === 'floating' && PIP_SUPPORTED)) {
+    if (!plainText(current()?.body || '').trim()) { select(currentId); toast('先写点稿子再开始'); $('body').focus(); return; }
+    select(currentId); start();
+    if (kind === 'floating') prompter.togglePip();
+    return;
+  }
+  const details = {
+    floating: ['浮窗提词', '当前浏览器不支持网页浮窗。电脑可使用支持画中画的 Chromium 浏览器；手机浮窗请使用已开放该功能的 App 版本。'],
+    notch: ['刘海提词', '刘海提词需要 App 的原生布局与平台支持，网页版暂不提供。具体能力以所安装的 App 版本为准。'],
+    camera: ['拍摄提词', '拍摄提词请使用 iPhone 或 iPad App。网页版目前提供提词板，不调用相机，也不录制视频。'],
+  };
+  if (!details[kind]) return;
+  [$('bannerNativeTitle').textContent, $('bannerNativeDescription').textContent] = details[kind];
+  $('bannerNativeDialog').showModal();
 }
 
 // ── 双窗口：导播台（这个窗口）+ 主持窗口（新开的窗口，放提词画面） ──
@@ -531,7 +549,14 @@ function watchRanges() {
 function init() {
   if (!TALENT) homeWorkspace = new HomeWorkspace({ getScripts: () => scripts, getCurrent: current,
     onOpen: select, onStart: start, onNew: newScript, onImport: () => $('fileInput').click(), onLibrary: openLibrary,
-    countWords, plainText, hasContent: s => !!s && !!plainText(s.body).trim() });
+    onBanner: openHomeBanner, countWords, plainText, hasContent: s => !!s && !!plainText(s.body).trim() });
+  for (const button of document.querySelectorAll('[data-banner-mode]')) {
+    button.onclick = () => {
+      saveSettings({ ...settings, mode: button.dataset.bannerMode });
+      $('bannerModesDialog').close(); openHomeBanner('board');
+    };
+  }
+  for (const toggle of document.querySelectorAll('input[type="checkbox"]')) toggle.setAttribute('role', 'switch');
   watchRanges();
   $('search').oninput = renderList;
   $('btnNew').onclick = () => newScript();
