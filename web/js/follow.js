@@ -45,10 +45,11 @@ export function align(units, pos, heard) {
 
 /** 浏览器语音识别：持续听，识别到字就回调；断了自动重连 */
 export class Listener {
-  constructor({ lang = 'zh-CN', onHeard, onState }) {
+  constructor({ lang = 'zh-CN', onHeard, onState, onSpeech }) {
     this.lang = lang;
     this.onHeard = onHeard;
     this.onState = onState || (() => {});
+    this.onSpeech = onSpeech || (() => {});
     this.running = false;
     this.rec = null;
   }
@@ -69,6 +70,8 @@ export class Listener {
     rec.continuous = true;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
+    rec.onspeechstart = () => this.onSpeech(true);
+    rec.onspeechend = () => this.onSpeech(false);
     rec.onresult = (e) => {
       // 只看这一次识别里最后一句（含还没定下来的部分），取末尾的字去对位
       let text = '';
@@ -96,6 +99,7 @@ export class Listener {
       }
     };
     rec.onend = () => {
+      this.onSpeech(false);
       // 浏览器会隔一会儿自己停；还在提词就接着听
       if (this.running) {
         try { rec.start(); } catch { setTimeout(() => this.running && rec.start(), 300); }
@@ -107,6 +111,7 @@ export class Listener {
 
   stop() {
     this.running = false;
+    this.onSpeech(false);
     if (this.rec) {
       try { this.rec.abort(); } catch { /* 已经停了 */ }
       this.rec = null;

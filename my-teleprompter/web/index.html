@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="AI魔方提词器">
-<link rel="stylesheet" href="styles.css?v=20261015-home">
+<link rel="stylesheet" href="styles.css?v=20261016-banner">
 </head>
 <body>
 <div id="app">
@@ -231,6 +231,8 @@
       </label>
       <label class="row">显示计时<input type="checkbox" id="sTimer"></label>
       <h4>智能跟读</h4>
+      <label class="row">跟读方式<select id="sFollowStyle"><option value="smooth">丝滑跟读</option><option value="step">步进跟读</option><option value="flexible">柔性跟读</option></select></label>
+      <label class="row" id="sFollowLinesRow" hidden>步进行数<select id="sFollowLines"><option value="1">1行</option><option value="2">2行</option><option value="3">3行</option></select></label>
       <label class="row">识别语言
         <select id="sLang">
           <option value="zh-CN">普通话</option>

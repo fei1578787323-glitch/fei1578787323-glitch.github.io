@@ -54,6 +54,8 @@ export function saveCurrent(id) { write(K_CURRENT, id); }
 
 export const DEFAULTS = {
   mode: 'follow',
+  followStyle: 'smooth',
+  followStepLines: 1,
   speed: 60,
   fontSize: 56,
   lineHeight: 1.5,
@@ -74,7 +76,10 @@ export const DEFAULTS = {
 export function loadSettings() {
   // 手机屏窄，默认字号小一些（一行能放十来个字）；用户调过就按用户的
   const base = { ...DEFAULTS, fontSize: window.innerWidth < 560 ? 34 : DEFAULTS.fontSize };
-  return { ...base, ...read(K_SETTINGS, {}) };
+  const saved = { ...base, ...read(K_SETTINGS, {}) };
+  saved.followStyle = ['smooth', 'step', 'flexible'].includes(saved.followStyle) ? saved.followStyle : 'smooth';
+  saved.followStepLines = Math.min(3, Math.max(1, Math.round(Number(saved.followStepLines)) || 1));
+  return saved;
 }
 export function saveSettings(s) { write(K_SETTINGS, s); }
 

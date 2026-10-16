@@ -7,6 +7,7 @@
 <link rel="icon" href="site/favicon-32.png?v=20261011-plain">
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png?v=20261011-plain">
 <meta name="description" content="A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac.">
+<link rel="preload" as="image" href="web/assets/banners/modes.jpg">
 <style>
   :root {
     --ink: #0b0b14;
@@ -46,7 +47,7 @@
   a:hover { text-decoration: underline; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
 
-  /* 顶部：深色 + 光点球 */
+  /* 顶部布局由 banner-hero.css 适配深浅主题。 */
   .hero {
     position: relative;
     overflow: hidden;
@@ -76,8 +77,6 @@
   .btn-ghost { border-color: rgba(255, 255, 255, 0.28); color: #fff; }
   .btn-link { color: rgba(255, 255, 255, 0.8); padding-left: 6px; }
   .hero-note { margin-top: 16px; font-size: 13px; color: rgba(255, 255, 255, 0.5); }
-  #orb { width: 100%; aspect-ratio: 1; display: block; }
-  .slogan { text-align: center; letter-spacing: 3px; font-size: 12px; color: rgba(184, 155, 255, 0.7); margin-top: -8px; }
 
   section { padding: 72px 0; }
   .eyebrow { color: var(--accent); font-size: 13px; font-weight: 600; letter-spacing: 2px; }
@@ -148,7 +147,6 @@
 
   @media (max-width: 860px) {
     .hero-body { grid-template-columns: 1fr; }
-    .hero-visual { max-width: 340px; margin: 0 auto; order: -1; }
     .grid3, .plans { grid-template-columns: 1fr; }
     .shots { grid-template-columns: repeat(2, 1fr); }
     .nav-links { display: none; }
@@ -158,6 +156,7 @@
   .lang:hover { background: rgba(255,255,255,0.16); }
   .lang:focus-visible { outline: 2px solid #9b6bf2; outline-offset: 2px; }
 </style>
+<link rel="stylesheet" href="site/banner-hero.css?v=20261016">
 </head>
 <body>
 
@@ -184,8 +183,17 @@
     </div>
     <div class="hero-body">
       <div>
-        <h1 data-en="Say it, and&lt;br&gt;&lt;em&gt;the script keeps up&lt;/em&gt;">念到哪，<br><em>字就滚到哪</em></h1>
-        <p class="lead" data-en="A voice-following teleprompter for videos, courses, livestreams and talks. Read to your phone and the text moves with your voice; pause, and it pauses too.">给口播、录课、直播和演讲用的智能跟读提词器。对着手机念，文字跟着你的语速走；停下来，它也停下来。</p>
+        <h1 data-en="AI Cube Prompter">AI魔方提词器</h1>
+        <p class="lead" data-en="Write, prompt and record. Find the right setup for your next video.">写稿、提词、拍摄，让每一次表达更从容。</p>
+        <div id="siteBanners">
+          <a href="web/"><img class="site-banner-poster" src="web/assets/banners/modes.jpg" width="1200" height="675" alt="AI魔方提词器提词模式预览"></a>
+        </div>
+        <div class="site-banner-controls" aria-label="功能横幅切换">
+          <button type="button" id="siteBannerPrevious" aria-label="上一张" title="上一张"><span aria-hidden="true">&#8592;</span></button>
+          <div id="siteBannerDots"></div>
+          <button type="button" id="siteBannerNext" aria-label="下一张" title="下一张"><span aria-hidden="true">&#8594;</span></button>
+          <button type="button" id="siteBannerPause" aria-label="暂停轮播" title="暂停轮播" aria-pressed="false"><span aria-hidden="true">&#8545;</span></button>
+        </div>
         <div class="cta">
           <span class="btn btn-primary" aria-disabled="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.2 8.5c0-1.7 1.4-2.5 1.4-2.5-.8-1.1-2-1.3-2.4-1.3-1-.1-2 .6-2.5.6s-1.3-.6-2.2-.6C4.4 4.7 3.3 5.4 2.7 6.5c-1.2 2.1-.3 5.2.9 6.9.6.8 1.2 1.8 2.1 1.7.9 0 1.2-.5 2.2-.5s1.3.5 2.2.5c.9 0 1.5-.9 2-1.7.6-.9.9-1.8.9-1.9 0 0-1.8-.7-1.8-3zM9.6 3.5c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.6-.4 2.2-1.1z"/></svg>
@@ -195,10 +203,6 @@
           <a class="btn btn-ghost btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use it in your browser">用网页版</span> <small data-en="No install · Windows / Android too">免安装 · Windows、安卓也能用</small></a>
         </div>
         <p class="hero-note" data-en="iPhone, iPad and Mac · The basic prompter is free forever">iPhone、iPad、Mac 通用 · 提词板永久免费</p>
-      </div>
-      <div class="hero-visual">
-        <canvas id="orb" aria-label="光点球"></canvas>
-        <div class="slogan">SEE IT. SAY IT.</div>
       </div>
     </div>
   </div>
@@ -216,12 +220,12 @@
           <h3 data-en="Voice follow">智能跟读</h3>
           <p data-en="It hears which line you’re on and keeps pace; go back to re-read and it follows you back. Voice-activated, constant-speed and manual modes too.">识别你念到哪一句，文字跟着走；念错退回去重念，它也跟着退。另有声控、匀速、手动翻页三种模式。</p>
         </div>
-        <div class="card">
+        <div class="card" id="recording">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></div>
           <h3 data-en="Record with the script">拍摄提词</h3>
           <p data-en="Read and record at once, with beauty, filters, background swap and 4K / 60 fps. Then cut retakes, remove breaths and add captions in one tap.">一边看稿一边录，美颜、滤镜、换背景、4K / 60 帧；录完一键剪掉重读、去气口、出字幕。</p>
         </div>
-        <div class="card">
+        <div class="card" id="floating-notching">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><rect x="12" y="11" width="7" height="7" rx="1.5"/></svg></div>
           <h3 data-en="Notch and floating prompting">刘海与浮窗提词</h3>
           <p data-en="The native iOS app offers a camera-adjacent notch layout and picture-in-picture prompting. Availability in other apps depends on iOS permissions and the receiving app. Browser floating windows require a supported desktop browser.">iOS 原生版提供靠近摄像头的刘海布局和画中画提词。其他平台的显示效果取决于系统权限和目标应用；网页浮窗仅在支持的桌面浏览器可用。</p>
@@ -258,11 +262,11 @@
 
   <section id="updates">
     <div class="wrap">
-      <div class="eyebrow" data-en="Updated October 15, 2026">2026年10月15日更新</div>
+      <div class="eyebrow" data-en="Updated October 16, 2026">2026年10月16日更新</div>
       <h2 data-en="A clearer workspace, with themes that follow you">布局更清晰，交互跟着主题走</h2>
       <p class="sub" data-en="The browser workspace now includes switchable home layouts, theme colors and quieter controls. Native camera and video-processing features remain in the Mac and iOS apps; the browser does not offer those tools yet.">网页版新增可切换主页、主题强调色和统一控件。拍摄、刘海提词、AI成片等能力仍由 Mac / iOS 原生版提供，网页版暂不提供这些工具。</p>
       <div class="grid3">
-        <div class="card"><h3 data-en="Available in the browser">网页版已同步</h3><p data-en="Themed feature banners below the daily quote crossfade every 3 seconds, without extra branding or a footer toolbar. The in-app cube has a transparent background; compact switches and selection follow your theme. Home layouts, scripts and licenses are retained.">今日成长下方新增主题横幅，每 3 秒淡入淡出切换，去除重复品牌和底部工具栏；软件内魔方改为透明背景，紧凑开关与选中态跟随主题。保留原有主页布局、稿件和授权数据。</p><p style="margin-top:16px"><a href="web/" data-en="Open the browser workspace →">打开在线工作台 →</a></p></div>
+        <div class="card"><h3 data-en="Available in the browser">网页版已同步</h3><p data-en="Five complete feature posters crossfade every 3 seconds on the homepage and in the web workspace. Dark themes retain the original poster lighting; light themes blend into the page. Smooth, step and flexible voice-follow styles are available, with 1–3 display lines for step mode. Existing scripts, licenses and preferences are retained.">官网与在线工作台同步五张完整横幅，每 3 秒淡入淡出；深色保留原海报明暗，浅色融入页面。智能跟读支持丝滑、步进、柔性三种方式，步进可选 1–3 个实际显示行。保留原有稿件、授权和界面偏好。</p><p style="margin-top:16px"><a href="web/" data-en="Open the browser workspace →">打开在线工作台 →</a></p></div>
         <div class="card"><h3 data-en="Native app workflows">原生版近期功能</h3><p data-en="AI video processing integrates speech recognition, editing and subtitle export. Notch prompting includes script selection and per-platform controls. Mobile home layouts are switchable; material collection and help controls have been refined.">AI成片接入识别、剪辑与字幕导出；刘海提词增加稿件选择和平台内调节；手机主页可切换布局，素材集和功能说明控件持续优化。具体能力以所安装版本为准。</p></div>
         <div class="card"><h3 data-en="New Mac interface previews">Mac 新界面预览</h3><p data-en="Lumen and accordion workspaces preserve existing actions. Luminous Core adds theme-colored task tiles and a clearer source preview to the AI workspace. These newest Mac layouts are preview builds, not a claim of a new public app release.">蓝曜、折叠工作台保留现有功能；流光智核为 AI 工作区加入主题色任务磁贴和清晰原稿预览。最新 Mac 布局目前为独立预览，不代表已发布新的正式安装包。</p></div>
       </div>
@@ -392,50 +396,7 @@
   </div>
 </footer>
 
-<script>
-// 光点球：和 App 开屏同一种样子，慢慢转（系统开了「减少动态效果」就停在一帧）
-(function () {
-  const canvas = document.getElementById('orb');
-  const ctx = canvas.getContext('2d');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const N = 1800, golden = Math.PI * (3 - Math.sqrt(5));
-  const pts = [];
-  for (let i = 0; i < N; i++) {
-    const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), th = golden * i + (Math.random() - 0.5) * 0.4;
-    pts.push([Math.cos(th) * r, y, Math.sin(th) * r, Math.random()]);
-  }
-  function size() {
-    const d = Math.min(window.devicePixelRatio || 1, 2), w = canvas.clientWidth;
-    canvas.width = w * d; canvas.height = w * d; ctx.setTransform(d, 0, 0, d, 0, 0);
-  }
-  function draw(t) {
-    const w = canvas.clientWidth, c = w / 2, R = w * 0.33 * (1 + 0.015 * Math.sin(t * 1.2));
-    ctx.clearRect(0, 0, w, w);
-    const g = ctx.createRadialGradient(c, c, 0, c, c, R * 1.7);
-    g.addColorStop(0, 'rgba(155,107,242,0.35)'); g.addColorStop(1, 'rgba(155,107,242,0)');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, w, w);
-    const rot = t * 0.3, cr = Math.cos(rot), sr = Math.sin(rot), tilt = 0.35, ct = Math.cos(tilt), st = Math.sin(tilt);
-    for (const p of pts) {
-      const x = p[0] * cr + p[2] * sr, z0 = -p[0] * sr + p[2] * cr;
-      const y = p[1] * ct - z0 * st, z = p[1] * st + z0 * ct;
-      const depth = (z + 1) / 2, a = (0.18 + 0.82 * depth) * (0.6 + 0.4 * p[3]);
-      const s = 0.8 + 1.5 * depth;
-      ctx.fillStyle = depth > 0.72 ? `rgba(255,255,255,${a})` : `rgba(184,155,255,${a})`;
-      ctx.beginPath(); ctx.arc(c + x * R, c + y * R, s / 2, 0, Math.PI * 2); ctx.fill();
-    }
-    // 绕着转的小球
-    const ot = t * 0.6, ox = Math.cos(ot) * R * 1.45, oz = Math.sin(ot);
-    ctx.fillStyle = `rgba(120,180,255,${0.35 + 0.5 * (oz + 1) / 2})`;
-    ctx.beginPath(); ctx.arc(c + ox, c + Math.sin(ot) * R * 0.25, 7 + 3 * (oz + 1) / 2, 0, Math.PI * 2); ctx.fill();
-  }
-  const t0 = performance.now();
-  // 一打开先画一帧（后台标签、减少动态效果时也看得到球）
-  size(); draw(0);
-  window.addEventListener('resize', () => { size(); draw((performance.now() - t0) / 1000); });
-  function frame(now) { draw((now - t0) / 1000); if (!reduce) requestAnimationFrame(frame); }
-  requestAnimationFrame(frame);
-})();
-</script>
+<script type="module" src="site/banner-hero.js?v=20261016"></script>
 <script>
 // 官网购买：在发卡平台上架商品后，把商品链接填到这里，再跑 scripts/publish-site.sh。没填的按钮显示「即将开放」
 const BUY = {
@@ -456,8 +417,8 @@ document.querySelectorAll('[data-buy]').forEach((a) => {
   els.forEach(e => { e.dataset.zh = e.innerHTML; });
   const meta = document.querySelector('meta[name=description]');
   const text = {
-    en: { title: 'AI Cube Prompter', desc: 'A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac.', btn: '中文', orb: 'Particle orb' },
-    zh: { title: 'AI魔方提词器', desc: '念到哪，字就滚到哪。给口播、录课、直播和演讲用的智能跟读提词器，iPhone、iPad、Mac 都能用。', btn: 'EN', orb: '光点球' }
+    en: { title: 'AI Cube Prompter', desc: 'A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac.', btn: '中文' },
+    zh: { title: 'AI魔方提词器', desc: '念到哪，字就滚到哪。给口播、录课、直播和演讲用的智能跟读提词器，iPhone、iPad、Mac 都能用。', btn: 'EN' }
   };
   function apply(lang) {
     els.forEach(e => { e.innerHTML = lang === 'en' ? e.dataset.en : e.dataset.zh; });
@@ -465,7 +426,6 @@ document.querySelectorAll('[data-buy]').forEach((a) => {
     document.title = text[lang].title;
     if (meta) meta.content = text[lang].desc;
     document.getElementById('langBtn').textContent = text[lang].btn;
-    document.getElementById('orb').setAttribute('aria-label', text[lang].orb);
   }
   let lang = 'en';
   try { lang = localStorage.getItem('frmzone.lang') || 'en'; } catch (e) {}

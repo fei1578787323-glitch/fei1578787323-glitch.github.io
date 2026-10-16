@@ -10,15 +10,28 @@ export function dailyQuote(quotes, date = new Date()) {
   const day = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 1)) / 86400000);
   return quotes[day % quotes.length];
 }
-export function themePixel(r, g, b, accent) {
-  const hi = Math.max(r, g, b), lo = Math.min(r, g, b), chroma = hi - lo;
-  if (hi <= .48 || chroma <= .07 || r <= g || g < b * .9 || chroma / hi >= .76 || (g - b) / chroma >= .22) return [r, g, b];
-  const strength = Math.min(1, (chroma - .07) / .12) * Math.min(1, (hi - .48) / .15);
-  const high = Math.max(...accent), low = Math.min(...accent), range = high - low, light = (hi + lo) / 2;
-  const amplitude = Math.min(range, .9) * (1 - Math.abs(2 * light - 1)), base = light - amplitude / 2;
-  return [r, g, b].map((v, i) => v + ((range > .001 ? base + amplitude * (accent[i] - low) / range : light) - v) * strength);
+export function lightSurface(r, g, b, canvas = null) {
+  const luminance = r * .2126 + g * .7152 + b * .0722;
+  if (canvas) {
+    const ink = Math.pow(Math.max(0, (luminance - .18) / .82), .9) * .91;
+    return canvas.map(v => v * (1 - ink));
+  }
+  return [.97 - luminance * .84, .98 - luminance * .84, .99 - luminance * .84];
 }
-const PHOTO = { notch: [[.44, .39, .53, .53]], camera: [[.47, .28, .32, .65]], floating: [[.71, .40, .28, .51]] };
+export function themePixel(r, g, b, accent, light = false, canvas = null) {
+  const original = light ? lightSurface(r, g, b, canvas) : [r, g, b];
+  const hi = Math.max(r, g, b), lo = Math.min(r, g, b), chroma = hi - lo;
+  if (hi <= .48 || chroma <= .07 || r <= g || g < b * .9 || chroma / hi >= .76 || (g - b) / chroma >= .22) return original;
+  const strength = Math.min(1, (chroma - .07) / .12) * Math.min(1, (hi - .48) / .15);
+  if (light) {
+    const factor = Math.min(.85, .42 / Math.max(.001, accent[0] * .2126 + accent[1] * .7152 + accent[2] * .0722));
+    return original.map((v, i) => v + (accent[i] * factor - v) * strength);
+  }
+  const high = Math.max(...accent), low = Math.min(...accent), range = high - low, lightness = (hi + lo) / 2;
+  const amplitude = Math.min(range, .9) * (1 - Math.abs(2 * lightness - 1)), base = lightness - amplitude / 2;
+  return [r, g, b].map((v, i) => v + ((range > .001 ? base + amplitude * (accent[i] - low) / range : lightness) - v) * strength);
+}
+const PHOTO = { notch: [[.44, .39, .53, .53]], camera: [[.47, .28, .32, .65]], floating: [[.71, .40, .28, .51], [.64, .36, .14, .37]] };
 const EXTRA = {
   modes: [[.35, .14, .63, .79]], floating: [[.50, .27, .24, .06], [.78, .14, .21, .25]],
   notch: [[.55, .32, .31, .05], [.72, .10, .26, .19]],
@@ -30,14 +43,21 @@ const contains = (rect, x, y) => x >= rect[0] && x <= rect[0] + rect[2] && y >= 
 export function themedPoint(kind, x, y) {
   return !PHOTO[kind]?.some(r => contains(r, x, y)) && (GRAPHICS[kind] || []).some(r => contains(r, x, y));
 }
+export function photoProtection(kind, x, y) {
+  return Math.max(0, ...(PHOTO[kind] || []).map(([left, top, width, height]) =>
+    Math.min(1, Math.max(0, Math.min(x - left, left + width - x, y - top, top + height - y) / .012))));
+}
 
 export class HomeFeatureBanners {
-  constructor(onOpen) {
+  constructor(onOpen, { assetBase = new URL('../assets/', import.meta.url), includeQuote = true, onChange } = {}) {
     this.index = 0; this.motion = true; this.visible = false; this.ready = false; this.blocks = new Set(); this.layers = [];
+    this.onChange = onChange;
     this.reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    this.darkScheme = matchMedia('(prefers-color-scheme: dark)');
+    this.darkScheme.addEventListener('change', () => { if (this.appearance) this.setAppearance(this.appearance, this.color); });
     this.growth = document.createElement('div'); this.growth.className = 'daily-growth';
     this.setQuote(dailyQuote([]));
-    fetch('assets/daily-quotes.json').then(r => { if (!r.ok) throw new Error('quotes'); return r.json(); })
+    if (includeQuote) fetch(new URL('daily-quotes.json', assetBase)).then(r => { if (!r.ok) throw new Error('quotes'); return r.json(); })
       .then(quotes => this.setQuote(dailyQuote(quotes))).catch(() => {});
     this.node = document.createElement('section'); this.node.className = 'feature-banners';
     this.node.setAttribute('aria-label', '功能横幅'); this.node.setAttribute('aria-roledescription', '轮播');
@@ -55,17 +75,19 @@ export class HomeFeatureBanners {
         const c = canvas.getContext('2d'); c.drawImage(image, 0, 0, canvas.width, canvas.height);
         layer.pixels = c.getImageData(0, 0, canvas.width, canvas.height);
         layer.ink = [];
+        layer.protection = new Float32Array(canvas.width * canvas.height);
         const { width, height, data } = layer.pixels;
         for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
           const i = (y * width + x) * 4;
           if (data[i] > data[i + 1] && themedPoint(kind, x / width, y / height)) layer.ink.push(i);
+          layer.protection[i / 4] = photoProtection(kind, x / width, y / height);
         }
         this.paint(layer);
         fallback.hidden = true;
         this.ready = this.layers.every(l => l.pixels || l.failed); this.schedule();
       };
       image.onerror = () => { layer.failed = true; this.ready = this.layers.every(l => l.pixels || l.failed); this.schedule(); };
-      image.src = `assets/banners/${kind}.jpg`;
+      image.src = new URL(`banners/${kind}.jpg`, assetBase).href;
     }
     this.updateSelection();
     this.node.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') this.block('hover', true); });
@@ -104,18 +126,40 @@ export class HomeFeatureBanners {
     if (!open) { for (const reason of ['hover', 'focus', 'touch']) this.blocks.delete(reason); this.pointer = null; }
     this.schedule();
   }
-  setAppearance({ motion }, color) {
+  setAppearance(appearance, color) {
+    const { motion, theme } = appearance;
+    this.appearance = appearance;
     this.motion = motion;
-    if (this.color !== color) { this.color = color; for (const layer of this.layers) this.paint(layer); }
+    const light = theme === 'light' || theme === 'ice' || (theme === 'system' && !this.darkScheme.matches);
+    const style = getComputedStyle(document.documentElement);
+    const sample = document.createElement('canvas').getContext('2d');
+    sample.fillStyle = style.getPropertyValue('--banner-surface').trim() || '#f2f2f7';
+    sample.fillRect(0, 0, 1, 1);
+    const surface = [...sample.getImageData(0, 0, 1, 1).data].slice(0, 3).map(v => v / 255);
+    const surfaceKey = surface.join('-');
+    if (this.color !== color || this.light !== light || this.surfaceKey !== surfaceKey) {
+      this.color = color; this.light = light; this.surface = surface; this.surfaceKey = surfaceKey;
+      for (const layer of this.layers) this.paint(layer);
+    }
+    this.node.dataset.tone = light ? 'light' : 'dark';
     this.schedule();
   }
   paint(layer) {
     if (!layer.pixels || !this.color) return;
     const accent = this.color.slice(1).match(/../g).map(v => parseInt(v, 16) / 255);
     const { width, height, data } = layer.pixels;
-    const output = new ImageData(new Uint8ClampedArray(data), width, height);
+    if (this.light && layer.surfaceKey !== this.surfaceKey) {
+      layer.lightPixels = new ImageData(new Uint8ClampedArray(data), width, height);
+      for (let i = 0; i < data.length; i += 4) {
+        const surface = lightSurface(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255, this.surface);
+        const protection = layer.protection[i / 4];
+        for (let c = 0; c < 3; c++) layer.lightPixels.data[i + c] = Math.round(surface[c] * 255 * (1 - protection) + data[i + c] * protection);
+      }
+      layer.surfaceKey = this.surfaceKey;
+    }
+    const output = new ImageData(new Uint8ClampedArray(this.light ? layer.lightPixels.data : data), width, height);
     for (const i of layer.ink) {
-      const mapped = themePixel(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255, accent);
+      const mapped = themePixel(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255, accent, this.light, this.surface);
       for (let c = 0; c < 3; c++) output.data[i + c] = Math.round(mapped[c] * 255);
     }
     layer.canvas.getContext('2d').putImageData(output, 0, 0);
@@ -127,6 +171,7 @@ export class HomeFeatureBanners {
       layer.button.classList.toggle('active', active); layer.button.tabIndex = active ? 0 : -1;
       layer.button.setAttribute('aria-hidden', String(!active)); layer.button.inert = !active;
     });
+    this.onChange?.(this.index);
   }
   move(step) { this.index = nextBanner(this.index, step); this.updateSelection(); this.schedule(); }
   block(reason, blocked) { blocked ? this.blocks.add(reason) : this.blocks.delete(reason); this.schedule(); }

@@ -1,7 +1,8 @@
 // 提词画面：滚动用 translate3d 按小数像素平移（不取整，才丝滑），每帧 requestAnimationFrame 推进。
 // 四种模式：智能跟读（语音识别对位）、匀速、声控（有声音才走）、手动（滚轮 / 拖动 / 方向键）。
 import { renderScript, indexUnits, clock, estimateSeconds } from './markup.js';
-import { align, Listener, VoiceGate, FollowPacer, ReadingRate, FollowGlide } from './follow.js';
+import { align, Listener, VoiceGate, FollowPacer, ReadingRate } from './follow.js';
+import { FollowScrollMotion } from './follow-scroll.js';
 import * as store from './store.js';
 
 const MODE_NAMES = { follow: '智能跟读', auto: '匀速滚动', voice: '声控滚动', manual: '手动' };
@@ -56,6 +57,7 @@ export class Prompter {
   // ── 打开 / 关闭 ──
 
   open(script, settings) {
+    this.glide = null;
     this.script = script;
     this.s = settings;
     this.el.hidden = false;
@@ -125,10 +127,12 @@ export class Prompter {
   /** 设置改了（字号、行距…）：重新排版，保持读到的位置 */
   update(settings) {
     const keepUnit = this.unitAtReadingLine();
+    const previousGeometry = this.geometryKey, offset = this.offset;
     this.s = settings;
     this.applySettings();
     this.layout();
-    if (this.s.mode === 'follow') this.offset = this.targetFor(this.pos);
+    if (previousGeometry !== this.geometryKey) this.glide = null;
+    if (this.s.mode === 'follow') this.offset = previousGeometry === this.geometryKey ? offset : this.targetFor(this.pos);
     else if (keepUnit != null) this.offset = this.targetFor(keepUnit);
     this.clamp();
     this.lastDimKey = null;
@@ -140,6 +144,7 @@ export class Prompter {
     if (!this.isOpen) return;
     const keep = this.s.mode === 'follow' ? this.pos : this.unitAtReadingLine();
     this.layout();
+    this.glide = null;
     if (keep != null) this.offset = this.targetFor(keep);
     this.clamp();
     this.paint();
@@ -157,6 +162,7 @@ export class Prompter {
     const first = lines[0], last = lines[lines.length - 1];
     this.startOffset = first ? first.offsetTop + this.lineH / 2 - this.readingY : 0;
     this.endOffset = last ? last.offsetTop + last.offsetHeight - this.lineH / 2 - this.readingY : 0;
+    this.geometryKey = JSON.stringify([this.s.fontSize, this.s.lineHeight, this.s.margin, this.s.center, this.s.linePos, this.stage.clientWidth, h]);
   }
 
   // ── 位置换算 ──
@@ -230,7 +236,7 @@ export class Prompter {
 
   followGlideStep(dt, now) {
     const n = this.units.length;
-    if (!this.glide) { this.glide = new FollowGlide(); this.pacer = new FollowPacer(); this.rateMeter = new ReadingRate(); this.glide.reset(this.offset); }
+    if (!this.glide) { this.glide = new FollowScrollMotion(); this.pacer = new FollowPacer(); this.rateMeter = new ReadingRate(); this.glide.reset(this.offset); }
     // 滚动位置被别处改了（拖动、点字跳转、改字号）：从当前位置重新起步
     if (Math.abs(this.offset - this.glide.y) > 0.5) { this.glide.reset(this.offset); this.rateMeter.reset(); this.pacer.reset(this.pos, now); }
     let target, nominal = 0;
@@ -241,7 +247,10 @@ export class Prompter {
       const perUnit = (this.glideY(Math.min(n - 1, p + 2)) - target) / 2;
       nominal = this.rateMeter.feed(this.pos, now) * Math.max(0, perUnit);
     }
-    this.offset = Math.min(this.endOffset, this.glide.step(target, nominal, dt, this.lineH * 2.5));
+    this.offset = Math.min(this.endOffset, this.glide.step(target, nominal, dt, this.lineH * 2.5, {
+      style: this.s.followStyle, lines: this.s.followStepLines, read: this.pos, now,
+      speaking: !!this.speechActive, length: n, lineAt: i => { const line = this.visualLine(i); return { ...line, contentEnd: line.end }; },
+    }));
     this.glide.y = this.offset;
   }
 
@@ -302,6 +311,7 @@ export class Prompter {
   }
 
   restart() {
+    this.glide = null;
     this.pos = 0;
     this.offset = this.startOffset;
     this.elapsed = 0;
@@ -323,6 +333,7 @@ export class Prompter {
 
   async startInputs() {
     if (this.s.mode === 'follow') {
+      this.glide = null; this.speechActive = false;
       if (!Listener.supported) {
         this.followState = 'unsupported';
         this.toast('这个浏览器不支持语音识别，请用 Chrome、Edge 或 Safari；已改用匀速滚动');
@@ -332,6 +343,7 @@ export class Prompter {
       this.listener = new Listener({
         lang: this.s.lang,
         onHeard: (heard) => this.heard(heard),
+        onSpeech: active => { this.speechActive = active; },
         onState: (st) => {
           this.followState = st;
           if (st === 'denied') {

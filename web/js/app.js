@@ -10,7 +10,7 @@ const $ = (id) => document.getElementById(id) || findEl(id);
 const TALENT = location.hash === '#talent';
 
 let scripts = store.loadScripts();
-let settings = store.loadSettings();
+let settings = { followStyle: 'smooth', followStepLines: 1, ...store.loadSettings() };
 let currentId = store.loadCurrent();
 if (!scripts.some(s => s.id === currentId)) currentId = scripts[0].id;
 let license = null;          // 验证过的授权码信息
@@ -369,6 +369,9 @@ function syncDrawer() {
   $('sCountdown').value = String(settings.countdown);
   $('sTimer').checked = settings.timer;
   $('sLang').value = settings.lang;
+  $('sFollowStyle').value = settings.followStyle;
+  $('sFollowLines').value = String(settings.followStepLines);
+  $('sFollowLinesRow').hidden = settings.followStyle !== 'step';
   for (const b of $('sColors').querySelectorAll('button')) {
     b.setAttribute('aria-pressed', b.dataset.fg === settings.fg && b.dataset.bg === settings.bg ? 'true' : 'false');
   }
@@ -392,6 +395,8 @@ function bindDrawer() {
   $('sCountdown').onchange = (e) => set('countdown', +e.target.value);
   $('sTimer').onchange = (e) => set('timer', e.target.checked);
   $('sLang').onchange = (e) => set('lang', e.target.value);
+  $('sFollowStyle').onchange = e => set('followStyle', e.target.value);
+  $('sFollowLines').onchange = e => set('followStepLines', +e.target.value);
   for (const b of $('sColors').querySelectorAll('button')) {
     b.onclick = () => { settings.fg = b.dataset.fg; set('bg', b.dataset.bg); };
   }
