@@ -6,6 +6,7 @@ const POSTERS = [
   ['floating', '浮窗提词', 'Floating prompting', '#floating-notching'],
   ['scrolling', '五种滚动方式', 'Five scrolling methods', 'web/'],
 ];
+const SHORT_TITLES = [['拍摄', 'Camera'], ['提词板', 'Board'], ['刘海', 'Notch'], ['浮窗', 'Float'], ['滚动', 'Scroll']];
 const host = document.getElementById('siteBanners');
 const dots = document.getElementById('siteBannerDots');
 const previous = document.getElementById('siteBannerPrevious');
@@ -67,6 +68,8 @@ function updateLabels() {
   layers.forEach(({ link, image, button }, i) => {
     const title = POSTERS[i][en ? 2 : 1];
     link.setAttribute('aria-label', title); image.alt = title; button.setAttribute('aria-label', title);
+    button.textContent = SHORT_TITLES[i][en ? 1 : 0];
+    button.title = title;
   });
 }
 previous.onclick = () => move(-1);
