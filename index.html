@@ -6,7 +6,7 @@
 <title>AI Cube Prompter</title>
 <link rel="icon" href="site/favicon-32.png?v=20261011-plain">
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png?v=20261011-plain">
-<meta name="description" content="A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac.">
+<meta name="description" content="A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac, with an Android beta download.">
 <link rel="preload" as="image" href="web/assets/banners/modes.jpg">
 <style>
   :root {
@@ -67,6 +67,8 @@
   .hero h1 em { font-style: normal; color: var(--accent-2); }
   .hero p.lead { font-size: 18px; color: rgba(255, 255, 255, 0.72); margin: 0 0 28px; max-width: 30em; }
   .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .cta .btn { max-width: 100%; min-height: 44px; flex-wrap: wrap; justify-content: center; }
+  #android-download { scroll-margin-top: 24px; }
   .btn {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 13px 22px; border-radius: 999px; font-size: 15px; font-weight: 600;
@@ -200,9 +202,13 @@
             <span data-en="Download on the App Store">App Store 下载</span> <small data-en="Coming soon">即将上架</small>
           </span>
           <span class="btn btn-ghost" aria-disabled="true"><span data-en="Mac (direct download)">Mac 官网版</span> <small data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</small></span>
+          <a class="btn btn-primary btn-go" id="android-download" href="https://github.com/fei1578787323-glitch/fei1578787323-glitch.github.io/releases/download/android-v0.44.0/aicube-prompter-android-0.44.0.apk" download="aicube-prompter-android-0.44.0.apk">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg>
+            <span data-en="Android beta download">安卓内测版下载</span> <small>0.44.0 · 206 MB</small>
+          </a>
           <a class="btn btn-ghost btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use it in your browser">用网页版</span> <small data-en="No install · Windows / Android too">免安装 · Windows、安卓也能用</small></a>
         </div>
-        <p class="hero-note" data-en="iPhone, iPad and Mac · The basic prompter is free forever">iPhone、iPad、Mac 通用 · 提词板永久免费</p>
+        <p class="hero-note" data-en="iPhone, iPad and Mac · Android 8.0+ beta · The basic prompter is free forever">iPhone、iPad、Mac · Android 8.0+ 内测版 · 提词板永久免费</p>
       </div>
     </div>
   </div>
@@ -213,7 +219,7 @@
     <div class="wrap">
       <div class="eyebrow" data-en="Features">功能</div>
       <h2 data-en="From idea to finished video, in one app">从想法到成片，一个 App 走完</h2>
-      <p class="sub" data-en="Write, plan, prompt, shoot and review — all here, synced between phone and Mac via iCloud.">写稿、排期、提词、拍摄、复盘都在这里，手机和电脑通过 iCloud 同步。</p>
+      <p class="sub" data-en="Write, plan, prompt, shoot and review. iCloud sync connects iPhone, iPad and Mac; the Android beta stores data locally.">写稿、排期、提词、拍摄、复盘。iPhone、iPad 和 Mac 通过 iCloud 同步；Android 内测版使用本机存储。</p>
       <div class="grid3">
         <div class="card">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h2M8 8v8M12 5v14M16 8v8M20 11v2"/></svg></div>
@@ -417,8 +423,8 @@ document.querySelectorAll('[data-buy]').forEach((a) => {
   els.forEach(e => { e.dataset.zh = e.innerHTML; });
   const meta = document.querySelector('meta[name=description]');
   const text = {
-    en: { title: 'AI Cube Prompter', desc: 'A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac.', btn: '中文' },
-    zh: { title: 'AI魔方提词器', desc: '念到哪，字就滚到哪。给口播、录课、直播和演讲用的智能跟读提词器，iPhone、iPad、Mac 都能用。', btn: 'EN' }
+    en: { title: 'AI Cube Prompter', desc: 'A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac, with an Android beta download.', btn: '中文' },
+    zh: { title: 'AI魔方提词器', desc: '念到哪，字就滚到哪。给口播、录课、直播和演讲用的智能跟读提词器，支持 iPhone、iPad、Mac，提供 Android 内测版下载。', btn: 'EN' }
   };
   function apply(lang) {
     els.forEach(e => { e.innerHTML = lang === 'en' ? e.dataset.en : e.dataset.zh; });
