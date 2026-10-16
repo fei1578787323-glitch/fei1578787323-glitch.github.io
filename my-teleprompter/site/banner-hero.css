@@ -11,9 +11,7 @@
 .hero .btn[aria-disabled="true"] { cursor: default; }
 .hero .btn-ghost { color: var(--text); border-color: var(--line); background: var(--card); }
 .hero .hero-note { text-align: center; color: var(--muted); margin: 14px 0 0; }
-@media (min-width: 861px) {
-  #siteBanners { max-width: min(100%, max(280px, calc((100svh - 480px) * 1.7768))); margin-inline: auto; }
-}
+#siteBanners { width: 100%; margin-inline: auto; }
 .site-banner-poster { display: block; width: 100%; height: auto; }
 .hero .feature-banners { position: relative; width: 100%; aspect-ratio: 16/9; padding: 0; touch-action: pan-y;
   border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; }
