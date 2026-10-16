@@ -15,19 +15,15 @@
   #siteBanners { max-width: min(100%, max(280px, calc((100svh - 480px) * 1.7768))); margin-inline: auto; }
 }
 .site-banner-poster { display: block; width: 100%; height: auto; }
-.hero .feature-banners { position: relative; width: 100%; aspect-ratio: 1672/941; padding: 0; touch-action: pan-y;
+.hero .feature-banners { position: relative; width: 100%; aspect-ratio: 16/9; padding: 0; touch-action: pan-y;
   border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; }
 .hero .feature-banner-slide { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0;
   padding: 0; cursor: pointer; background: transparent; opacity: 0; pointer-events: none; transition: opacity .45s ease-in-out; }
 .hero .feature-banner-slide.active { opacity: 1; pointer-events: auto; z-index: 1; }
-.hero .feature-banner-slide canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
+.hero .feature-banner-slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .hero .feature-banner-slide:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
 .hero .feature-banner-fallback { position: absolute; inset: 0; display: grid; place-items: center; color: var(--text); }
 .hero .feature-banner-fallback[hidden] { display: none; }
-.hero .feature-banners[data-tone="light"] { border: 0; border-radius: 0;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 1.8%, #000 98.2%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 1.8%, #000 98.2%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent);
-  -webkit-mask-composite: source-in; mask-composite: intersect; }
 .site-banner-controls { display: flex; align-items: center; justify-content: center; gap: 4px; margin: 8px 0 10px; }
 .site-banner-controls button { width: 40px; height: 40px; padding: 0; border: 0; border-radius: 6px;
   background: transparent; color: var(--text); cursor: pointer; font: inherit; font-size: 20px; }
@@ -50,7 +46,4 @@
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero .feature-banner-slide { transition: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .hero .feature-banners[data-tone="light"] { -webkit-mask-image: none; mask-image: none; }
 }
