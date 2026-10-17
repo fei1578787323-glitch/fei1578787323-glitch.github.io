@@ -3,212 +3,76 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>AI Cube Prompter</title>
 <link rel="icon" href="site/favicon-32.png?v=20261011-plain">
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png?v=20261011-plain">
 <meta name="description" content="A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac, with an Android beta download.">
 <link rel="preload" as="image" href="site/banners-20261016/camera.jpg">
-<style>
-  :root {
-    --ink: #0b0b14;
-    --ink-2: #151527;
-    --accent: #9b6bf2;
-    --accent-2: #b89bff;
-    --bg: #f6f4fb;
-    --card: rgba(255, 255, 255, 0.78);
-    --card-border: rgba(155, 107, 242, 0.16);
-    --text: #1d1b26;
-    --muted: #6b6880;
-    --line: rgba(29, 27, 38, 0.08);
-    --chip: rgba(155, 107, 242, 0.1);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0e0d16;
-      --card: rgba(34, 32, 52, 0.72);
-      --card-border: rgba(184, 155, 255, 0.14);
-      --text: #efedf7;
-      --muted: #a09cb6;
-      --line: rgba(239, 237, 247, 0.08);
-      --chip: rgba(184, 155, 255, 0.14);
-    }
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
-
-  /* 顶部布局由 banner-hero.css 适配深浅主题。 */
-  .hero {
-    position: relative;
-    overflow: hidden;
-    color: #fff;
-    background: radial-gradient(ellipse at 50% 30%, #231b44 0%, var(--ink-2) 45%, var(--ink) 100%);
-    padding: 28px 0 72px;
-  }
-  .nav { display: flex; align-items: center; justify-content: space-between; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: 3px; font-size: 17px; color: #fff; }
-  .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; background: var(--accent); isolation: isolate;
-    mask: url('web/icons/brand-logo.png') center/contain no-repeat; -webkit-mask: url('web/icons/brand-logo.png') center/contain no-repeat; }
-  .brand-mark img { filter: grayscale(1); mix-blend-mode: multiply; }
-  .nav-links { display: flex; gap: 22px; font-size: 14px; }
-  .nav-links a { color: rgba(255, 255, 255, 0.72); }
-  .hero-body { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 24px; align-items: center; margin-top: 36px; }
-  .hero h1 { font-size: clamp(34px, 5.4vw, 58px); line-height: 1.12; margin: 0 0 16px; font-weight: 700; text-wrap: balance; }
-  .hero h1 em { font-style: normal; color: var(--accent-2); }
-  .hero p.lead { font-size: 18px; color: rgba(255, 255, 255, 0.72); margin: 0 0 28px; max-width: 30em; }
-  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
-  .cta .btn { max-width: 100%; min-height: 44px; flex-wrap: wrap; justify-content: center; }
-  #android-download { scroll-margin-top: 24px; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 13px 22px; border-radius: 999px; font-size: 15px; font-weight: 600;
-    border: 1px solid transparent; cursor: default;
-  }
-  .btn small { font-weight: 400; opacity: 0.7; font-size: 12px; }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-ghost { border-color: rgba(255, 255, 255, 0.28); color: #fff; }
-  .btn-link { color: rgba(255, 255, 255, 0.8); padding-left: 6px; }
-  .hero-note { margin-top: 16px; font-size: 13px; color: rgba(255, 255, 255, 0.5); }
-
-  section { padding: 72px 0; }
-  .eyebrow { color: var(--accent); font-size: 13px; font-weight: 600; letter-spacing: 2px; }
-  h2 { font-size: clamp(26px, 3.4vw, 36px); margin: 6px 0 12px; text-wrap: balance; }
-  .sub { color: var(--muted); margin: 0 0 32px; max-width: 40em; }
-
-  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .card {
-    background: var(--card); border: 1px solid var(--card-border); border-radius: 20px;
-    padding: 22px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  }
-  .card h3 { margin: 12px 0 6px; font-size: 18px; }
-  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
-  .icon { width: 40px; height: 40px; border-radius: 12px; background: var(--chip); display: grid; place-items: center; color: var(--accent); }
-  .icon svg { width: 22px; height: 22px; }
-
-  .shots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .shot { text-align: center; }
-  .shot img { width: 100%; max-width: 100%; border-radius: 26px; border: 1px solid var(--line); box-shadow: 0 18px 40px rgba(40, 20, 90, 0.14); }
-  .shot figcaption { margin-top: 10px; font-size: 14px; color: var(--muted); }
-
-  .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .plan { position: relative; }
-  .plan.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
-  .plan .tag { position: absolute; top: 18px; right: 18px; font-size: 12px; background: var(--accent); color: #fff; padding: 2px 10px; border-radius: 999px; }
-  .price { font-size: 32px; font-weight: 700; margin: 8px 0 2px; font-variant-numeric: tabular-nums; }
-  .price span { font-size: 14px; font-weight: 400; color: var(--muted); }
-  .plan ul { list-style: none; padding: 0; margin: 16px 0 0; font-size: 14.5px; }
-  .plan li { padding: 5px 0 5px 22px; position: relative; color: var(--text); }
-  .plan li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
-  .lifetime {
-    margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
-    background: linear-gradient(120deg, rgba(155, 107, 242, 0.16), rgba(155, 107, 242, 0.05));
-  }
-  .lifetime b { font-size: 18px; }
-  .lifetime-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
-  /* 购买按钮：链接在页面底部 BUY 里填；没填的显示「即将开放」、点不了 */
-  .plan { display: flex; flex-direction: column; }
-  .plan ul { flex: 1; }
-  .btn-buy { margin-top: 18px; justify-content: center; border-color: var(--accent); color: var(--accent); cursor: pointer; flex-wrap: wrap; }
-  .lifetime .btn-buy { margin-top: 0; }
-  .btn-buy.primary { background: var(--accent); color: #fff; }
-  .btn-buy .soon { display: none; }
-  .btn-buy.off { opacity: .55; cursor: default; pointer-events: none; }
-  .btn-buy.off .soon { display: inline; }
-  .btn-buy:focus-visible, .btn-go:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
-  .btn-go { cursor: pointer; }
-  .btn-go:hover { border-color: #fff; }
-  .activate { margin-top: 16px; }
-  .activate p { margin: 6px 0 0; line-height: 1.7; }
-  .activate code { background: var(--chip); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
-  details { margin-top: 20px; }
-  summary { cursor: pointer; color: var(--accent); font-weight: 600; }
-  .table-wrap { overflow-x: auto; margin-top: 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); }
-  table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 14px; }
-  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
-  th { font-weight: 600; background: var(--chip); }
-  td:not(:first-child), th:not(:first-child) { text-align: center; white-space: nowrap; }
-  tr:last-child td { border-bottom: none; }
-
-  .suites a.card { display: block; color: inherit; text-decoration: none; transition: transform .15s ease; }
-  .suites a.card:hover { transform: translateY(-2px); }
-  .suites .go { color: var(--accent); font-size: 14px; margin-top: 10px; display: inline-block; }
-
-  footer { padding: 40px 0 56px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
-  .foot { display: flex; flex-wrap: wrap; gap: 18px 28px; justify-content: space-between; }
-  .foot nav { display: flex; flex-wrap: wrap; gap: 18px; }
-
-  @media (max-width: 860px) {
-    .hero-body { grid-template-columns: 1fr; }
-    .grid3, .plans { grid-template-columns: 1fr; }
-    .shots { grid-template-columns: repeat(2, 1fr); }
-    .nav-links { display: none; }
-  }
-  .nav-right { display: flex; align-items: center; gap: 22px; }
-  .lang { font: inherit; font-size: 13px; font-weight: 600; color: inherit; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
-  .lang:hover { background: rgba(255,255,255,0.16); }
-  .lang:focus-visible { outline: 2px solid #9b6bf2; outline-offset: 2px; }
-</style>
-<link rel="stylesheet" href="site/banner-hero.css?v=20261016-integrated-1">
+<link rel="stylesheet" href="site/glass.css?v=20261017-glass-1">
+<link rel="stylesheet" href="site/liquid.css?v=20261017-liquid-1">
 </head>
 <body>
 
+<div class="dock-wrap">
+  <div class="dock glass">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><img src="web/icons/brand-logo.png" width="28" height="28" alt=""></span>
+      <span data-en="AI Cube Prompter">AI魔方提词器</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#features" data-en="Features">功能</a>
+      <a href="#updates" data-en="Updates">最新变化</a>
+      <a href="web/" target="_blank" rel="noopener" data-en="Web app">网页版</a>
+      <a href="#pricing" data-en="Pricing">价格</a>
+      <a href="#suites" data-en="For teams">机构方案</a>
+      <a href="#help" data-en="Help">帮助</a>
+    </nav>
+    <div class="nav-right">
+      <button class="lang" id="langBtn" type="button" aria-label="切换语言 / Switch language">中文</button>
+      <a class="btn btn-primary" href="web/" target="_blank" rel="noopener" data-en="Open web app">打开网页版</a>
+    </div>
+  </div>
+</div>
+
+<nav class="rail glass" aria-label="Sections">
+  <a href="#features" title="Features 功能" aria-label="Features 功能"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></a>
+  <a href="#shots" title="Screens 截图" aria-label="Screens 截图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="3"/><path d="M11 18h2"/></svg></a>
+  <a href="#updates" title="Updates 更新" aria-label="Updates 更新"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></a>
+  <a href="#pricing" title="Pricing 价格" aria-label="Pricing 价格"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9.5c0-1 1.3-1.7 3-1.7s3 .7 3 1.7-1.3 1.5-3 2-3 1-3 2.2 1.3 1.8 3 1.8 3-.8 3-1.8"/></svg></a>
+  <a href="#suites" title="For teams 机构" aria-label="For teams 机构"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.2a3.2 3.2 0 0 1 0 5.6M18 14.4c1.8.7 3 2.4 3 4.6"/></svg></a>
+</nav>
+
 <header class="hero">
   <div class="wrap">
-    <div class="nav">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true">
-          <img src="web/icons/brand-logo.png" width="30" height="30" alt="">
-        </span>
-        <span data-en="AI Cube Prompter">AI魔方提词器</span>
+    <div class="stage glass">
+      <div class="stage-grid">
+        <div class="stage-copy">
+          <div><span class="eyebrow" data-en="Teleprompter · iPhone · iPad · Mac">提词器 · iPhone · iPad · Mac</span></div>
+          <h1 data-en="AI Cube Prompter">AI魔方提词器</h1>
+          <p class="lead" data-en="Write, prompt and record. Find the right setup for your next video.">写稿、提词、拍摄，让每一次表达更从容。</p>
+          <div class="cta">
+            <a class="btn btn-primary btn-go" id="android-download" href="https://github.com/fei1578787323-glitch/fei1578787323-glitch.github.io/releases/download/android-v0.44.0/aicube-prompter-android-0.44.0.apk" download="aicube-prompter-android-0.44.0.apk">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg>
+              <span data-en="Android beta download">安卓内测版下载</span> <small>0.44.0 · 206 MB</small>
+            </a>
+            <a class="btn btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use it in your browser">用网页版</span> <small data-en="No install · Windows / Android too">免安装 · Windows、安卓也能用</small></a>
+            <span class="btn" aria-disabled="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.2 8.5c0-1.7 1.4-2.5 1.4-2.5-.8-1.1-2-1.3-2.4-1.3-1-.1-2 .6-2.5.6s-1.3-.6-2.2-.6C4.4 4.7 3.3 5.4 2.7 6.5c-1.2 2.1-.3 5.2.9 6.9.6.8 1.2 1.8 2.1 1.7.9 0 1.2-.5 2.2-.5s1.3.5 2.2.5c.9 0 1.5-.9 2-1.7.6-.9.9-1.8.9-1.9 0 0-1.8-.7-1.8-3zM9.6 3.5c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.6-.4 2.2-1.1z"/></svg>
+              <span data-en="Download on the App Store">App Store 下载</span> <small data-en="Coming soon">即将上架</small>
+            </span>
+            <span class="btn" aria-disabled="true"><span data-en="Mac (direct download)">Mac 官网版</span> <small data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</small></span>
+          </div>
+          <p class="hero-note" data-en="iPhone, iPad and Mac · Android 8.0+ beta · The basic prompter is free forever">iPhone、iPad、Mac · Android 8.0+ 内测版 · 提词板永久免费</p>
+        </div>
+        <div class="stage-feature">
+          <div id="siteBanners">
+            <a href="#recording"><img class="site-banner-poster" src="site/banners-20261016/camera.jpg" width="1920" height="1080" alt="AI魔方提词器拍摄提词" style="display:block;width:100%;height:auto;border-radius:28px"></a>
+          </div>
+        </div>
       </div>
-      <div class="nav-right">
-      <nav class="nav-links">
-        <a href="#features" data-en="Features">功能</a>
-        <a href="#updates" data-en="Updates">最新变化</a>
-        <a href="web/" target="_blank" rel="noopener" data-en="Web app">网页版</a>
-        <a href="#pricing" data-en="Pricing">价格</a>
-        <a href="#suites" data-en="For teams">机构方案</a>
-        <a href="#help" data-en="Help">帮助</a>
-            </nav>
-      <button class="lang" id="langBtn" type="button" aria-label="切换语言 / Switch language">中文</button>
-      </div>
-    </div>
-    <div class="hero-body">
-      <div>
-        <h1 data-en="AI Cube Prompter">AI魔方提词器</h1>
-        <p class="lead" data-en="Write, prompt and record. Find the right setup for your next video.">写稿、提词、拍摄，让每一次表达更从容。</p>
-        <div id="siteBanners">
-          <a href="#recording"><img class="site-banner-poster" src="site/banners-20261016/camera.jpg" width="1920" height="1080" alt="AI魔方提词器拍摄提词"></a>
-        </div>
-        <div class="site-banner-controls" aria-label="功能横幅切换">
-          <button type="button" id="siteBannerPrevious" aria-label="上一张" title="上一张"><span aria-hidden="true">&#8592;</span></button>
-          <div id="siteBannerDots"></div>
-          <button type="button" id="siteBannerNext" aria-label="下一张" title="下一张"><span aria-hidden="true">&#8594;</span></button>
-          <button type="button" id="siteBannerPause" aria-label="暂停轮播" title="暂停轮播" aria-pressed="false"><span aria-hidden="true">&#8545;</span></button>
-        </div>
-        <div class="cta">
-          <span class="btn btn-primary" aria-disabled="true">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.2 8.5c0-1.7 1.4-2.5 1.4-2.5-.8-1.1-2-1.3-2.4-1.3-1-.1-2 .6-2.5.6s-1.3-.6-2.2-.6C4.4 4.7 3.3 5.4 2.7 6.5c-1.2 2.1-.3 5.2.9 6.9.6.8 1.2 1.8 2.1 1.7.9 0 1.2-.5 2.2-.5s1.3.5 2.2.5c.9 0 1.5-.9 2-1.7.6-.9.9-1.8.9-1.9 0 0-1.8-.7-1.8-3zM9.6 3.5c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.6-.4 2.2-1.1z"/></svg>
-            <span data-en="Download on the App Store">App Store 下载</span> <small data-en="Coming soon">即将上架</small>
-          </span>
-          <span class="btn btn-ghost" aria-disabled="true"><span data-en="Mac (direct download)">Mac 官网版</span> <small data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</small></span>
-          <a class="btn btn-primary btn-go" id="android-download" href="https://github.com/fei1578787323-glitch/fei1578787323-glitch.github.io/releases/download/android-v0.44.0/aicube-prompter-android-0.44.0.apk" download="aicube-prompter-android-0.44.0.apk">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg>
-            <span data-en="Android beta download">安卓内测版下载</span> <small>0.44.0 · 206 MB</small>
-          </a>
-          <a class="btn btn-ghost btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use it in your browser">用网页版</span> <small data-en="No install · Windows / Android too">免安装 · Windows、安卓也能用</small></a>
-        </div>
-        <p class="hero-note" data-en="iPhone, iPad and Mac · Android 8.0+ beta · The basic prompter is free forever">iPhone、iPad、Mac · Android 8.0+ 内测版 · 提词板永久免费</p>
+      <div class="modes" id="siteModes" aria-label="功能横幅切换">
+        <button type="button" class="pause" id="siteBannerPause" aria-pressed="false">&#8545;</button>
       </div>
     </div>
   </div>
@@ -220,65 +84,68 @@
       <div class="eyebrow" data-en="Features">功能</div>
       <h2 data-en="From idea to finished video, in one app">从想法到成片，一个 App 走完</h2>
       <p class="sub" data-en="Write, plan, prompt, shoot and review. iCloud sync connects iPhone, iPad and Mac; the Android beta stores data locally.">写稿、排期、提词、拍摄、复盘。iPhone、iPad 和 Mac 通过 iCloud 同步；Android 内测版使用本机存储。</p>
-      <div class="grid3">
-        <div class="card">
+      <div class="bento">
+        <div class="card b4 big">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h2M8 8v8M12 5v14M16 8v8M20 11v2"/></svg></div>
           <h3 data-en="Voice follow">智能跟读</h3>
           <p data-en="It hears which line you’re on and keeps pace; go back to re-read and it follows you back. Voice-activated, constant-speed and manual modes too.">识别你念到哪一句，文字跟着走；念错退回去重念，它也跟着退。另有声控、匀速、手动翻页三种模式。</p>
         </div>
-        <div class="card" id="recording">
+        <div class="card b2" id="recording">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></div>
           <h3 data-en="Record with the script">拍摄提词</h3>
           <p data-en="Read and record at once, with beauty, filters, background swap and 4K / 60 fps. Then cut retakes, remove breaths and add captions in one tap.">一边看稿一边录，美颜、滤镜、换背景、4K / 60 帧；录完一键剪掉重读、去气口、出字幕。</p>
         </div>
-        <div class="card" id="floating-notching">
+        <div class="card b2" id="floating-notching">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><rect x="12" y="11" width="7" height="7" rx="1.5"/></svg></div>
           <h3 data-en="Notch and floating prompting">刘海与浮窗提词</h3>
           <p data-en="The native iOS app offers a camera-adjacent notch layout and picture-in-picture prompting. Availability in other apps depends on iOS permissions and the receiving app. Browser floating windows require a supported desktop browser.">iOS 原生版提供靠近摄像头的刘海布局和画中画提词。其他平台的显示效果取决于系统权限和目标应用；网页浮窗仅在支持的桌面浏览器可用。</p>
         </div>
-        <div class="card">
+        <div class="card b2">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
           <h3 data-en="Content calendar">内容日历</h3>
           <p data-en="Idea, drafting, ready, shot, edited, published — schedule it and know what to shoot each day. Teams can plan by person.">灵感、写稿、待拍、已拍、已剪、已发布，排好日子，每天打开就知道拍什么；团队可以按人排期。</p>
         </div>
-        <div class="card">
+        <div class="card b2">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div>
           <h3 data-en="Materials and AI creation">素材集与 AI 创作</h3>
           <p data-en="In the native app, collect recordings, documents, images and links, transcribe locally, then choose whether to send text to your AI provider. AI can make scripts conversational or fit a target duration.">原生版集中管理录音、文件、图片和链接，本机转写后可整理成稿；发送给 AI 前由你确认，支持改成口语、压到指定时长等任务。</p>
         </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2" y="4" width="14" height="10" rx="1.5"/><rect x="12" y="10" width="10" height="8" rx="1.5"/><path d="M6 18h4"/></svg></div>
-          <h3 data-en="Studio on Mac">电脑版演播室</h3>
-          <p data-en="Multiple external displays, NDI, phone remote, hot-standby backup across machines and tally lights — ready for livestream rooms and broadcast.">多块外接屏同时输出、NDI、手机遥控、多机主备热切换、Tally 灯，直播间和电视台都能用。</p>
-        </div>
+        <div class="card b6 wide"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2" y="4" width="14" height="10" rx="1.5"/><rect x="12" y="10" width="10" height="8" rx="1.5"/><path d="M6 18h4"/></svg></div><div><h3 data-en="Studio on Mac">电脑版演播室</h3>
+          <p data-en="Multiple external displays, NDI, phone remote, hot-standby backup across machines and tally lights — ready for livestream rooms and broadcast.">多块外接屏同时输出、NDI、手机遥控、多机主备热切换、Tally 灯，直播间和电视台都能用。</p></div></div>
       </div>
     </div>
   </section>
 
-  <section id="shots" style="padding-top: 0;">
+  <section id="shots">
     <div class="wrap">
-      <div class="shots">
-        <figure class="shot"><img src="site/home.jpg" alt="首页：念稿数据、内容日历、拍摄提词和提词板入口" loading="lazy"><figcaption data-en="Home">首页</figcaption></figure>
-        <figure class="shot"><img src="site/prompter.jpg" alt="提词板：阅读线和当前句高亮" loading="lazy"><figcaption data-en="Prompter">提词板</figcaption></figure>
-        <figure class="shot"><img src="site/calendar.jpg" alt="内容日历" loading="lazy"><figcaption data-en="Calendar">内容日历</figcaption></figure>
-        <figure class="shot"><img src="site/voice.jpg" alt="灵感录音" loading="lazy"><figcaption data-en="Voice notes">灵感录音</figcaption></figure>
+      <div class="shots-stage glass">
+        <div class="shots">
+          <figure class="shot"><img src="site/home.jpg" alt="首页：念稿数据、内容日历、拍摄提词和提词板入口" loading="lazy"><figcaption data-en="Home">首页</figcaption></figure>
+          <figure class="shot"><img src="site/prompter.jpg" alt="提词板：阅读线和当前句高亮" loading="lazy"><figcaption data-en="Prompter">提词板</figcaption></figure>
+          <figure class="shot"><img src="site/calendar.jpg" alt="内容日历" loading="lazy"><figcaption data-en="Calendar">内容日历</figcaption></figure>
+          <figure class="shot"><img src="site/voice.jpg" alt="灵感录音" loading="lazy"><figcaption data-en="Voice notes">灵感录音</figcaption></figure>
+        </div>
       </div>
     </div>
   </section>
 
   <section id="updates">
     <div class="wrap">
-      <div class="eyebrow" data-en="Updated October 16, 2026">2026年10月16日更新</div>
-      <h2 data-en="A clearer workspace, with themes that follow you">布局更清晰，交互跟着主题走</h2>
-      <p class="sub" data-en="The browser workspace now includes switchable home layouts, theme colors and quieter controls. Native camera and video-processing features remain in the Mac and iOS apps; the browser does not offer those tools yet.">网页版新增可切换主页、主题强调色和统一控件。拍摄、刘海提词、AI成片等能力仍由 Mac / iOS 原生版提供，网页版暂不提供这些工具。</p>
-      <div class="grid3">
-        <div class="card"><h3 data-en="Available in the browser">网页版已同步</h3><p data-en="The official homepage now features four prompting-mode posters plus one scrolling-methods poster, each shown in full with a 3-second crossfade slideshow. The web workspace retains its theme-aware banners. Smooth, step and flexible voice-follow styles are available, with 1–3 display lines for step mode. Existing scripts, licenses and preferences are retained.">官网首页更新为四张提词模式海报和一张滚动方式海报，完整展示，每 3 秒淡入淡出；在线工作台保留随主题变化的横幅。智能跟读支持丝滑、步进、柔性三种方式，步进可选 1–3 个实际显示行。保留原有稿件、授权和界面偏好。</p><p style="margin-top:16px"><a href="web/" data-en="Open the browser workspace →">打开在线工作台 →</a></p></div>
-        <div class="card"><h3 data-en="Native app workflows">原生版近期功能</h3><p data-en="AI video processing integrates speech recognition, editing and subtitle export. Notch prompting includes script selection and per-platform controls. Mobile home layouts are switchable; material collection and help controls have been refined.">AI成片接入识别、剪辑与字幕导出；刘海提词增加稿件选择和平台内调节；手机主页可切换布局，素材集和功能说明控件持续优化。具体能力以所安装版本为准。</p></div>
-        <div class="card"><h3 data-en="New Mac interface previews">Mac 新界面预览</h3><p data-en="Lumen and accordion workspaces preserve existing actions. Luminous Core adds theme-colored task tiles and a clearer source preview to the AI workspace. These newest Mac layouts are preview builds, not a claim of a new public app release.">蓝曜、折叠工作台保留现有功能；流光智核为 AI 工作区加入主题色任务磁贴和清晰原稿预览。最新 Mac 布局目前为独立预览，不代表已发布新的正式安装包。</p></div>
-      </div>
-      <div class="shots" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); margin-top:28px">
-        <figure class="shot"><img src="site/workbench-20261010.jpg" alt="Mac 蓝曜工作台实际预览：稿件任务和今日计划" loading="lazy"><figcaption data-en="Lumen workspace · Mac preview">蓝曜工作台 · Mac 预览</figcaption></figure>
-        <figure class="shot"><img src="site/intelligence-20261010.jpg" alt="Mac 流光智核实际预览：文案提取来源磁贴" loading="lazy"><figcaption data-en="Luminous Core · Mac preview">流光智核 · Mac 预览</figcaption></figure>
+      <div class="updates">
+        <div>
+          <div class="eyebrow" data-en="Updated October 16, 2026">2026年10月16日更新</div>
+          <h2 data-en="A clearer workspace, with themes that follow you">布局更清晰，交互跟着主题走</h2>
+          <p class="sub" data-en="The browser workspace now includes switchable home layouts, theme colors and quieter controls. Native camera and video-processing features remain in the Mac and iOS apps; the browser does not offer those tools yet.">网页版新增可切换主页、主题强调色和统一控件。拍摄、刘海提词、AI成片等能力仍由 Mac / iOS 原生版提供，网页版暂不提供这些工具。</p>
+          <div class="stack">
+            <div class="card"><h3 data-en="Available in the browser">网页版已同步</h3><p data-en="The official homepage now features four prompting-mode posters plus one scrolling-methods poster, each shown in full with a 3-second crossfade slideshow. The web workspace retains its theme-aware banners. Smooth, step and flexible voice-follow styles are available, with 1–3 display lines for step mode. Existing scripts, licenses and preferences are retained.">官网首页更新为四张提词模式海报和一张滚动方式海报，完整展示，每 3 秒淡入淡出；在线工作台保留随主题变化的横幅。智能跟读支持丝滑、步进、柔性三种方式，步进可选 1–3 个实际显示行。保留原有稿件、授权和界面偏好。</p><p style="margin-top:16px"><a href="web/" data-en="Open the browser workspace →">打开在线工作台 →</a></p></div>
+            <div class="card"><h3 data-en="Native app workflows">原生版近期功能</h3><p data-en="AI video processing integrates speech recognition, editing and subtitle export. Notch prompting includes script selection and per-platform controls. Mobile home layouts are switchable; material collection and help controls have been refined.">AI成片接入识别、剪辑与字幕导出；刘海提词增加稿件选择和平台内调节；手机主页可切换布局，素材集和功能说明控件持续优化。具体能力以所安装版本为准。</p></div>
+            <div class="card"><h3 data-en="New Mac interface previews">Mac 新界面预览</h3><p data-en="Lumen and accordion workspaces preserve existing actions. Luminous Core adds theme-colored task tiles and a clearer source preview to the AI workspace. These newest Mac layouts are preview builds, not a claim of a new public app release.">蓝曜、折叠工作台保留现有功能；流光智核为 AI 工作区加入主题色任务磁贴和清晰原稿预览。最新 Mac 布局目前为独立预览，不代表已发布新的正式安装包。</p></div>
+          </div>
+        </div>
+        <div class="previews glass">
+          <figure class="shot"><img src="site/workbench-20261010.jpg" alt="Mac 蓝曜工作台实际预览：稿件任务和今日计划" loading="lazy"><figcaption data-en="Lumen workspace · Mac preview">蓝曜工作台 · Mac 预览</figcaption></figure>
+          <figure class="shot"><img src="site/intelligence-20261010.jpg" alt="Mac 流光智核实际预览：文案提取来源磁贴" loading="lazy"><figcaption data-en="Luminous Core · Mac preview">流光智核 · Mac 预览</figcaption></figure>
+        </div>
       </div>
     </div>
   </section>
@@ -340,7 +207,7 @@
 
       <details>
         <summary data-en="Compare all plans">查看完整版本对比</summary>
-        <div class="table-wrap">
+        <div class="table-wrap glass">
           <table>
             <thead><tr><th data-en="Feature">功能</th><th data-en="Free">免费版</th><th>Pro</th><th>MAX</th></tr></thead>
             <tbody>
@@ -375,7 +242,7 @@
     </div>
   </section>
 
-  <section id="suites" class="suites" style="padding-top: 0;">
+  <section id="suites" class="suites">
     <div class="wrap">
       <div class="eyebrow" data-en="For teams">机构方案</div>
       <h2 data-en="For livestream rooms, course teams and studios">给直播间、课程团队和演播室</h2>
@@ -390,7 +257,7 @@
 </main>
 
 <footer id="help">
-  <div class="wrap foot">
+  <div class="wrap"><div class="foot glass">
     <div>© 2026 <span data-en="AI Cube Prompter">AI魔方提词器</span> · See It. Say It.</div>
     <nav>
       <a href="手机版说明书" data-en="iPhone guide (Chinese)">手机版说明书</a>
@@ -399,10 +266,10 @@
       <a href="terms" data-en="Terms of Use">用户协议</a>
       <a href="studio" data-en="For organizations">机构采购</a>
     </nav>
-  </div>
+  </div></div>
 </footer>
 
-<script type="module" src="site/banner-hero.js?v=20261016-integrated-1"></script>
+<script type="module" src="site/glass.js?v=20261017-glass-1"></script>
 <script>
 // 官网购买：在发卡平台上架商品后，把商品链接填到这里，再跑 scripts/publish-site.sh。没填的按钮显示「即将开放」
 const BUY = {
