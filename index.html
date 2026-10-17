@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png?v=20261011-plain">
 <meta name="description" content="A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac, with an Android beta download.">
 <link rel="preload" as="image" href="site/banners-20261016/camera.jpg">
-<link rel="stylesheet" href="site/agent.css?v=20261017-agent-1">
+<link rel="stylesheet" href="site/brahma.css?v=20261017-brahma-1">
 </head>
 <body>
 
@@ -35,41 +35,74 @@
 </div>
 
 <header class="hero" id="top">
-  <div class="planet" aria-hidden="true"></div>
-  <div class="wrap">
-    <span class="chip chip-l"><i></i><span data-en="Voice follow">智能跟读</span></span>
-    <span class="chip chip-r"><i></i><span data-en="Record with the script">拍摄提词</span></span>
-    <span class="chip chip-c" data-en="Notch prompting ↗">刘海提词 ↗</span>
-    <span class="pill-tag"><i></i><span data-en="Teleprompter · iPhone · iPad · Mac">提词器 · iPhone · iPad · Mac</span></span>
-    <h1 data-en="Write it. Read it.&lt;br&gt;&lt;span&gt;Record it.&lt;/span&gt;">写稿、提词、<br><span>一次拍成。</span></h1>
-    <p class="lead" data-en="AI Cube Prompter follows your voice line by line, so you can write, prompt and record your next video without losing your place.">AI魔方提词器会跟着你的声音一句句往下走，写稿、提词、拍摄，一个 App 不丢行。</p>
-    <div class="cta">
-      <a class="btn btn-primary btn-go" id="android-download" href="https://github.com/fei1578787323-glitch/fei1578787323-glitch.github.io/releases/download/android-v0.44.0/aicube-prompter-android-0.44.0.apk" download="aicube-prompter-android-0.44.0.apk"><span data-en="Android beta download">安卓内测版下载</span> <small>0.44.0 · 206 MB</small></a>
-      <a class="btn btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use it in your browser">用网页版</span></a>
-    </div>
-    <div class="cta-more">
-      <span><b data-en="App Store">App Store</b> · <span data-en="Coming soon">即将上架</span></span>
-      <span><b data-en="Mac (direct download)">Mac 官网版</b> · <span data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</span></span>
-      <span data-en="The basic prompter is free forever">提词板永久免费</span>
-    </div>
-    <div class="stage">
-      <div class="stage-grid"><div class="stage-feature">
-        <div id="siteBanners">
-          <a href="#recording"><img class="site-banner-poster" src="site/banners-20261016/camera.jpg" width="1920" height="1080" alt="AI魔方提词器拍摄提词" style="display:block;width:100%;height:auto;border-radius:18px"></a>
-        </div>
-      </div></div>
-      <div class="modes" id="siteModes" aria-label="功能横幅切换">
-        <button type="button" class="pause" id="siteBannerPause" aria-pressed="false">&#8545;</button>
+  <div class="hero-left">
+    <div class="ghost-art" aria-hidden="true"><svg viewBox="0 0 600 760" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="hA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a2cf5"/><stop offset=".45" stop-color="#e04bd8"/><stop offset=".75" stop-color="#6a4cff"/><stop offset="1" stop-color="#2b7bff"/></linearGradient>
+    <linearGradient id="hB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6bff"/><stop offset=".5" stop-color="#3b6cff"/><stop offset="1" stop-color="#6be8ff"/></linearGradient>
+    <radialGradient id="hS" cx=".32" cy=".28" r=".85"><stop offset="0" stop-color="#8ec5ff"/><stop offset=".4" stop-color="#3d49f0"/><stop offset="1" stop-color="#5a14d6"/></radialGradient>
+    <radialGradient id="hC" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#8ff4ff"/><stop offset="1" stop-color="#27c5e6"/></radialGradient>
+  </defs>
+  <circle cx="190" cy="700" r="250" fill="url(#gS)"/>
+  <ellipse cx="190" cy="560" rx="160" ry="60" fill="#fff" opacity=".18"/>
+  <ellipse cx="320" cy="350" rx="330" ry="250" transform="rotate(-38 320 350)" fill="none" stroke="url(#gA)" stroke-width="64"/>
+  <ellipse cx="308" cy="338" rx="330" ry="250" transform="rotate(-38 308 338)" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="9"/>
+  <ellipse cx="340" cy="420" rx="250" ry="120" transform="rotate(58 340 420)" fill="none" stroke="url(#gB)" stroke-width="46"/>
+  <ellipse cx="332" cy="410" rx="250" ry="120" transform="rotate(58 332 410)" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="7"/>
+  <path d="M330 560 C400 520 440 520 470 520" fill="none" stroke="#9bf1ff" stroke-opacity=".85" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="480" cy="522" r="38" fill="url(#gC)"/>
+</svg></div>
+    <div class="copy">
+      <h1 data-en="Write it. Read it.&lt;br&gt;&lt;span&gt;Record it.&lt;/span&gt;">写稿、提词、<br><span>一次拍成。</span></h1>
+      <p class="lead" data-en="AI Cube Prompter follows your voice line by line, so you can write, prompt and record your next video without losing your place.">AI魔方提词器会跟着你的声音一句句往下走，写稿、提词、拍摄，一个 App 不丢行。</p>
+      <div class="cta">
+        <a class="btn btn-primary btn-go" id="android-download" href="https://github.com/fei1578787323-glitch/fei1578787323-glitch.github.io/releases/download/android-v0.44.0/aicube-prompter-android-0.44.0.apk" download="aicube-prompter-android-0.44.0.apk"><span data-en="Android beta">安卓内测版</span> <small>0.44.0 · 206 MB</small></a>
+        <a class="btn btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use in browser">用网页版</span></a>
+      </div>
+      <div class="cta-more">
+        <span><b data-en="App Store">App Store</b> · <span data-en="Coming soon">即将上架</span></span>
+        <span><b data-en="Mac">Mac</b> · <span data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</span></span>
+        <span data-en="The basic prompter is free forever">提词板永久免费</span>
       </div>
     </div>
-    <div class="platforms">
-      <span data-en="Built for the devices you already shoot on">适配你手边正在用的设备</span>
-      <div class="row"><span>iPhone</span><span>iPad</span><span>Mac</span><span>Android</span><span>Web</span></div>
-    </div>
   </div>
+  <div class="hero-right"><svg class="art" viewBox="0 0 600 760" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a2cf5"/><stop offset=".45" stop-color="#e04bd8"/><stop offset=".75" stop-color="#6a4cff"/><stop offset="1" stop-color="#2b7bff"/></linearGradient>
+    <linearGradient id="gB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6bff"/><stop offset=".5" stop-color="#3b6cff"/><stop offset="1" stop-color="#6be8ff"/></linearGradient>
+    <radialGradient id="gS" cx=".32" cy=".28" r=".85"><stop offset="0" stop-color="#8ec5ff"/><stop offset=".4" stop-color="#3d49f0"/><stop offset="1" stop-color="#5a14d6"/></radialGradient>
+    <radialGradient id="gC" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#8ff4ff"/><stop offset="1" stop-color="#27c5e6"/></radialGradient>
+  </defs>
+  <circle cx="190" cy="700" r="250" fill="url(#gS)"/>
+  <ellipse cx="190" cy="560" rx="160" ry="60" fill="#fff" opacity=".18"/>
+  <ellipse cx="320" cy="350" rx="330" ry="250" transform="rotate(-38 320 350)" fill="none" stroke="url(#gA)" stroke-width="64"/>
+  <ellipse cx="308" cy="338" rx="330" ry="250" transform="rotate(-38 308 338)" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="9"/>
+  <ellipse cx="340" cy="420" rx="250" ry="120" transform="rotate(58 340 420)" fill="none" stroke="url(#gB)" stroke-width="46"/>
+  <ellipse cx="332" cy="410" rx="250" ry="120" transform="rotate(58 332 410)" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="7"/>
+  <path d="M330 560 C400 520 440 520 470 520" fill="none" stroke="#9bf1ff" stroke-opacity=".85" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="480" cy="522" r="38" fill="url(#gC)"/>
+</svg></div>
 </header>
 
 <main>
+  <section id="demo">
+    <div class="wrap">
+      <div class="demo-head">
+        <div class="eyebrow" data-en="See it in action">看它怎么用</div>
+        <h2 style="margin-inline:auto" data-en="Five ways to prompt">五种提词场景</h2>
+      </div>
+      <div class="stage">
+        <div class="stage-grid"><div class="stage-feature">
+          <div id="siteBanners">
+            <a href="#recording"><img class="site-banner-poster" src="site/banners-20261016/camera.jpg" width="1920" height="1080" alt="AI魔方提词器拍摄提词" style="display:block;width:100%;height:auto"></a>
+          </div>
+        </div></div>
+        <div class="modes" id="siteModes" aria-label="功能横幅切换">
+          <button type="button" class="pause" id="siteBannerPause" aria-pressed="false">&#8545;</button>
+        </div>
+      </div>
+    </div>
+  </section>
   <section id="features">
     <div class="wrap">
       <div class="eyebrow" data-en="Features">功能</div>
