@@ -3,106 +3,68 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="light">
 <title>AI Cube Prompter</title>
 <link rel="icon" href="site/favicon-32.png?v=20261011-plain">
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png?v=20261011-plain">
 <meta name="description" content="A voice-following teleprompter for videos, courses, livestreams and talks — on iPhone, iPad and Mac, with an Android beta download.">
 <link rel="preload" as="image" href="site/banners-20261016/camera.jpg">
-<link rel="stylesheet" href="site/brahma.css?v=20261017-brahma-1">
+<link rel="stylesheet" href="site/bigvu.css?v=20261021-bigvu-1">
 </head>
 <body>
 
 <div class="dock-wrap">
   <div class="dock">
     <div class="brand">
-      <span class="brand-mark" aria-hidden="true"><img src="web/icons/brand-logo.png" width="28" height="28" alt=""></span>
+      <span class="brand-mark" aria-hidden="true"><img src="web/icons/brand-logo.png" width="30" height="30" alt=""></span>
       <span data-en="AI Cube Prompter">AI魔方提词器</span>
     </div>
     <nav class="nav-links">
       <a href="#features" data-en="Features">功能</a>
       <a href="#updates" data-en="Updates">最新变化</a>
-      <a href="web/" target="_blank" rel="noopener" data-en="Web app">网页版</a>
       <a href="#pricing" data-en="Pricing">价格</a>
       <a href="#suites" data-en="For teams">机构方案</a>
       <a href="#help" data-en="Help">帮助</a>
     </nav>
     <div class="nav-right">
       <button class="lang" id="langBtn" type="button" aria-label="切换语言 / Switch language">中文</button>
-      <a class="btn btn-primary" href="web/" target="_blank" rel="noopener" data-en="Open web app">打开网页版</a>
+      <a class="btn btn-navy" href="web/" target="_blank" rel="noopener" data-en="Open web app">打开网页版</a>
     </div>
   </div>
 </div>
 
 <header class="hero" id="top">
-  <div class="hero-left">
-    <div class="ghost-art" aria-hidden="true"><svg viewBox="0 0 600 760" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <defs>
-    <linearGradient id="hA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a2cf5"/><stop offset=".45" stop-color="#e04bd8"/><stop offset=".75" stop-color="#6a4cff"/><stop offset="1" stop-color="#2b7bff"/></linearGradient>
-    <linearGradient id="hB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6bff"/><stop offset=".5" stop-color="#3b6cff"/><stop offset="1" stop-color="#6be8ff"/></linearGradient>
-    <radialGradient id="hS" cx=".32" cy=".28" r=".85"><stop offset="0" stop-color="#8ec5ff"/><stop offset=".4" stop-color="#3d49f0"/><stop offset="1" stop-color="#5a14d6"/></radialGradient>
-    <radialGradient id="hC" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#8ff4ff"/><stop offset="1" stop-color="#27c5e6"/></radialGradient>
-  </defs>
-  <circle cx="190" cy="700" r="250" fill="url(#gS)"/>
-  <ellipse cx="190" cy="560" rx="160" ry="60" fill="#fff" opacity=".18"/>
-  <ellipse cx="320" cy="350" rx="330" ry="250" transform="rotate(-38 320 350)" fill="none" stroke="url(#gA)" stroke-width="64"/>
-  <ellipse cx="308" cy="338" rx="330" ry="250" transform="rotate(-38 308 338)" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="9"/>
-  <ellipse cx="340" cy="420" rx="250" ry="120" transform="rotate(58 340 420)" fill="none" stroke="url(#gB)" stroke-width="46"/>
-  <ellipse cx="332" cy="410" rx="250" ry="120" transform="rotate(58 332 410)" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="7"/>
-  <path d="M330 560 C400 520 440 520 470 520" fill="none" stroke="#9bf1ff" stroke-opacity=".85" stroke-width="20" stroke-linecap="round"/>
-  <circle cx="480" cy="522" r="38" fill="url(#gC)"/>
-</svg></div>
-    <div class="copy">
-      <h1 data-en="Write it. Read it.&lt;br&gt;&lt;span&gt;Record it.&lt;/span&gt;">写稿、提词、<br><span>一次拍成。</span></h1>
-      <p class="lead" data-en="AI Cube Prompter follows your voice line by line, so you can write, prompt and record your next video without losing your place.">AI魔方提词器会跟着你的声音一句句往下走，写稿、提词、拍摄，一个 App 不丢行。</p>
-      <div class="cta">
-        <a class="btn btn-primary btn-go" id="android-download" href="https://github.com/fei1578787323-glitch/fei1578787323-glitch.github.io/releases/download/android-v0.44.0/aicube-prompter-android-0.44.0.apk" download="aicube-prompter-android-0.44.0.apk"><span data-en="Android beta">安卓内测版</span> <small>0.44.0 · 206 MB</small></a>
-        <a class="btn btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use in browser">用网页版</span></a>
-      </div>
-      <div class="cta-more">
-        <span><b data-en="App Store">App Store</b> · <span data-en="Coming soon">即将上架</span></span>
-        <span><b data-en="Mac">Mac</b> · <span data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</span></span>
-        <span data-en="The basic prompter is free forever">提词板永久免费</span>
+  <div class="wrap">
+    <h1 data-en="Write it. Read it.&lt;br&gt;&lt;span&gt;Record it.&lt;/span&gt;">写稿、提词、<br><span>一次拍成。</span></h1>
+    <p class="lead" data-en="AI Cube Prompter follows your voice line by line, so you can write, prompt and record your next video without losing your place.">AI魔方提词器会跟着你的声音一句句往下走，写稿、提词、拍摄，一个 App 不丢行。</p>
+    <div class="cta">
+      <a class="btn btn-navy btn-go" id="android-download" href="https://github.com/fei1578787323-glitch/fei1578787323-glitch.github.io/releases/download/android-v0.44.0/aicube-prompter-android-0.44.0.apk" download="aicube-prompter-android-0.44.0.apk"><span data-en="Android beta download">安卓内测版下载</span> <small>0.44.0 · 206 MB</small></a>
+      <a class="btn btn-go" href="web/" target="_blank" rel="noopener"><span data-en="Use it in your browser">用网页版</span></a>
+    </div>
+    <div class="cta-more">
+      <span><b data-en="App Store">App Store</b> · <span data-en="Coming soon">即将上架</span></span>
+      <span><b data-en="Mac (direct download)">Mac 官网版</b> · <span data-en="14-day full trial · Coming soon">14 天全功能试用 · 即将开放</span></span>
+    </div>
+    <div class="stage">
+      <div class="stage-grid"><div class="stage-feature">
+        <div id="siteBanners">
+          <a href="#recording"><img class="site-banner-poster" src="site/banners-20261016/camera.jpg" width="1920" height="1080" alt="AI魔方提词器拍摄提词" style="display:block;width:100%;height:auto;border-radius:28px"></a>
+        </div>
+      </div></div>
+      <div class="modes" id="siteModes" aria-label="功能横幅切换">
+        <button type="button" class="pause" id="siteBannerPause" aria-pressed="false">&#8545;</button>
       </div>
     </div>
+    <div class="statbar">
+      <div class="stat"><b>7</b><span data-en="day free trial">天免费试用</span></div>
+      <div class="stat"><b>5</b><span data-en="scrolling methods">种滚动方式</span></div>
+      <div class="stat"><b>4K</b><span data-en="/ 60 fps recording">/ 60 帧拍摄</span></div>
+      <div class="stat"><b>0</b><span data-en="cost for the basic prompter">元用基础提词板</span></div>
+    </div>
   </div>
-  <div class="hero-right"><svg class="art" viewBox="0 0 600 760" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <defs>
-    <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a2cf5"/><stop offset=".45" stop-color="#e04bd8"/><stop offset=".75" stop-color="#6a4cff"/><stop offset="1" stop-color="#2b7bff"/></linearGradient>
-    <linearGradient id="gB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6bff"/><stop offset=".5" stop-color="#3b6cff"/><stop offset="1" stop-color="#6be8ff"/></linearGradient>
-    <radialGradient id="gS" cx=".32" cy=".28" r=".85"><stop offset="0" stop-color="#8ec5ff"/><stop offset=".4" stop-color="#3d49f0"/><stop offset="1" stop-color="#5a14d6"/></radialGradient>
-    <radialGradient id="gC" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#8ff4ff"/><stop offset="1" stop-color="#27c5e6"/></radialGradient>
-  </defs>
-  <circle cx="190" cy="700" r="250" fill="url(#gS)"/>
-  <ellipse cx="190" cy="560" rx="160" ry="60" fill="#fff" opacity=".18"/>
-  <ellipse cx="320" cy="350" rx="330" ry="250" transform="rotate(-38 320 350)" fill="none" stroke="url(#gA)" stroke-width="64"/>
-  <ellipse cx="308" cy="338" rx="330" ry="250" transform="rotate(-38 308 338)" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="9"/>
-  <ellipse cx="340" cy="420" rx="250" ry="120" transform="rotate(58 340 420)" fill="none" stroke="url(#gB)" stroke-width="46"/>
-  <ellipse cx="332" cy="410" rx="250" ry="120" transform="rotate(58 332 410)" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="7"/>
-  <path d="M330 560 C400 520 440 520 470 520" fill="none" stroke="#9bf1ff" stroke-opacity=".85" stroke-width="20" stroke-linecap="round"/>
-  <circle cx="480" cy="522" r="38" fill="url(#gC)"/>
-</svg></div>
 </header>
 
 <main>
-  <section id="demo">
-    <div class="wrap">
-      <div class="demo-head">
-        <div class="eyebrow" data-en="See it in action">看它怎么用</div>
-        <h2 style="margin-inline:auto" data-en="Five ways to prompt">五种提词场景</h2>
-      </div>
-      <div class="stage">
-        <div class="stage-grid"><div class="stage-feature">
-          <div id="siteBanners">
-            <a href="#recording"><img class="site-banner-poster" src="site/banners-20261016/camera.jpg" width="1920" height="1080" alt="AI魔方提词器拍摄提词" style="display:block;width:100%;height:auto"></a>
-          </div>
-        </div></div>
-        <div class="modes" id="siteModes" aria-label="功能横幅切换">
-          <button type="button" class="pause" id="siteBannerPause" aria-pressed="false">&#8545;</button>
-        </div>
-      </div>
-    </div>
-  </section>
   <section id="features">
     <div class="wrap">
       <div class="eyebrow" data-en="Features">功能</div>
@@ -142,7 +104,7 @@
 
   <section id="shots">
     <div class="wrap">
-      <div class="shots-stage glass">
+      <div class="shots-stage">
         <div class="shots">
           <figure class="shot"><img src="site/home.jpg" alt="首页：念稿数据、内容日历、拍摄提词和提词板入口" loading="lazy"><figcaption data-en="Home">首页</figcaption></figure>
           <figure class="shot"><img src="site/prompter.jpg" alt="提词板：阅读线和当前句高亮" loading="lazy"><figcaption data-en="Prompter">提词板</figcaption></figure>
@@ -179,10 +141,22 @@
       <div class="eyebrow" data-en="Pricing">价格</div>
       <h2 data-en="Start free, upgrade when you’re ready">先免费用，觉得好再开通</h2>
       <p class="sub" data-en="One Apple ID covers phone and Mac; first-time subscribers get a 7-day free trial. Prices below are in CNY — your local App Store price applies. You can also buy a license code here; it works in the Mac app, the iPhone app and the web app.">手机和电脑同一个 Apple 账号通用；首次订阅可免费试用 7 天。价格以 App Store 显示为准。也可以在官网直接买授权码，电脑版、手机版、网页版通用。</p>
-      <div class="plans">
+      <div class="billing">
+        <div class="toggle" id="billingToggle" role="group" aria-label="Billing">
+          <button type="button" data-b="monthly" aria-pressed="false" data-en="Monthly">按月</button>
+          <button type="button" data-b="yearly" aria-pressed="true" data-en="Yearly">按年</button>
+        </div>
+        <span class="save" data-en="Save up to 72%">按年最多省 72%</span>
+      </div>
+      <div class="plans" id="plans">
         <div class="card plan">
+          <div class="tier" data-en="TRY">体验</div><div class="tier-sub" data-en="Try AI Cube">先试试</div>
           <h3 data-en="Free">免费版</h3>
-          <div class="price">¥0</div>
+          <div class="price"><span>¥0</span><small data-en="forever">永久</small></div>
+          <div class="bill" data-en="for one person, no card needed">个人使用，无需绑卡</div>
+          <a class="btn btn-open" href="web/" target="_blank" rel="noopener" data-en="Open web app">打开网页版</a>
+          <div class="tiles"><div class="tile"><span class="lab" data-en="Voice follow">智能跟读</span><b>20 <em>min/day</em></b></div><div class="tile"><span class="lab" data-en="Recording / floating">拍摄 / 浮窗</span><b>20 <em>min/day</em></b></div></div>
+          <div class="with" data-en="Includes:">包含：</div>
           <ul>
             <li data-en="Prompter free forever, unlimited scripts">提词板永久免费，稿件不限</li>
             <li data-en="Voice follow 20 min a day">智能跟读每天 20 分钟</li>
@@ -191,10 +165,14 @@
             <li data-en="AI writing, content calendar (10 items)">AI 写稿、内容日历（排 10 条）</li>
           </ul>
         </div>
-        <div class="card plan featured">
-          <span class="tag" data-en="Most popular">最多人选</span>
-          <h3>Pro</h3>
-          <div class="price" data-en="¥99 &lt;span&gt;/ year · or ¥29 / month&lt;/span&gt;">¥99 <span>/ 年 · 或 ¥29 / 月</span></div>
+        <div class="card plan featured"><span class="tag" data-en="Most popular">最多人选</span>
+          <div class="tier" data-en="CREATE">创作</div><div class="tier-sub" data-en="For everyday video">日常出片</div>
+          <h3 data-en="Pro">Pro</h3>
+          <div class="price"><span class="p-y"><span>¥99</span><small data-en="/ year">/ 年</small></span><span class="p-m"><span>¥29</span><small data-en="/ month">/ 月</small></span></div>
+          <div class="bill"><span class="p-y" data-en="billed once a year">按年付费，一次付清</span><span class="p-m" data-en="billed monthly">按月付费</span></div>
+          <a class="btn btn-buy primary" data-buy="pro"><span data-en="Buy 1-year Pro code · ¥99">买 Pro 年卡授权码 · ¥99</span><small class="soon" data-en="Coming soon">即将开放</small></a>
+          <div class="tiles"><div class="tile"><span class="lab" data-en="Voice follow">智能跟读</span><b><span data-en="Unlimited">不限</span></b></div><div class="tile"><span class="lab" data-en="Recording">拍摄</span><b>4K <em>/ 60 fps</em></b></div></div>
+          <div class="with" data-en="Includes:">包含：</div>
           <ul>
             <li data-en="Unlimited voice follow, recording and floating">跟读、拍摄、浮窗不限时长</li>
             <li data-en="4K / 60 fps, eye contact, SRT captions">4K / 60 帧、眼神校正、SRT 字幕</li>
@@ -202,11 +180,15 @@
             <li data-en="External displays, NDI, phone remote">外接屏幕、NDI、手机遥控</li>
             <li data-en="Apple Watch remote, phone–Mac transfer">Apple Watch 遥控、与电脑互传</li>
           </ul>
-          <a class="btn btn-buy primary" data-buy="pro"><span data-en="Buy 1-year Pro code · ¥99">买 Pro 年卡授权码 · ¥99</span><small class="soon" data-en="Coming soon">即将开放</small></a>
         </div>
         <div class="card plan">
-          <h3>MAX</h3>
-          <div class="price" data-en="¥299 &lt;span&gt;/ year · or ¥69 / month&lt;/span&gt;">¥299 <span>/ 年 · 或 ¥69 / 月</span></div>
+          <div class="tier" data-en="SCALE">团队</div><div class="tier-sub" data-en="Teams and studios">团队与演播室</div>
+          <h3 data-en="MAX">MAX</h3>
+          <div class="price"><span class="p-y"><span>¥299</span><small data-en="/ year">/ 年</small></span><span class="p-m"><span>¥69</span><small data-en="/ month">/ 月</small></span></div>
+          <div class="bill"><span class="p-y" data-en="billed once a year">按年付费，一次付清</span><span class="p-m" data-en="billed monthly">按月付费</span></div>
+          <a class="btn btn-buy" data-buy="max"><span data-en="Buy 1-year MAX code · ¥299">买 MAX 年卡授权码 · ¥299</span><small class="soon" data-en="Coming soon">即将开放</small></a>
+          <div class="tiles"><div class="tile"><span class="lab" data-en="Devices">同时设备</span><b>5 <em data-en="at once">台</em></b></div><div class="tile"><span class="lab" data-en="Team">团队</span><b><span data-en="Scheduling">排期</span></b></div></div>
+          <div class="with" data-en="Includes:">包含：</div>
           <ul>
             <li data-en="Everything in Pro">Pro 全部功能</li>
             <li data-en="Team scheduling, multi-person web editing">团队排期、网页多人改稿</li>
@@ -214,55 +196,68 @@
             <li data-en="Project files, 5 devices at once">工程文件、同时 5 台设备</li>
             <li data-en="Per-seat licenses and invoices for organizations">机构按机位授权、开发票</li>
           </ul>
-          <a class="btn btn-buy" data-buy="max"><span data-en="Buy 1-year MAX code · ¥299">买 MAX 年卡授权码 · ¥299</span><small class="soon" data-en="Coming soon">即将开放</small></a>
         </div>
-      </div>
-      <div class="card lifetime">
-        <div data-en="&lt;b&gt;Lifetime MAX · ¥1999&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color: var(--muted); font-size: 14px;&quot;&gt;Pay once for every MAX feature and all future updates; AI credits sold separately.&lt;/span&gt;"><b>终身 MAX · ¥1999</b><br><span style="color: var(--muted); font-size: 14px;">一次买断，MAX 全部功能和以后的更新都包含；AI 算力点另购。</span></div>
-        <div class="lifetime-actions">
+        <div class="card plan">
+          <div class="tier" data-en="OWN IT">买断</div><div class="tier-sub" data-en="Pay once">一次买断</div>
+          <h3 data-en="Lifetime MAX">终身 MAX</h3>
+          <div class="price"><span>¥1999</span><small data-en="one-time">一次性</small></div>
+          <div class="bill" data-en="all future updates included">含以后所有更新</div>
           <a class="btn btn-buy" data-buy="lifetime"><span data-en="Buy Lifetime MAX · ¥1999">买终身 MAX · ¥1999</span><small class="soon" data-en="Coming soon">即将开放</small></a>
-          <a href="studio" data-en="Organization licensing →">机构采购与授权 →</a>
+          <div class="tiles"><div class="tile"><span class="lab" data-en="MAX features">MAX 功能</span><b><span data-en="All">全部</span></b></div><div class="tile"><span class="lab" data-en="AI credits">AI 算力点</span><b><span data-en="Sold separately">另购</span></b></div></div>
+          <div class="with" data-en="Includes:">包含：</div>
+          <ul><li data-en="Every MAX feature">MAX 全部功能</li><li data-en="All future updates">以后的更新都包含</li><li><a href="studio" data-en="Organization licensing →">机构采购与授权 →</a></li></ul>
         </div>
       </div>
       <div class="card activate">
         <b data-en="After you buy">买完怎么用</b>
         <p data-en="You’ll get a code that starts with &lt;code&gt;VP1-&lt;/code&gt; right after paying. Paste it in: &lt;b&gt;Mac&lt;/b&gt; — the app menu › “License…”; &lt;b&gt;iPhone&lt;/b&gt; — Settings › Plan &amp;amp; License › Enter serial; &lt;b&gt;Web app&lt;/b&gt; — the plan button at the top right. One code works on one person’s devices; keep it safe.">付款后会马上收到一串 <code>VP1-</code> 开头的授权码，复制粘贴就能用：<b>电脑版</b>在屏幕左上角「AI魔方提词器」菜单 ›「授权…」；<b>手机版</b>在「设置 › 版本与授权 › 输入序列号」；<b>网页版</b>点右上角的版本按钮。一个授权码给一个人自己的设备用，请妥善保存。</p>
       </div>
-
-      <details>
-        <summary data-en="Compare all plans">查看完整版本对比</summary>
-        <div class="table-wrap glass">
-          <table>
-            <thead><tr><th data-en="Feature">功能</th><th data-en="Free">免费版</th><th>Pro</th><th>MAX</th></tr></thead>
-            <tbody>
-              <tr><td data-en="Voice-activated / constant / manual modes, unlimited scripts, prompter, minimal mode">声控 / 匀速 / 手动翻页，稿件不限，提词板，极简模式</td><td>✓</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Voice follow">智能跟读</td><td data-en="20 min / day">每天 20 分钟</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
-              <tr><td data-en="Record with script (beauty, filters, background)">拍摄提词（美颜、滤镜、换背景）</td><td data-en="20 min / day">每天 20 分钟</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
-              <tr><td data-en="4K / 60 fps recording">4K / 60 帧拍摄</td><td data-en="1080p / 30 fps">1080p / 30 帧</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Floating prompter">浮窗提词</td><td data-en="20 min / day (shared with recording)">每天 20 分钟（和拍摄共用）</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
-              <tr><td data-en="Delivery review">口播复盘</td><td data-en="3 / day">每天 3 次</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
-              <tr><td data-en="Cut retakes, remove breaths, voice enhance, captions">剪掉重读、去气口、人声增强、识别字幕</td><td data-en="3 videos / day">每天 3 条</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
-              <tr><td data-en="SRT caption export">SRT 字幕导出</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Eye contact correction">眼神校正</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Content calendar: scheduling, today’s shoots, reminders">内容日历：排期、今天要拍、到期提醒</td><td data-en="Up to 10 items">最多排 10 条</td><td data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
-              <tr><td data-en="Voice notes to text and scripts">录音转文字、变成稿件</td><td data-en="10 min / day">每天 10 分钟</td><td data-en="1 hr / day">每天 1 小时</td><td data-en="Unlimited">不限</td></tr>
-              <tr><td data-en="AI writing and assistant">AI 写稿、AI 助手</td><td>✓</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Projects: all scripts and settings in one file">工程：全部稿件和设置存成一个文件</td><td>—</td><td>—</td><td>✓</td></tr>
-              <tr><td data-en="Version history">历史版本</td><td data-en="Last 5">最近 5 版</td><td data-en="80 per script">每篇 80 版</td><td data-en="80 per script">每篇 80 版</td></tr>
-              <tr><td data-en="Phone remote, follow Mac (secondary), multi-machine sync">手机遥控、跟随电脑（从机）、多机同步</td><td>✓</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Devices at once (main + remotes / secondaries)">同时使用的设备（主设备 + 遥控 / 从机）</td><td data-en="2">2 台</td><td data-en="3">3 台</td><td data-en="5">5 台</td></tr>
-              <tr><td data-en="Apple Watch remote, phone–Mac transfer, OBS / vMix browser source">Apple Watch 遥控、手机与电脑互传、OBS / vMix 浏览器源</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="External / multi-display output">外接屏幕 / 多屏输出</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Mac: NDI output, live comments">电脑版：NDI 输出、直播弹幕</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Mac: show current time">电脑版：显示当前时间</td><td>—</td><td>✓</td><td>✓</td></tr>
-              <tr><td data-en="Mac: multi-person web editing (presence, auto-merge)">电脑版：网页多人改稿（团队协作、在线名单、自动合并）</td><td>—</td><td>—</td><td>✓</td></tr>
-              <tr><td data-en="Team scheduling (assignees, filter by person)">团队排期（给每条内容指定负责人，按人看日历和看板）</td><td>—</td><td>—</td><td>✓</td></tr>
-              <tr><td data-en="Mac: hot standby, tally lights, wipe on quit">电脑版：多机主备热切换、Tally 灯、退出清空稿件</td><td>—</td><td>—</td><td>✓</td></tr>
-              <tr><td data-en="Per-seat license codes and invoices">机构多机位授权码、发票</td><td>—</td><td>—</td><td>✓</td></tr>
-            </tbody>
-          </table>
+      <div class="addon">
+        <img src="site/banners-20261016/camera.jpg" alt="" loading="lazy">
+        <div>
+          <span class="tagpill" data-en="+ Android beta">+ 安卓内测版</span>
+          <h3 data-en="Try it on Android today">安卓内测版，现在就能装</h3>
+          <p data-en="Version 0.44.0 · 206 MB. Needs Android 8.0+; data is stored locally.">0.44.0 版 · 206 MB。需要 Android 8.0 以上；数据保存在本机。</p>
         </div>
-      </details>
+        <a class="btn" href="https://github.com/fei1578787323-glitch/fei1578787323-glitch.github.io/releases/download/android-v0.44.0/aicube-prompter-android-0.44.0.apk" download="aicube-prompter-android-0.44.0.apk" data-en="Download APK">下载安装包</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <div class="eyebrow" data-en="Compare">对比</div>
+      <h2 data-en="What’s in each plan">各版本包含什么</h2>
+      <p class="sub" data-en="The features that matter most, side by side.">最常用的功能，并排对比。</p>
+      <div class="table-wrap"><table>
+            <thead><tr><th data-en="Feature">功能</th><th data-en="Free">免费版</th><th class="hl">Pro</th><th>MAX</th></tr></thead>
+            <tbody>
+              <tr><td data-en="Voice-activated / constant / manual modes, unlimited scripts, prompter, minimal mode">声控 / 匀速 / 手动翻页，稿件不限，提词板，极简模式</td><td>✓</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Voice follow">智能跟读</td><td data-en="20 min / day">每天 20 分钟</td><td class="hl" data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="Record with script (beauty, filters, background)">拍摄提词（美颜、滤镜、换背景）</td><td data-en="20 min / day">每天 20 分钟</td><td class="hl" data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="4K / 60 fps recording">4K / 60 帧拍摄</td><td data-en="1080p / 30 fps">1080p / 30 帧</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Floating prompter">浮窗提词</td><td data-en="20 min / day (shared with recording)">每天 20 分钟（和拍摄共用）</td><td class="hl" data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="Delivery review">口播复盘</td><td data-en="3 / day">每天 3 次</td><td class="hl" data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="Cut retakes, remove breaths, voice enhance, captions">剪掉重读、去气口、人声增强、识别字幕</td><td data-en="3 videos / day">每天 3 条</td><td class="hl" data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="SRT caption export">SRT 字幕导出</td><td>—</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Eye contact correction">眼神校正</td><td>—</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Content calendar: scheduling, today’s shoots, reminders">内容日历：排期、今天要拍、到期提醒</td><td data-en="Up to 10 items">最多排 10 条</td><td class="hl" data-en="Unlimited">不限</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="Voice notes to text and scripts">录音转文字、变成稿件</td><td data-en="10 min / day">每天 10 分钟</td><td class="hl" data-en="1 hr / day">每天 1 小时</td><td data-en="Unlimited">不限</td></tr>
+              <tr><td data-en="AI writing and assistant">AI 写稿、AI 助手</td><td>✓</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Projects: all scripts and settings in one file">工程：全部稿件和设置存成一个文件</td><td>—</td><td class="hl">—</td><td>✓</td></tr>
+              <tr><td data-en="Version history">历史版本</td><td data-en="Last 5">最近 5 版</td><td class="hl" data-en="80 per script">每篇 80 版</td><td data-en="80 per script">每篇 80 版</td></tr>
+              <tr><td data-en="Phone remote, follow Mac (secondary), multi-machine sync">手机遥控、跟随电脑（从机）、多机同步</td><td>✓</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Devices at once (main + remotes / secondaries)">同时使用的设备（主设备 + 遥控 / 从机）</td><td data-en="2">2 台</td><td class="hl" data-en="3">3 台</td><td data-en="5">5 台</td></tr>
+              <tr><td data-en="Apple Watch remote, phone–Mac transfer, OBS / vMix browser source">Apple Watch 遥控、手机与电脑互传、OBS / vMix 浏览器源</td><td>—</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="External / multi-display output">外接屏幕 / 多屏输出</td><td>—</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Mac: NDI output, live comments">电脑版：NDI 输出、直播弹幕</td><td>—</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Mac: show current time">电脑版：显示当前时间</td><td>—</td><td class="hl">✓</td><td>✓</td></tr>
+              <tr><td data-en="Mac: multi-person web editing (presence, auto-merge)">电脑版：网页多人改稿（团队协作、在线名单、自动合并）</td><td>—</td><td class="hl">—</td><td>✓</td></tr>
+              <tr><td data-en="Team scheduling (assignees, filter by person)">团队排期（给每条内容指定负责人，按人看日历和看板）</td><td>—</td><td class="hl">—</td><td>✓</td></tr>
+              <tr><td data-en="Mac: hot standby, tally lights, wipe on quit">电脑版：多机主备热切换、Tally 灯、退出清空稿件</td><td>—</td><td class="hl">—</td><td>✓</td></tr>
+              <tr><td data-en="Per-seat license codes and invoices">机构多机位授权码、发票</td><td>—</td><td class="hl">—</td><td>✓</td></tr>
+            </tbody>
+          </table></div>
     </div>
   </section>
 
@@ -281,7 +276,7 @@
 </main>
 
 <footer id="help">
-  <div class="foot"><div class="foot-in" style="display:contents">
+  <div class="foot"><div style="display:contents">
     <div>© 2026 <span data-en="AI Cube Prompter">AI魔方提词器</span> · See It. Say It.</div>
     <nav>
       <a href="手机版说明书" data-en="iPhone guide (Chinese)">手机版说明书</a>
@@ -294,6 +289,18 @@
 </footer>
 
 <script type="module" src="site/glass.js?v=20261017-glass-1"></script>
+<script>
+// 月付 / 年付切换：只换价格显示，不影响购买链接
+(function () {
+  const plans = document.getElementById('plans'), box = document.getElementById('billingToggle');
+  if (!plans || !box) return;
+  box.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    plans.classList.toggle('monthly', b.dataset.b === 'monthly');
+    box.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  });
+})();
+</script>
 <script>
 // 官网购买：在发卡平台上架商品后，把商品链接填到这里，再跑 scripts/publish-site.sh。没填的按钮显示「即将开放」
 const BUY = {
