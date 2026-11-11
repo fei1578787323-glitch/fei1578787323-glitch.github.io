@@ -7,11 +7,19 @@
 .account-header .account-close { font-size: 26px; padding: 0; min-width: 42px; line-height: 1; background: transparent; border: 0; }
 .account-subtitle, .account-detail, .account-delivery, .account-footnote { color: var(--muted, #5e6776); line-height: 1.55; }
 .account-subtitle { margin: 8px 0 16px; font-size: 14px; }
+.account-methods { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--fill, #eef1f6); margin-bottom: 14px; }
+.account-methods button { flex: 1; border: 0; min-height: 38px; padding: 8px; background: transparent; font-size: 14px; }
+.account-methods button[aria-pressed="true"] { background: var(--card, #fff); color: var(--accent-text, #1f8f3d); box-shadow: var(--shadow, 0 1px 4px #0001); font-weight: 650; }
+.account-method-note { color: var(--muted, #5e6776); font-size: 12px; line-height: 1.5; margin: -6px 0 14px; }
 .account-status, .account-error { margin: 8px 0; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
 .account-status:empty { display: none; }
 .account-error { color: var(--danger, #c5221f); }
 .account-form { display: grid; gap: 9px; margin-top: 16px; }
 .account-form > label { font-size: 14px; font-weight: 600; }
+.account-email-group, .account-phone-group { display: grid; gap: 9px; }
+.account-email-group > label, .account-phone-group > label { font-size: 14px; font-weight: 600; }
+.account-phone-row { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; }
+.account-country-code { display: flex; align-items: center; justify-content: center; border: 1px solid var(--sep, #d3d7df); border-radius: 10px; color: var(--muted, #5e6776); background: var(--fill, #eef1f6); }
 .account-form input:not([type="checkbox"]) { min-width: 0; width: 100%; min-height: 44px; border: 1px solid var(--sep, #d3d7df); background: var(--fill, #eef1f6); border-radius: 10px; padding: 10px 12px; font-size: 16px; }
 .account-code-row { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 10px; }
 .account-delivery, .account-footnote { font-size: 12px; margin: 4px 0 10px; }

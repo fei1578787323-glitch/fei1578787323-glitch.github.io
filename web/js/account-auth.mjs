@@ -1,4 +1,4 @@
-// First-party email authentication. No AI calls, cookies, localStorage or manuscript access.
+// First-party email/phone authentication. No AI calls, cookies, localStorage or manuscript access.
 export const ACCOUNT_AUTH_URL = 'https://account.zntom.com/v1/auth/';
 export const ACCOUNT_SESSION_KEY = 'aicube.web.account.session.v1';
 const TOKEN = /^[A-Za-z0-9_-]{43}$/;
@@ -9,6 +9,21 @@ export class AccountAuthError extends Error {
 export function normalizeEmail(value) {
   const email = typeof value === 'string' ? value.trim().toLowerCase() : '';
   return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : '';
+}
+export function normalizePhone(value) {
+  if (typeof value !== 'string' || value.length > 64 || /[\r\n]/.test(value)) return '';
+  let number = value.normalize('NFKC').trim().replace(/[ ()-]/g, '');
+  if (number.startsWith('+86')) number = number.slice(3);
+  else if (number.startsWith('0086')) number = number.slice(4);
+  else if (number.length === 13 && number.startsWith('86')) number = number.slice(2);
+  return /^1[3-9]\d{9}$/.test(number) ? '+86' + number : '';
+}
+function validChallenge(value, now) {
+  if (typeof value?.id !== 'string' || !ID.test(value.id) || !Number.isSafeInteger(value.expiresAt) ||
+      !Number.isSafeInteger(value.retryAt) || value.expiresAt <= now || value.retryAt > value.expiresAt) {
+    throw new AccountAuthError('invalidResponse');
+  }
+  return { id: value.id, expiresAt: value.expiresAt, retryAt: value.retryAt };
 }
 function validSession(value, now, allowExpired = false) {
   if (!value || typeof value.user?.id !== 'string' || !ID.test(value.user.id) ||
@@ -65,21 +80,25 @@ export class AccountAuthClient {
   }
   async capabilities() {
     const flags = await this.request('capabilities');
-    if (!flags || ['email', 'apple', 'ai'].some(key => typeof flags[key] !== 'boolean')) throw new AccountAuthError('invalidResponse');
-    return { email: flags.email, apple: flags.apple, ai: flags.ai };
+    if (!flags || ['email', 'apple', 'ai'].some(key => typeof flags[key] !== 'boolean') ||
+        (flags.phone !== undefined && typeof flags.phone !== 'boolean')) throw new AccountAuthError('invalidResponse');
+    return { email: flags.email, phone: flags.phone === true, apple: flags.apple, ai: flags.ai };
   }
   async sendCode(email) {
     if (!normalizeEmail(email)) throw new AccountAuthError('invalidRequest');
-    const value = await this.request('email/challenges', { email: normalizeEmail(email) });
-    if (typeof value?.id !== 'string' || !ID.test(value.id) || !Number.isSafeInteger(value.expiresAt) ||
-        !Number.isSafeInteger(value.retryAt) || value.expiresAt <= this.now() || value.retryAt > value.expiresAt) {
-      throw new AccountAuthError('invalidResponse');
-    }
-    return { id: value.id, expiresAt: value.expiresAt, retryAt: value.retryAt };
+    return validChallenge(await this.request('email/challenges', { email: normalizeEmail(email) }), this.now());
   }
   async verifyCode(email, code, challengeID) {
-    if (!normalizeEmail(email) || !/^\d{6}$/.test(code) || !ID.test(challengeID)) throw new AccountAuthError('invalidRequest');
+    if (!normalizeEmail(email) || !/^\d{6}$/.test(code) || typeof challengeID !== 'string' || !ID.test(challengeID)) throw new AccountAuthError('invalidRequest');
     return validSession(await this.request('email/session', { email: normalizeEmail(email), code, challengeID }), this.now());
+  }
+  async sendPhoneCode(phone) {
+    if (!normalizePhone(phone)) throw new AccountAuthError('invalidRequest');
+    return validChallenge(await this.request('phone/challenges', { phone: normalizePhone(phone) }), this.now());
+  }
+  async verifyPhoneCode(phone, code, challengeID) {
+    if (!normalizePhone(phone) || !/^\d{6}$/.test(code) || typeof challengeID !== 'string' || !ID.test(challengeID)) throw new AccountAuthError('invalidRequest');
+    return validSession(await this.request('phone/session', { phone: normalizePhone(phone), code, challengeID }), this.now());
   }
   async refresh(refreshToken) {
     if (!TOKEN.test(refreshToken)) throw new AccountAuthError('invalidRequest');
@@ -109,16 +128,27 @@ export class AccountLoginController {
   constructor({ client = new AccountAuthClient(), storage, now = () => Date.now() / 1000,
     acquireLease = browserSessionLease(), newID = () => crypto.randomUUID() } = {}) {
     this.client = client; this.storage = storage; this.now = now; this.acquireLease = acquireLease; this.newID = newID;
-    this.state = { capabilities: null, session: null, challenge: null, email: '', busy: '', error: '', message: '', restorePending: false, cleanupPending: false };
+    this.state = { capabilities: null, session: null, challenge: null, method: 'email', email: '', phone: '', busy: '', error: '', message: '', restorePending: false, cleanupPending: false };
     this.listeners = new Set(); this.releaseLease = null; this.record = null; this.retryAfter = 0; this.resendAt = 0;
   }
   subscribe(listener) { this.listeners.add(listener); listener(this.state); return () => this.listeners.delete(listener); }
   update(values) { Object.assign(this.state, values); for (const listener of this.listeners) listener(this.state); }
   get signedIn() { return !!this.state.session && this.state.session.expiresAt > this.now(); }
   get resendSeconds() { return Math.max(0, Math.ceil(this.resendAt - this.now())); }
+  get methodAvailable() { return this.state.capabilities?.[this.state.method] === true; }
+  get hasLoginMethods() { return this.state.capabilities?.email === true || this.state.capabilities?.phone === true; }
+  setMethod(method) {
+    if (!['email', 'phone'].includes(method) || this.state.busy || this.record || !this.state.capabilities?.[method]) return false;
+    if (method !== this.state.method) this.update({ method, challenge: null, error: '', message: '' });
+    return true;
+  }
   setEmail(email) {
     if (this.state.busy || this.state.session) return;
     if (normalizeEmail(email) !== this.state.email) this.update({ email: normalizeEmail(email), challenge: null, error: '', message: '' });
+  }
+  setPhone(phone) {
+    if (this.state.busy || this.state.session) return;
+    if (normalizePhone(phone) !== this.state.phone) this.update({ phone: normalizePhone(phone), challenge: null, error: '', message: '' });
   }
   writeRecord(record) {
     try { this.storage.setItem(ACCOUNT_SESSION_KEY, JSON.stringify(record)); }
@@ -141,14 +171,17 @@ export class AccountLoginController {
   async initialize() {
     if (this.state.cleanupPending) return this.retryCleanup();
     return this.run('loading', async () => {
+      this.update({ capabilities: null });
       this.update({ capabilities: await this.client.capabilities() });
-      if (!this.state.capabilities.email) { this.update({ error: 'unavailable' }); return; }
+      if (!this.methodAvailable) {
+        this.update({ ...(this.hasLoginMethods ? { method: this.state.capabilities.email ? 'email' : 'phone' } : {}), challenge: null });
+      }
       if (this.state.session) return;
       if (!this.record) {
         let raw;
         try { raw = this.storage.getItem(ACCOUNT_SESSION_KEY); }
         catch { throw new AccountAuthError('storage'); }
-        if (!raw) return;
+        if (!raw) { if (!this.hasLoginMethods) this.update({ error: 'unavailable' }); return; }
         try {
           const record = JSON.parse(raw);
           if (record.version !== 1 || typeof record.leaseID !== 'string' || !ID.test(record.leaseID)) throw new Error();
@@ -163,18 +196,22 @@ export class AccountLoginController {
       await this.rotate();
     });
   }
-  async sendCode(email, consent) {
-    if (!consent || !normalizeEmail(email) || !this.state.capabilities?.email || this.resendSeconds > 0 || this.record || this.state.cleanupPending) return false;
+  async sendCode(identifier, consent) {
+    const method = this.state.method;
+    const normalized = method === 'phone' ? normalizePhone(identifier) : normalizeEmail(identifier);
+    if (!consent || !normalized || !this.methodAvailable || this.resendSeconds > 0 || this.record || this.state.cleanupPending) return false;
     return this.run('sending', async () => {
-      const normalized = normalizeEmail(email);
-      const challenge = await this.client.sendCode(normalized);
+      const challenge = method === 'phone' ? await this.client.sendPhoneCode(normalized) : await this.client.sendCode(normalized);
       this.resendAt = challenge.retryAt;
-      this.update({ email: normalized, challenge, message: '验证码已发送，有效期 5 分钟。收不到时请检查垃圾邮件。' });
+      this.update({ [method]: normalized, challenge: { ...challenge, method, identifier: normalized },
+        message: method === 'phone' ? '短信验证码已发送，有效期 5 分钟。' : '验证码已发送，有效期 5 分钟。收不到时请检查垃圾邮件。' });
     });
   }
   async login(code, consent) {
     const challenge = this.state.challenge;
-    if (!consent || !this.state.capabilities?.email || !challenge || !/^\d{6}$/.test(code) || this.record || this.state.cleanupPending) return false;
+    const method = this.state.method;
+    if (!consent || !this.methodAvailable || !challenge || challenge.method !== method || challenge.identifier !== this.state[method] ||
+        !/^\d{6}$/.test(code) || this.record || this.state.cleanupPending) return false;
     if (challenge.expiresAt <= this.now()) { this.update({ error: 'expired' }); return false; }
     return this.run('login', async () => {
       const leaseID = this.newID();
@@ -182,7 +219,8 @@ export class AccountLoginController {
       if (!release) throw new AccountAuthError('storage');
       let session;
       try {
-        session = await this.client.verifyCode(this.state.email, code, challenge.id);
+        session = method === 'phone' ? await this.client.verifyPhoneCode(this.state.phone, code, challenge.id) :
+          await this.client.verifyCode(this.state.email, code, challenge.id);
         const record = { version: 1, leaseID, session };
         try { this.writeRecord(record); }
         catch (error) { try { await this.client.logout(session.refreshToken); } catch {} throw error; }
