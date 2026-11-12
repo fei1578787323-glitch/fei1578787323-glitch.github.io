@@ -1,11 +1,13 @@
 // 离线可用：第一次打开后把页面文件缓存下来，没网也能打开提词（智能跟读要联网识别除外）。
 // 改了网页文件发布时把 VERSION 加一，旧缓存会被换掉。
-const VERSION = 'frmzone-web-20261112-otp-expiry';
+const VERSION = 'frmzone-web-20261112-mac-banners-1';
 const FILES = ['./', 'index.html', 'styles.css', 'styles.css?v=20261016-banner', 'manifest.webmanifest', 'library.json',
   'js/app.js', 'js/store.js', 'js/markup.js', 'js/follow.js', 'js/follow-scroll.js', 'js/prompter.js', 'js/license.js', 'js/workspace.js', 'js/home-banners.js',
   'account.css?v=20261111.2', 'js/account-ui.mjs?v=20261111.2', 'js/account-auth.mjs',
   'assets/daily-quotes.json', 'icons/brand-logo.png', 'assets/banners/modes.jpg', 'assets/banners/floating.jpg',
   'assets/banners/notch.jpg', 'assets/banners/board.jpg', 'assets/banners/camera.jpg',
+  'assets/banners/modes-light.jpg', 'assets/banners/floating-light.jpg', 'assets/banners/notch-light.jpg',
+  'assets/banners/board-light.jpg', 'assets/banners/camera-light.jpg',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png',
   'icons/icon-192.png?v=20261011-plain', 'icons/icon-512.png?v=20261011-plain',
   'icons/apple-touch-icon.png?v=20261011-plain', 'icons/favicon-32.png?v=20261011-plain'];

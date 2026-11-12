@@ -20,9 +20,13 @@ export function lightSurface(r, g, b, canvas = null) {
 }
 export function themePixel(r, g, b, accent, light = false, canvas = null) {
   const original = light ? lightSurface(r, g, b, canvas) : [r, g, b];
-  const hi = Math.max(r, g, b), lo = Math.min(r, g, b), chroma = hi - lo;
-  if (hi <= .48 || chroma <= .07 || r <= g || g < b * .9 || chroma / hi >= .76 || (g - b) / chroma >= .22) return original;
-  const strength = Math.min(1, (chroma - .07) / .12) * Math.min(1, (hi - .48) / .15);
+  const hi = Math.max(r, g, b), lo = Math.min(r, g, b);
+  // Match HomeBannerAccent.map(website: true): continuous coral selection.
+  const ramp = (value, start, end) => {
+    const t = Math.min(1, Math.max(0, (value - start) / (end - start)));
+    return t * t * (3 - 2 * t);
+  };
+  const strength = ramp(r - g, .01, .10) * ramp(r - b, .02, .12) * ramp(hi, .30, .60);
   if (light) {
     const factor = Math.min(.85, .42 / Math.max(.001, accent[0] * .2126 + accent[1] * .7152 + accent[2] * .0722));
     return original.map((v, i) => v + (accent[i] * factor - v) * strength);
@@ -31,14 +35,20 @@ export function themePixel(r, g, b, accent, light = false, canvas = null) {
   const amplitude = Math.min(range, .9) * (1 - Math.abs(2 * lightness - 1)), base = lightness - amplitude / 2;
   return [r, g, b].map((v, i) => v + ((range > .001 ? base + amplitude * (accent[i] - low) / range : lightness) - v) * strength);
 }
-const PHOTO = { notch: [[.44, .39, .53, .53]], camera: [[.47, .28, .32, .65]], floating: [[.71, .40, .28, .51], [.64, .36, .14, .37]] };
-const EXTRA = {
-  modes: [[.35, .14, .63, .79]], floating: [[.50, .27, .24, .06], [.78, .14, .21, .25]],
-  notch: [[.55, .32, .31, .05], [.72, .10, .26, .19]],
-  board: [[.47, .35, .35, .12], [.66, .68, .06, .11], [.84, .28, .15, .25]], camera: [[.81, .30, .18, .37]],
+// Normalized top-left regions from the Mac website artwork renderer.
+const PHOTO = {
+  camera: [[.565, .06, .265, .88]], notch: [[.45, .17, .50, .60]],
+  floating: [[.425, .14, .40, .60], [.825, .24, .15, .58]],
+  board: [[.445, .15, .46, .63]], modes: [],
 };
-const COMMON = [[.045, .16, .37, .19], [.055, .35, .065, .46], [.05, .79, .28, .13]];
-const GRAPHICS = Object.fromEntries(Object.entries(EXTRA).map(([kind, regions]) => [kind, [...COMMON, ...regions]]));
+const BRAND = [.05, .05, .075, .20], HEADLINE = [.06, .28, .44, .23];
+const GRAPHICS = {
+  modes: [BRAND, [.24, .15, .52, .15], [.06, .41, .87, .13], [.04, .67, .91, .16]],
+  camera: [BRAND, HEADLINE, [.60, .24, .08, .04]],
+  board: [BRAND, HEADLINE, [.51, .45, .28, .07], [.65, .64, .05, .09]],
+  notch: [BRAND, HEADLINE, [.70, .23, .09, .05]],
+  floating: [BRAND, HEADLINE, [.63, .33, .11, .06], [.87, .35, .05, .04]],
+};
 const contains = (rect, x, y) => x >= rect[0] && x <= rect[0] + rect[2] && y >= rect[1] && y <= rect[1] + rect[3];
 export function themedPoint(kind, x, y) {
   return !PHOTO[kind]?.some(r => contains(r, x, y)) && (GRAPHICS[kind] || []).some(r => contains(r, x, y));
@@ -70,20 +80,21 @@ export class HomeFeatureBanners {
       button.onclick = e => { if (!this.dragged || e.detail === 0) onOpen(kind); };
       this.node.append(button);
       const image = new Image();
-      const layer = { kind, button, canvas, image, fallback }; this.layers.push(layer);
+      const lightImage = new Image();
+      const layer = { kind, button, canvas, image, lightImage, fallback }; this.layers.push(layer);
+      lightImage.onload = () => { this.paint(layer); this.schedule(); };
+      lightImage.onerror = () => this.paint(layer);
+      lightImage.src = new URL(`banners/${kind}-light.jpg`, assetBase).href;
       image.onload = () => {
         const c = canvas.getContext('2d'); c.drawImage(image, 0, 0, canvas.width, canvas.height);
         layer.pixels = c.getImageData(0, 0, canvas.width, canvas.height);
         layer.ink = [];
-        layer.protection = new Float32Array(canvas.width * canvas.height);
         const { width, height, data } = layer.pixels;
         for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
           const i = (y * width + x) * 4;
           if (data[i] > data[i + 1] && themedPoint(kind, x / width, y / height)) layer.ink.push(i);
-          layer.protection[i / 4] = photoProtection(kind, x / width, y / height);
         }
         this.paint(layer);
-        fallback.hidden = true;
         this.ready = this.layers.every(l => l.pixels || l.failed); this.schedule();
       };
       image.onerror = () => { layer.failed = true; this.ready = this.layers.every(l => l.pixels || l.failed); this.schedule(); };
@@ -130,8 +141,9 @@ export class HomeFeatureBanners {
     const { motion, theme } = appearance;
     this.appearance = appearance;
     this.motion = motion;
-    const light = theme === 'light' || theme === 'ice' || (theme === 'system' && !this.darkScheme.matches);
+    // Use the actual page scheme, preserving system mode and existing themes.
     const style = getComputedStyle(document.documentElement);
+    const light = style.colorScheme.trim() === 'light';
     const sample = document.createElement('canvas').getContext('2d');
     sample.fillStyle = style.getPropertyValue('--banner-surface').trim() || '#f2f2f7';
     sample.fillRect(0, 0, 1, 1);
@@ -145,24 +157,34 @@ export class HomeFeatureBanners {
     this.schedule();
   }
   paint(layer) {
-    if (!layer.pixels || !this.color) return;
+    const context = layer.canvas.getContext('2d');
+    if (this.light && layer.lightImage.complete && layer.lightImage.naturalWidth > 0) {
+      // Use the authored light poster without inversion or accent recoloring.
+      // Its 1672x941 frame is fitted, not stretched into the dark 16:9 frame.
+      const image = layer.lightImage, width = layer.canvas.width, height = layer.canvas.height;
+      const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+      const drawnWidth = image.naturalWidth * scale, drawnHeight = image.naturalHeight * scale;
+      context.clearRect(0, 0, width, height);
+      context.drawImage(image, (width - drawnWidth) / 2, (height - drawnHeight) / 2, drawnWidth, drawnHeight);
+      layer.fallback.hidden = true;
+      return;
+    }
+    if (!layer.pixels) return;
+    // Missing light art falls back to the untouched dark original, as on Mac.
+    if (this.light || !this.color) {
+      context.putImageData(layer.pixels, 0, 0);
+      layer.fallback.hidden = true;
+      return;
+    }
     const accent = this.color.slice(1).match(/../g).map(v => parseInt(v, 16) / 255);
     const { width, height, data } = layer.pixels;
-    if (this.light && layer.surfaceKey !== this.surfaceKey) {
-      layer.lightPixels = new ImageData(new Uint8ClampedArray(data), width, height);
-      for (let i = 0; i < data.length; i += 4) {
-        const surface = lightSurface(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255, this.surface);
-        const protection = layer.protection[i / 4];
-        for (let c = 0; c < 3; c++) layer.lightPixels.data[i + c] = Math.round(surface[c] * 255 * (1 - protection) + data[i + c] * protection);
-      }
-      layer.surfaceKey = this.surfaceKey;
-    }
-    const output = new ImageData(new Uint8ClampedArray(this.light ? layer.lightPixels.data : data), width, height);
+    const output = new ImageData(new Uint8ClampedArray(data), width, height);
     for (const i of layer.ink) {
-      const mapped = themePixel(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255, accent, this.light, this.surface);
+      const mapped = themePixel(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255, accent);
       for (let c = 0; c < 3; c++) output.data[i + c] = Math.round(mapped[c] * 255);
     }
-    layer.canvas.getContext('2d').putImageData(output, 0, 0);
+    context.putImageData(output, 0, 0);
+    layer.fallback.hidden = true;
   }
   updateSelection() {
     this.node.dataset.current = BANNERS[this.index][0];
