@@ -212,7 +212,7 @@ export class AccountLoginController {
     const method = this.state.method;
     if (!consent || !this.methodAvailable || !challenge || challenge.method !== method || challenge.identifier !== this.state[method] ||
         !/^\d{6}$/.test(code) || this.record || this.state.cleanupPending) return false;
-    if (challenge.expiresAt <= this.now()) { this.update({ error: 'expired' }); return false; }
+    if (challenge.expiresAt <= this.now()) { this.update({ error: 'expired', message: '' }); return false; }
     return this.run('login', async () => {
       const leaseID = this.newID();
       const release = await this.acquireLease(leaseID);
@@ -256,6 +256,11 @@ export class AccountLoginController {
     return this.run('refreshing', () => this.rotate());
   }
   async tick() {
+    // The form disables expired codes, so surface expiry without requiring a submit.
+    // Do not replace the progress state while a resend/login request is in flight.
+    if (!this.state.busy && this.state.challenge && this.state.challenge.expiresAt <= this.now() && this.state.error !== 'expired') {
+      this.update({ error: 'expired', message: '' });
+    }
     if (this.record && this.state.session && this.state.session.expiresAt <= this.now() + 60) {
       await this.refresh({ automatic: true });
     }

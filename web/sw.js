@@ -1,6 +1,6 @@
 // 离线可用：第一次打开后把页面文件缓存下来，没网也能打开提词（智能跟读要联网识别除外）。
 // 改了网页文件发布时把 VERSION 加一，旧缓存会被换掉。
-const VERSION = 'frmzone-web-20261111-account-2';
+const VERSION = 'frmzone-web-20261112-otp-expiry';
 const FILES = ['./', 'index.html', 'styles.css', 'styles.css?v=20261016-banner', 'manifest.webmanifest', 'library.json',
   'js/app.js', 'js/store.js', 'js/markup.js', 'js/follow.js', 'js/follow-scroll.js', 'js/prompter.js', 'js/license.js', 'js/workspace.js', 'js/home-banners.js',
   'account.css?v=20261111.2', 'js/account-ui.mjs?v=20261111.2', 'js/account-auth.mjs',
